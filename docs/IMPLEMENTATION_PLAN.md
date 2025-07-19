@@ -100,45 +100,70 @@ const colors = {
 5. **Mobile-first** - Thumb-friendly interactions
 
 ## Current Status
-- ✅ Basic Fi Money themed React Native app created
+- ✅ Fi Money themed React Native app with dark theme
+- ✅ Plant-based rewards system (🌱→🌿→🪴→🌳) working
+- ✅ Emoji-rich interface following Fi design philosophy
+- ✅ Proper color palette implementation
+- ✅ Interactive balance and plant growth mechanics
 - ✅ Test data structure with 15 user profiles established
-- ✅ Dark theme with Fi Money color palette implemented
-- ✅ Plant-based rewards system integrated
-- ✅ Emoji-rich interface established
-- 🔄 Ready for core feature implementation
+- ✅ Scrollable layout with multiple sections
+- 🔄 **Ready for Phase 1: Architecture & Data Integration**
 
 ---
 
-## Phase 1: Foundation & Data Integration (Week 1-2)
+## Phase 1: Architecture Refactoring & Data Integration (Week 1-2)
 
-### 1.1 Data Service Layer
-**Status:** 🔴 Not Started  
+### 1.1 Component Extraction & Organization
+**Status:** 🟡 High Priority  
+**Current Issue:** All code in single App.tsx file
+**Files to create:**
+- `src/components/BalanceCard.js` - Extract balance display
+- `src/components/PlantRewards.js` - Extract plant growth component
+- `src/components/QuickActions.js` - Extract quick action grid
+- `src/components/VibeCard.js` - Extract today's vibe section
+- `src/theme/colors.js` - Centralize color definitions
+
+**Tasks:**
+- [ ] Extract reusable components from App.tsx
+- [ ] Create centralized theme/color system
+- [ ] Implement component props and TypeScript interfaces
+- [ ] Add component documentation
+
+### 1.2 Data Service Layer
+**Status:** 🔴 Critical Next Step  
 **Files to create:**
 - `src/services/DataService.js` - Test data loader
 - `src/utils/DataParser.js` - JSON data parser
 - `src/types/FinancialTypes.ts` - TypeScript interfaces
+- `src/hooks/useFinancialData.js` - Custom hook for data management
 
 **Tasks:**
-- [ ] Create data service to load test JSON files
+- [ ] Create data service to load test JSON files from `../summaries/test_data_dir/`
 - [ ] Parse net worth, MF, bank, credit, EPF, stock data
+- [ ] Replace hardcoded balance with real user data
 - [ ] Implement user profile switcher (15 test users)
 - [ ] Add data validation and error handling
 
 **Test Command:** `npm test -- DataService`
 
-### 1.2 Navigation Structure
-**Status:** 🔴 Not Started  
+### 1.3 Navigation Structure
+**Status:** 🟡 Medium Priority  
+**Current Issue:** Single screen app
 **Files to create:**
 - `src/navigation/AppNavigator.js`
-- `src/screens/` folder structure
+- `src/screens/HomeScreen.js` - Move current App.tsx content
+- `src/screens/PortfolioScreen.js`
+- `src/screens/InsightsScreen.js`
+- `src/screens/ProfileScreen.js`
 
 **Tasks:**
-- [ ] Install React Navigation
+- [ ] Install React Navigation dependencies
 - [ ] Create bottom tab navigation
+- [ ] Move current App.tsx content to HomeScreen
 - [ ] Set up screen structure: Home, Portfolio, Insights, Profile
 - [ ] Implement user profile switcher in header
 
-**Dependencies:** `npm install @react-navigation/native @react-navigation/bottom-tabs`
+**Dependencies:** `npm install @react-navigation/native @react-navigation/bottom-tabs react-native-screens react-native-safe-area-context`
 
 ---
 
@@ -485,13 +510,20 @@ export const FiTheme = {
 
 ## Progress Tracking
 
-### Current Sprint: Foundation Setup
+### Current Sprint: Architecture Refactoring
 **Target Date:** [Add your target date]
-**Progress:** 0/10 tasks completed
+**Progress:** 0/12 tasks completed
+**Priority:** Component extraction → Data integration → Navigation
 
-### Next Sprint: Core Features
+### Next Sprint: Data Integration
+**Target Date:** [Add your target date]
+**Progress:** 0/8 tasks completed
+**Focus:** Connect real test data, user switching
+
+### Sprint 3: Core Features
 **Target Date:** [Add your target date]
 **Progress:** 0/15 tasks completed
+**Focus:** Personal inflation, health score, recommendations
 
 ---
 
@@ -504,14 +536,44 @@ cd DemoApp && npx react-native run-android
 # Run tests
 npm test
 
-# Install new dependencies
-npm install [package-name]
+# Install navigation dependencies (Phase 1.3)
+npm install @react-navigation/native @react-navigation/bottom-tabs react-native-screens react-native-safe-area-context
 
 # Check current user data
-ls summaries/test_data_dir/
+ls ../summaries/test_data_dir/
 
-# Switch test user
+# Current app structure
+ls src/  # Will be created in Phase 1.1
+
+# Switch test user (after DataService implementation)
 # Update DataService.js to load different user folder
+```
+
+## Immediate Next Steps (This Week)
+
+### Step 1: Component Extraction (2-3 hours)
+```bash
+# Create folder structure
+mkdir src src/components src/theme src/services src/utils src/types src/hooks
+
+# Extract components from App.tsx
+# 1. BalanceCard component
+# 2. PlantRewards component  
+# 3. QuickActions component
+# 4. VibeCard component
+```
+
+### Step 2: Data Service Setup (3-4 hours)
+```bash
+# Create data service to load JSON files
+# Connect to ../summaries/test_data_dir/[userId]/
+# Replace hardcoded balance with real data
+```
+
+### Step 3: User Profile Switcher (1-2 hours)
+```bash
+# Add dropdown/picker to switch between 15 test users
+# Show different financial data for each user
 ```
 
 ---
@@ -520,9 +582,12 @@ ls summaries/test_data_dir/
 
 ### Technical Decisions
 - Using React Native for cross-platform compatibility
-- Test data stored locally for demo purposes
-- Google Gemini for AI capabilities
-- Dark theme following Fi Money design
+- Test data stored locally for demo purposes (../summaries/test_data_dir/)
+- Google Gemini for AI capabilities (Phase 3)
+- Dark theme following Fi Money design (✅ Implemented)
+- Component-based architecture for reusability
+- Custom hooks for data management
+- TypeScript for type safety
 
 ### Business Logic
 - Personal inflation calculation prioritized as key differentiator

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,26 +7,37 @@ import {
   StatusBar,
   SafeAreaView,
   ScrollView,
+  Image,
 } from 'react-native';
-
-const colors = {
-  primary: '#02B899',
-  secondary: '#4B7672',
-  darkText: '#FBFDFD',
-  black: '#1C1B1C',
-  background: '#272A29',
-};
+import { FiColors } from './src/theme/colors';
+import BalanceCard from './src/components/BalanceCard';
+import PlantRewards from './src/components/PlantRewards';
+import QuickActions from './src/components/QuickActions';
+import VibeCard from './src/components/VibeCard';
+import DataService from './src/services/DataService';
+import { getAvatarSource } from './src/utils/avatarHelper';
 
 function App() {
   const [balance, setBalance] = useState(12450.75);
   const [plantGrowth, setPlantGrowth] = useState(3);
   const [rewardPoints, setRewardPoints] = useState(245);
+  const [currentUser, setCurrentUser] = useState('1010101010');
+  const [availableUsers] = useState(DataService.getAvailableUsers());
+  const [userAvatar, setUserAvatar] = useState(1);
 
-  const getPlantEmoji = (growth) => {
-    if (growth <= 1) return '🌱';
-    if (growth <= 3) return '🌿';
-    if (growth <= 5) return '🪴';
-    return '🌳';
+  useEffect(() => {
+    loadUserData();
+  }, [currentUser]);
+
+  const loadUserData = async () => {
+    try {
+      const userBalance = await DataService.getUserBalance(currentUser);
+      const avatar = DataService.getUserAvatar(currentUser);
+      setBalance(userBalance);
+      setUserAvatar(avatar);
+    } catch (error) {
+      console.error('Error loading user data:', error);
+    }
   };
 
   const handleTransaction = (amount) => {
@@ -37,34 +48,49 @@ function App() {
     }
   };
 
+  const switchUser = (userId) => {
+    setCurrentUser(userId);
+    DataService.setCurrentUser(userId);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.background} />
+      <StatusBar barStyle="light-content" backgroundColor={FiColors.background} />
       <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
         <View style={styles.content}>
           <View style={styles.header}>
-            <View>
+            <TouchableOpacity 
+              style={styles.profileButton}
+              onPress={() => {
+                const nextUserIndex = (availableUsers.indexOf(currentUser) + 1) % availableUsers.length;
+                switchUser(availableUsers[nextUserIndex]);
+              }}>
+              <Image 
+                source={getAvatarSource(userAvatar)}
+                style={styles.avatarImage}
+              />
+            </TouchableOpacity>
+            
+            <View style={styles.centerContent}>
               <Text style={styles.greeting}>Good morning! 👋</Text>
               <Text style={styles.subtitle}>Money made simple</Text>
             </View>
-            <TouchableOpacity style={styles.profileButton}>
-              <Text style={styles.profileEmoji}>😊</Text>
-            </TouchableOpacity>
-          </View>
-          
-          <View style={styles.balanceCard}>
-            <Text style={styles.balanceLabel}>Total Balance</Text>
-            <Text style={styles.balanceAmount}>₹{balance.toLocaleString('en-IN', {minimumFractionDigits: 2})}</Text>
-            <Text style={styles.balanceSubtext}>Keep it growing! 📈</Text>
-          </View>
-          
-          <View style={styles.rewardsSection}>
-            <View style={styles.plantContainer}>
-              <Text style={styles.plantEmoji}>{getPlantEmoji(plantGrowth)}</Text>
-              <Text style={styles.plantText}>Your money plant is growing!</Text>
-              <Text style={styles.rewardPoints}>{rewardPoints} Fi Points ✨</Text>
+            
+            <View style={styles.rightIcons}>
+              <TouchableOpacity style={styles.iconButton}>
+                <Text style={styles.iconEmoji}>📢</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.iconButton}>
+                <Text style={styles.iconEmoji}>🔔</Text>
+              </TouchableOpacity>
             </View>
           </View>
+          
+          <Text style={styles.userInfo}>User: {currentUser}</Text>
+          
+          <BalanceCard balance={balance} />
+          
+          <PlantRewards plantGrowth={plantGrowth} rewardPoints={rewardPoints} />
           
           <View style={styles.actionContainer}>
             <TouchableOpacity
@@ -79,35 +105,9 @@ function App() {
             </TouchableOpacity>
           </View>
           
-          <View style={styles.quickActions}>
-            <Text style={styles.sectionTitle}>Quick Actions</Text>
-            <View style={styles.quickActionGrid}>
-              <TouchableOpacity style={styles.quickActionItem}>
-                <Text style={styles.quickActionEmoji}>💳</Text>
-                <Text style={styles.quickActionText}>Cards</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.quickActionItem}>
-                <Text style={styles.quickActionEmoji}>📊</Text>
-                <Text style={styles.quickActionText}>Insights</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.quickActionItem}>
-                <Text style={styles.quickActionEmoji}>🎯</Text>
-                <Text style={styles.quickActionText}>Goals</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.quickActionItem}>
-                <Text style={styles.quickActionEmoji}>🏆</Text>
-                <Text style={styles.quickActionText}>Rewards</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          <QuickActions />
           
-          <View style={styles.funSection}>
-            <Text style={styles.funTitle}>Today's Vibe 🎭</Text>
-            <View style={styles.vibeCard}>
-              <Text style={styles.vibeEmoji}>🥲</Text>
-              <Text style={styles.vibeText}>When you check your balance after weekend shopping</Text>
-            </View>
-          </View>
+          <VibeCard />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -117,7 +117,7 @@ function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: FiColors.background,
   },
   scrollContainer: {
     flex: 1,
@@ -129,80 +129,58 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 24,
-  },
-  greeting: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: colors.darkText,
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: colors.secondary,
-    fontStyle: 'italic',
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingHorizontal: 4,
   },
   profileButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    overflow: 'hidden',
+    borderWidth: 2,
+    borderColor: FiColors.primary,
+  },
+  avatarImage: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: colors.primary + '20',
+  },
+  centerContent: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  greeting: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: FiColors.text,
+    marginBottom: 2,
+  },
+  subtitle: {
+    fontSize: 12,
+    color: FiColors.secondary,
+    fontStyle: 'italic',
+  },
+  rightIcons: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  iconButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: FiColors.surface,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  profileEmoji: {
-    fontSize: 20,
+  iconEmoji: {
+    fontSize: 18,
   },
-  balanceCard: {
-    backgroundColor: colors.primary,
-    borderRadius: 20,
-    padding: 24,
-    marginBottom: 20,
-    alignItems: 'center',
-  },
-  balanceLabel: {
-    fontSize: 14,
-    color: '#FBFDFD',
-    opacity: 0.9,
-    marginBottom: 8,
-  },
-  balanceAmount: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#FBFDFD',
-    marginBottom: 4,
-  },
-  balanceSubtext: {
+  userInfo: {
     fontSize: 12,
-    color: '#FBFDFD',
-    opacity: 0.8,
-  },
-  rewardsSection: {
-    marginBottom: 24,
-  },
-  plantContainer: {
-    backgroundColor: colors.secondary + '15',
-    borderRadius: 16,
-    padding: 20,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.secondary + '30',
-  },
-  plantEmoji: {
-    fontSize: 32,
-    marginBottom: 8,
-  },
-  plantText: {
-    fontSize: 14,
-    color: '#FBFDFD',
-    fontWeight: '500',
-    marginBottom: 4,
-  },
-  rewardPoints: {
-    fontSize: 12,
-    color: '#02B899',
-    fontWeight: '600',
+    color: FiColors.secondary,
+    marginBottom: 16,
+    textAlign: 'center',
   },
   actionContainer: {
     flexDirection: 'row',
@@ -216,79 +194,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   primaryButton: {
-    backgroundColor: colors.primary,
+    backgroundColor: FiColors.primary,
   },
   secondaryButton: {
-    backgroundColor: colors.secondary,
+    backgroundColor: FiColors.secondary,
   },
   primaryButtonText: {
-    color: '#FBFDFD',
+    color: FiColors.white,
     fontSize: 16,
     fontWeight: '600',
   },
   secondaryButtonText: {
-    color: '#FBFDFD',
+    color: FiColors.white,
     fontSize: 16,
     fontWeight: '600',
-  },
-  quickActions: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.darkText,
-    marginBottom: 16,
-  },
-  quickActionGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-  },
-  quickActionItem: {
-    width: '47%',
-    backgroundColor: colors.black,
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.secondary + '40',
-  },
-  quickActionEmoji: {
-    fontSize: 24,
-    marginBottom: 8,
-  },
-  quickActionText: {
-    fontSize: 13,
-    color: '#FBFDFD',
-    fontWeight: '500',
-  },
-  funSection: {
-    marginBottom: 20,
-  },
-  funTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.darkText,
-    marginBottom: 12,
-  },
-  vibeCard: {
-    backgroundColor: colors.primary + '10',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.primary + '20',
-  },
-  vibeEmoji: {
-    fontSize: 28,
-    marginBottom: 8,
-  },
-  vibeText: {
-    fontSize: 13,
-    color: '#FBFDFD',
-    textAlign: 'center',
-    fontStyle: 'italic',
   },
 });
 
