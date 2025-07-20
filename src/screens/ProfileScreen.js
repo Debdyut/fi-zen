@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, StatusBar, Image } from 'react-native';
 import { FadeInUp } from '../components/animations/AnimatedCard';
 import { TouchableArea } from '../components/common/AccessibilityHelpers';
 
@@ -18,9 +18,10 @@ const ProfileScreen = ({ navigation }) => {
     <FadeInUp delay={0}>
       <View style={styles.profileHeader}>
         <View style={styles.avatarContainer}>
-          <View style={styles.avatar}>
-            <Text style={styles.avatarText}>A</Text>
-          </View>
+          <Image 
+            source={require('../../assets/avatars/avatar-1.png')} 
+            style={styles.avatar}
+          />
           <TouchableArea style={styles.editAvatarButton}>
             <Text style={styles.editIcon}>✏️</Text>
           </TouchableArea>
@@ -97,12 +98,11 @@ const ProfileScreen = ({ navigation }) => {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={FiColors.background} />
       
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Profile</Text>
-      </View>
-
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Profile</Text>
+        </View>
         <ProfileHeader />
         <StatsCard />
         
@@ -129,7 +129,10 @@ const ProfileScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: FiColors.background,
+    backgroundColor: '#F5F5F5',
+  },
+  content: {
+    flex: 1,
   },
   header: {
     backgroundColor: FiColors.background,
@@ -144,7 +147,6 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
   },
   profileHeader: {
     backgroundColor: FiColors.surface,
@@ -166,14 +168,6 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: FiColors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  avatarText: {
-    fontSize: 32,
-    fontWeight: '600',
-    color: '#FFFFFF',
   },
   editAvatarButton: {
     position: 'absolute',

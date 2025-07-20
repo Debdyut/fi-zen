@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, StatusBar, Image } from 'react-native';
 import { FadeInUp } from '../animations/AnimatedCard';
 import { TouchableArea } from '../common/AccessibilityHelpers';
 import FiInflationCard from './FiInflationCard';
@@ -17,21 +17,38 @@ const FiColors = {
 };
 
 const FiHomeScreen = ({ navigation, inflationData }) => {
-  const FiHeader = () => (
-    <View style={styles.header}>
+  // Sticky Header Component
+  const StickyHeader = () => (
+    <View style={styles.stickyHeader}>
       <StatusBar barStyle="light-content" backgroundColor={FiColors.background} />
       
-      <View style={styles.headerTop}>
-        <View style={styles.greeting}>
-          <Text style={styles.greetingText}>Good morning</Text>
-          <Text style={styles.userName}>Arjun</Text>
-        </View>
-        
-        <TouchableArea style={styles.profileButton}>
-          <View style={styles.profileAvatar}>
-            <Text style={styles.profileInitial}>A</Text>
-          </View>
+      <TouchableArea 
+        style={styles.profileButton}
+        onPress={() => navigation.navigate('Profile')}
+      >
+        <Image 
+          source={require('../../../assets/avatars/avatar-1.png')} 
+          style={styles.profileAvatar}
+        />
+      </TouchableArea>
+      
+      <View style={styles.headerActions}>
+        <TouchableArea style={styles.headerActionButton}>
+          <Text style={styles.headerActionIcon}>🔔</Text>
         </TouchableArea>
+        
+        <TouchableArea style={styles.headerActionButton}>
+          <Text style={styles.headerActionIcon}>📢</Text>
+        </TouchableArea>
+      </View>
+    </View>
+  );
+
+  const WelcomeSection = () => (
+    <View style={styles.welcomeSection}>
+      <View style={styles.greeting}>
+        <Text style={styles.greetingText}>Good morning</Text>
+        <Text style={styles.userName}>Arjun</Text>
       </View>
 
       {/* Fi-style wealth display */}
@@ -162,9 +179,11 @@ const FiHomeScreen = ({ navigation, inflationData }) => {
 
   return (
     <View style={styles.container}>
-      <FiHeader />
+      <StickyHeader />
       
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        <WelcomeSection />
+        
         {/* Main Inflation Card */}
         <FiInflationCard inflationData={inflationData} />
         
@@ -195,19 +214,61 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: FiColors.background,
   },
-  header: {
+  stickyHeader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
     backgroundColor: FiColors.background,
     paddingTop: 50,
     paddingHorizontal: 20,
-    paddingBottom: 20,
-  },
-  headerTop: {
+    paddingBottom: 15,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    zIndex: 1000,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  profileButton: {
+    padding: 2,
+  },
+  profileAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  headerActions: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  headerActionButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: FiColors.textInverse + '10',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerActionIcon: {
+    fontSize: 18,
+  },
+  content: {
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+    paddingTop: 105, // Account for sticky header
+  },
+  welcomeSection: {
+    backgroundColor: FiColors.background,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+  },
+  greeting: {
     marginBottom: 24,
   },
-  greeting: {},
   greetingText: {
     fontSize: 16,
     color: FiColors.textInverse + '80',
@@ -217,22 +278,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '600',
     color: FiColors.textInverse,
-  },
-  profileButton: {
-    padding: 4,
-  },
-  profileAvatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: FiColors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  profileInitial: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#FFFFFF',
   },
   wealthSection: {
     alignItems: 'center',
@@ -244,7 +289,7 @@ const styles = StyleSheet.create({
   },
   wealthValue: {
     fontSize: 36,
-    fontWeight: '300', // Fi's light weight
+    fontWeight: '300',
     color: FiColors.textInverse,
     marginBottom: 4,
   },
@@ -252,10 +297,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: FiColors.primary,
     fontWeight: '500',
-  },
-  content: {
-    flex: 1,
-    backgroundColor: '#F5F5F5', // Light background for content
   },
   quickActions: {
     margin: 16,

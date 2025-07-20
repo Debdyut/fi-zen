@@ -150,13 +150,12 @@ const GoalsScreen = ({ navigation }) => {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={FiColors.background} />
       
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Financial Goals</Text>
-        <Text style={styles.headerSubtitle}>Track your progress & stay motivated</Text>
-      </View>
-
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Financial Goals</Text>
+          <Text style={styles.headerSubtitle}>Track your progress & stay motivated</Text>
+        </View>
         {/* Goals Overview */}
         <View style={styles.overviewCard}>
           <Text style={styles.overviewTitle}>Goals Overview</Text>
@@ -199,7 +198,10 @@ const GoalsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: FiColors.background,
+    backgroundColor: '#F5F5F5',
+  },
+  content: {
+    flex: 1,
   },
   header: {
     backgroundColor: FiColors.background,
@@ -219,7 +221,6 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
   },
   overviewCard: {
     backgroundColor: FiColors.surface,

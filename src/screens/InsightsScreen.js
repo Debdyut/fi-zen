@@ -51,13 +51,12 @@ const InsightsScreen = ({ navigation }) => {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={FiColors.background} />
       
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Financial Insights</Text>
-        <Text style={styles.headerSubtitle}>Your spending patterns & trends</Text>
-      </View>
-
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Financial Insights</Text>
+          <Text style={styles.headerSubtitle}>Your spending patterns & trends</Text>
+        </View>
         {/* Key Metrics */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Key Metrics</Text>
@@ -161,7 +160,10 @@ const InsightsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: FiColors.background,
+    backgroundColor: '#F5F5F5',
+  },
+  content: {
+    flex: 1,
   },
   header: {
     backgroundColor: FiColors.background,
@@ -181,7 +183,6 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
   },
   section: {
     margin: 16,
