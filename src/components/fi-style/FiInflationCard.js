@@ -83,8 +83,9 @@ const FiInflationCard = ({ inflationData = {} }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: FiColors.background,
-    padding: 16,
+    backgroundColor: 'transparent',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
   },
   card: {
     backgroundColor: FiColors.surface,

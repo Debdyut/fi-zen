@@ -107,7 +107,9 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
       {/* Metrics Grid */}
       <View style={styles.metricsGrid}>
         {metricsData.map((metric, index) => (
-          <MetricCard key={metric.id} metric={metric} index={index} />
+          <View key={metric.id} style={styles.cardWrapper}>
+            <MetricCard metric={metric} index={index} />
+          </View>
         ))}
       </View>
 
@@ -142,25 +144,32 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: FiColors.background,
-    padding: 16,
+    backgroundColor: 'transparent',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
   },
   metricsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
+    justifyContent: 'space-between',
     marginBottom: 20,
+  },
+  cardWrapper: {
+    width: '48%',
+    marginBottom: 12,
   },
   metricCard: {
     backgroundColor: FiColors.surface,
     borderRadius: 16,
     padding: 16,
-    width: '48%',
+    width: '100%',
+    minHeight: 130, // Increased minimum height
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+    justifyContent: 'space-between', // Better content distribution
   },
   cardHeader: {
     flexDirection: 'row',
@@ -200,9 +209,15 @@ const styles = StyleSheet.create({
     backgroundColor: FiColors.surface,
     borderRadius: 16,
     padding: 20,
+    marginHorizontal: 0, // Remove horizontal margin since container handles it
     marginBottom: 20,
     borderLeftWidth: 4,
     borderLeftColor: FiColors.primary,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
   },
   insightHeader: {
     flexDirection: 'row',
@@ -242,6 +257,12 @@ const styles = StyleSheet.create({
     backgroundColor: FiColors.surface,
     borderRadius: 16,
     padding: 20,
+    marginHorizontal: 0, // Remove horizontal margin since container handles it
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
   },
   progressTitle: {
     fontSize: 18,
