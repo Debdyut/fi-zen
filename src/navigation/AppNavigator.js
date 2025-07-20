@@ -2,16 +2,41 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Text } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet } from 'react-native';
 import { FiColors } from '../theme/consolidatedFiColors';
 import FiHomeScreenWrapper from '../components/fi-style/FiHomeScreenWrapper';
 import InflationScreen from '../screens/InflationScreen';
 import InflationSetupScreen from '../screens/InflationSetupScreen';
 import DetailedBreakdownScreen from '../components/results/DetailedBreakdownScreen';
+import InsightsScreen from '../screens/InsightsScreen';
+import GoalsScreen from '../screens/GoalsScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+
+// Custom Tab Icon Component
+const FiTabIcon = ({ emoji, focused, label }) => (
+  <View style={styles.tabIconContainer}>
+    <View style={[
+      styles.tabIconWrapper,
+      focused && styles.tabIconWrapperActive
+    ]}>
+      <Text style={[
+        styles.tabEmoji,
+        focused && styles.tabEmojiActive
+      ]}>
+        {emoji}
+      </Text>
+    </View>
+    <Text style={[
+      styles.tabLabel,
+      focused && styles.tabLabelActive
+    ]}>
+      {label}
+    </Text>
+  </View>
+);
 
 const TabNavigator = ({ navigation }) => {
   return (
@@ -19,33 +44,49 @@ const TabNavigator = ({ navigation }) => {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: FiColors.surface,
-          borderTopColor: FiColors.secondary + '20',
-          height: 70,
-          paddingBottom: 10,
+          backgroundColor: '#1A1A1A', // Dark background like Fi
+          borderTopColor: '#E0E0E0' + '30',
+          borderTopWidth: 0.5,
+          height: 85,
+          paddingBottom: 20,
           paddingTop: 10,
         },
-        tabBarActiveTintColor: FiColors.primary,
-        tabBarInactiveTintColor: FiColors.secondary,
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '500',
-        },
+        tabBarShowLabel: false,
       }}>
       <Tab.Screen 
         name="Home" 
         component={FiHomeScreenWrapper}
         options={{
-          tabBarLabel: 'Home',
-          tabBarIcon: () => <Text style={{ fontSize: 20 }}>🏠</Text>,
+          tabBarIcon: ({ focused }) => (
+            <FiTabIcon emoji="🏠" focused={focused} label="Home" />
+          ),
         }}
       />
       <Tab.Screen 
-        name="Inflation" 
-        component={InflationScreen}
+        name="Insights" 
+        component={InsightsScreen}
         options={{
-          tabBarLabel: 'Inflation',
-          tabBarIcon: () => <Text style={{ fontSize: 20 }}>📈</Text>,
+          tabBarIcon: ({ focused }) => (
+            <FiTabIcon emoji="📊" focused={focused} label="Insights" />
+          ),
+        }}
+      />
+      <Tab.Screen 
+        name="Goals" 
+        component={GoalsScreen}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <FiTabIcon emoji="🎯" focused={focused} label="Goals" />
+          ),
+        }}
+      />
+      <Tab.Screen 
+        name="Profile" 
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <FiTabIcon emoji="👤" focused={focused} label="Profile" />
+          ),
         }}
       />
     </Tab.Navigator>
@@ -72,5 +113,40 @@ const AppNavigator = () => {
     </NavigationContainer>
   );
 };
+
+const styles = StyleSheet.create({
+  tabIconContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 50,
+  },
+  tabIconWrapper: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    marginBottom: 4,
+  },
+  tabIconWrapperActive: {
+    backgroundColor: '#00D4AA' + '20', // Fi primary color
+  },
+  tabEmoji: {
+    fontSize: 18,
+  },
+  tabEmojiActive: {
+    fontSize: 20,
+  },
+  tabLabel: {
+    fontSize: 11,
+    fontWeight: '500',
+    color: '#FFFFFF' + '60', // Light text for dark background
+  },
+  tabLabelActive: {
+    color: '#00D4AA', // Fi primary color
+    fontWeight: '600',
+  },
+});
 
 export default AppNavigator;
