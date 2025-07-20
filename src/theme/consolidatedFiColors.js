@@ -1,28 +1,71 @@
 // Consolidated Fi Colors (Based on Actual Fi App Screenshots)
-// Single source of truth for all Fi-Zen components
+// Single source of truth for all Fi-Zen components with Dark/Light mode support
 
-export const FiColors = {
+// Dark Theme Colors (Fi's signature dark mode)
+export const DarkTheme = {
   // Fi App Primary Colors (from screenshots)
   background: '#1A1A1A',        // Fi's dark background
-  surface: '#FFFFFF',           // White cards
-  surfaceSecondary: '#F8F9FA',  // Light gray surface
+  surface: '#2A2A2A',           // Dark cards
+  surfaceSecondary: '#333333',  // Darker gray surface
   
-  // Fi Brand Colors
-  primary: '#00D4AA',           // Fi's signature teal (from screenshots)
+  // Fi Brand Colors (consistent across themes)
+  primary: '#00D4AA',           // Fi's signature teal
   primaryLight: '#33E0BB',      // Lighter teal
   primaryDark: '#00B894',       // Darker teal
   
-  // Text Colors
-  text: '#1A1A1A',             // Dark text on light surfaces
-  textSecondary: '#666666',     // Medium gray text
-  textTertiary: '#999999',      // Light gray text
-  textInverse: '#FFFFFF',       // White text on dark background
-  textInverseSecondary: '#CCCCCC', // Light gray on dark background
+  // Text Colors for Dark Mode
+  text: '#FFFFFF',              // White text on dark surfaces
+  textSecondary: '#CCCCCC',     // Light gray text
+  textTertiary: '#999999',      // Medium gray text
+  textInverse: '#1A1A1A',       // Dark text on light elements
+  textInverseSecondary: '#666666', // Medium gray on light elements
   
   // Status Colors (Fi Style)
   success: '#00D4AA',           // Use Fi teal for success
   warning: '#FFB800',           // Warm yellow
-  error: '#FF6B6B',             // Soft red (not harsh)
+  error: '#FF6B6B',             // Soft red
+  info: '#4A90E2',              // Blue
+  
+  // Inflation-Specific Colors
+  inflationLow: '#00D4AA',      // Fi teal for good rates
+  inflationModerate: '#FFB800', // Yellow for moderate
+  inflationHigh: '#FF8A65',     // Orange for concerning
+  inflationVeryHigh: '#FF6B6B', // Red for very high
+  
+  // UI Elements
+  border: '#404040',            // Dark border
+  borderLight: '#333333',       // Darker border
+  shadow: 'rgba(0, 0, 0, 0.3)', // Stronger shadow for dark mode
+  
+  // Backgrounds for different contexts
+  backgroundLight: '#2A2A2A',   // Dark background for content areas
+  backgroundCard: '#2A2A2A',    // Dark card backgrounds
+  backgroundAccent: '#00D4AA20', // Teal with 20% opacity
+};
+
+// Light Theme Colors
+export const LightTheme = {
+  // Light mode backgrounds
+  background: '#FFFFFF',        // White background
+  surface: '#FFFFFF',           // White cards
+  surfaceSecondary: '#F8F9FA',  // Light gray surface
+  
+  // Fi Brand Colors (consistent across themes)
+  primary: '#00D4AA',           // Fi's signature teal
+  primaryLight: '#33E0BB',      // Lighter teal
+  primaryDark: '#00B894',       // Darker teal
+  
+  // Text Colors for Light Mode
+  text: '#1A1A1A',             // Dark text on light surfaces
+  textSecondary: '#666666',     // Medium gray text
+  textTertiary: '#999999',      // Light gray text
+  textInverse: '#FFFFFF',       // White text on dark elements
+  textInverseSecondary: '#CCCCCC', // Light gray on dark elements
+  
+  // Status Colors (Fi Style)
+  success: '#00D4AA',           // Use Fi teal for success
+  warning: '#FFB800',           // Warm yellow
+  error: '#FF6B6B',             // Soft red
   info: '#4A90E2',              // Blue
   
   // Inflation-Specific Colors
@@ -41,6 +84,14 @@ export const FiColors = {
   backgroundCard: '#FFFFFF',    // Card backgrounds
   backgroundAccent: '#00D4AA20', // Teal with 20% opacity
 };
+
+// Function to get current theme colors
+export const getThemeColors = (isDarkMode) => {
+  return isDarkMode ? DarkTheme : LightTheme;
+};
+
+// Legacy export for backward compatibility
+export const FiColors = DarkTheme;
 
 // Fi Typography Scale (Based on Screenshots)
 export const FiTypography = {
@@ -104,14 +155,14 @@ export const FiTypography = {
   },
 };
 
-// Fi Component Styles (Reusable)
-export const FiStyles = {
+// Fi Component Styles (Theme-aware)
+export const getFiStyles = (colors) => ({
   // Standard Fi card
   card: {
-    backgroundColor: FiColors.surface,
+    backgroundColor: colors.surface,
     borderRadius: 16,
     padding: 20,
-    shadowColor: FiColors.shadow,
+    shadowColor: colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 1,
     shadowRadius: 8,
@@ -120,7 +171,7 @@ export const FiStyles = {
   
   // Fi button primary
   buttonPrimary: {
-    backgroundColor: FiColors.primary,
+    backgroundColor: colors.primary,
     borderRadius: 12,
     paddingVertical: 14,
     paddingHorizontal: 20,
@@ -129,24 +180,28 @@ export const FiStyles = {
   
   // Fi button secondary
   buttonSecondary: {
-    backgroundColor: FiColors.primaryLight + '20',
+    backgroundColor: colors.primary + '20',
     borderRadius: 12,
     paddingVertical: 14,
     paddingHorizontal: 20,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: FiColors.primary,
+    borderColor: colors.primary,
   },
   
   // Fi input field
   input: {
     borderWidth: 1,
-    borderColor: FiColors.border,
+    borderColor: colors.border,
     borderRadius: 8,
     padding: 12,
-    backgroundColor: FiColors.surface,
+    backgroundColor: colors.surface,
     fontSize: 16,
+    color: colors.text,
   },
-};
+});
 
-export default FiColors;
+// Legacy export for backward compatibility
+export const FiStyles = getFiStyles(DarkTheme);
+
+export default { DarkTheme, LightTheme, getThemeColors, FiTypography, getFiStyles };

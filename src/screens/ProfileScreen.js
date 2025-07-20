@@ -2,71 +2,70 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, StatusBar, Image } from 'react-native';
 import { FadeInUp } from '../components/animations/AnimatedCard';
 import { TouchableArea } from '../components/common/AccessibilityHelpers';
-
-const FiColors = {
-  background: '#1A1A1A',
-  surface: '#FFFFFF',
-  primary: '#00D4AA',
-  text: '#1A1A1A',
-  textSecondary: '#666666',
-  textInverse: '#FFFFFF',
-  border: '#E0E0E0',
-};
+import { useTheme } from '../theme/ThemeContext';
+import { useLanguage } from '../localization/LanguageContext';
+import { getThemeColors } from '../theme/consolidatedFiColors';
+import ThemeToggle from '../components/common/ThemeToggle';
+import LanguageSelector from '../components/common/LanguageSelector';
 
 const ProfileScreen = ({ navigation }) => {
+  const { isDarkMode } = useTheme();
+  const { t } = useLanguage();
+  const colors = getThemeColors(isDarkMode);
+
   const ProfileHeader = () => (
     <FadeInUp delay={0}>
-      <View style={styles.profileHeader}>
+      <View style={[styles.profileHeader, { backgroundColor: colors.surface }]}>
         <View style={styles.avatarContainer}>
           <Image 
             source={require('../../assets/avatars/avatar-1.png')} 
             style={styles.avatar}
           />
-          <TouchableArea style={styles.editAvatarButton}>
+          <TouchableArea style={[styles.editAvatarButton, { backgroundColor: colors.primary }]}>
             <Text style={styles.editIcon}>✏️</Text>
           </TouchableArea>
         </View>
         
-        <Text style={styles.userName}>Arjun Sharma</Text>
-        <Text style={styles.userEmail}>arjun.sharma@email.com</Text>
-        <Text style={styles.memberSince}>Member since March 2024</Text>
+        <Text style={[styles.userName, { color: colors.text }]}>{t('profile.userName')}</Text>
+        <Text style={[styles.userEmail, { color: colors.textSecondary }]}>arjun.sharma@email.com</Text>
+        <Text style={[styles.memberSince, { color: colors.textTertiary }]}>{t('profile.memberSince')}</Text>
       </View>
     </FadeInUp>
   );
 
   const StatsCard = () => (
     <FadeInUp delay={100}>
-      <View style={styles.statsCard}>
-        <Text style={styles.statsTitle}>Your Fi Journey</Text>
+      <View style={[styles.statsCard, { backgroundColor: colors.surface }]}>
+        <Text style={[styles.statsTitle, { color: colors.text }]}>{t('profile.journey')}</Text>
         <View style={styles.statsGrid}>
           <View style={styles.statItem}>
-            <Text style={styles.statValue}>47</Text>
-            <Text style={styles.statLabel}>Days Active</Text>
+            <Text style={[styles.statValue, { color: colors.primary }]}>47</Text>
+            <Text style={[styles.statLabel, { color: colors.textSecondary }]}>{t('profile.daysActive')}</Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={styles.statValue}>₹2.4L</Text>
-            <Text style={styles.statLabel}>Money Saved</Text>
+            <Text style={[styles.statValue, { color: colors.primary }]}>₹2.4L</Text>
+            <Text style={[styles.statLabel, { color: colors.textSecondary }]}>{t('profile.moneySaved')}</Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={styles.statValue}>12</Text>
-            <Text style={styles.statLabel}>Goals Achieved</Text>
+            <Text style={[styles.statValue, { color: colors.primary }]}>12</Text>
+            <Text style={[styles.statLabel, { color: colors.textSecondary }]}>{t('profile.goalsAchieved')}</Text>
           </View>
         </View>
       </View>
     </FadeInUp>
   );
 
-  const MenuSection = ({ title, items, delay = 200, bgColor = '#FFFFFF' }) => (
+  const MenuSection = ({ title, items, delay = 200 }) => (
     <FadeInUp delay={delay}>
-      <View style={[styles.menuSection, { backgroundColor: bgColor }]}>
-        <Text style={styles.menuSectionTitle}>{title}</Text>
+      <View style={[styles.menuSection, { backgroundColor: colors.surface }]}>
+        <Text style={[styles.menuSectionTitle, { color: colors.text }]}>{title}</Text>
         {items.map((item, index) => (
           <TouchableArea key={index} style={styles.menuItem}>
             <View style={styles.menuItemLeft}>
               <Text style={styles.menuIcon}>{item.icon}</Text>
-              <Text style={styles.menuText}>{item.title}</Text>
+              <Text style={[styles.menuText, { color: colors.text }]}>{item.title}</Text>
             </View>
-            <Text style={styles.menuArrow}>›</Text>
+            <Text style={[styles.menuArrow, { color: colors.textSecondary }]}>›</Text>
           </TouchableArea>
         ))}
       </View>
@@ -74,82 +73,76 @@ const ProfileScreen = ({ navigation }) => {
   );
 
   const personalItems = [
-    { icon: '👤', title: 'Personal Information' },
-    { icon: '🏠', title: 'Location & Preferences' },
-    { icon: '💰', title: 'Income & Expenses' },
-    { icon: '🎯', title: 'Financial Goals' },
+    { icon: '👤', title: t('profile.personalInfo') },
+    { icon: '🏠', title: t('profile.location') },
+    { icon: '💰', title: t('profile.income') },
+    { icon: '🎯', title: t('profile.financialGoals') },
   ];
 
   const appItems = [
-    { icon: '🔔', title: 'Notifications' },
-    { icon: '🔒', title: 'Privacy & Security' },
-    { icon: '📊', title: 'Data & Analytics' },
-    { icon: '🌙', title: 'App Appearance' },
+    { icon: '🔔', title: t('profile.notifications') },
+    { icon: '🔒', title: t('profile.privacy') },
+    { icon: '📊', title: t('profile.dataAnalytics') },
   ];
 
   const supportItems = [
-    { icon: '❓', title: 'Help & Support' },
-    { icon: '📝', title: 'Feedback' },
-    { icon: '⭐', title: 'Rate Fi App' },
-    { icon: '📄', title: 'Terms & Privacy' },
+    { icon: '❓', title: t('profile.help') },
+    { icon: '📝', title: t('profile.feedback') },
+    { icon: '⭐', title: t('profile.rate') },
+    { icon: '📄', title: t('profile.terms') },
   ];
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={FiColors.background} />
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <StatusBar 
+        barStyle={isDarkMode ? "light-content" : "dark-content"} 
+        backgroundColor={colors.background} 
+      />
       
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Profile</Text>
-        </View>
+      <ScrollView 
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
         <ProfileHeader />
         <StatsCard />
         
-        <MenuSection title="Personal" items={personalItems} delay={200} bgColor="#FFFBF0" />
-        <MenuSection title="App Settings" items={appItems} delay={300} bgColor="#F0FDFA" />
-        <MenuSection title="Support" items={supportItems} delay={400} bgColor="#FFF5F5" />
-        
-        {/* Logout Button */}
-        <FadeInUp delay={500}>
-          <TouchableArea style={styles.logoutButton}>
-            <Text style={styles.logoutText}>Sign Out</Text>
-          </TouchableArea>
+        {/* Theme Toggle Section */}
+        <FadeInUp delay={150}>
+          <View style={[styles.themeSection, { backgroundColor: colors.surface }]}>
+            <Text style={[styles.menuSectionTitle, { color: colors.text }]}>{t('profile.appearance')}</Text>
+            <ThemeToggle style={styles.themeToggle} />
+          </View>
         </FadeInUp>
         
-        {/* App Version */}
-        <View style={styles.versionContainer}>
-          <Text style={styles.versionText}>Fi App v1.2.0</Text>
-        </View>
+        {/* Language Selector Section */}
+        <FadeInUp delay={175}>
+          <View style={[styles.languageSection, { backgroundColor: colors.surface }]}>
+            <Text style={[styles.menuSectionTitle, { color: colors.text }]}>{t('profile.language')}</Text>
+            <LanguageSelector style={styles.languageSelector} />
+          </View>
+        </FadeInUp>
+        
+        <MenuSection title={t('profile.personal')} items={personalItems} delay={200} />
+        <MenuSection title={t('profile.appSettings')} items={appItems} delay={250} />
+        <MenuSection title={t('profile.support')} items={supportItems} delay={300} />
+        
+        <View style={styles.bottomSpacing} />
       </ScrollView>
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: FiColors.background,
   },
-  content: {
+  scrollView: {
     flex: 1,
   },
-  header: {
-    backgroundColor: FiColors.background,
-    paddingTop: 50,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: '600',
-    color: FiColors.textInverse,
-  },
-  content: {
-    flex: 1,
+  scrollContent: {
+    paddingBottom: 100,
   },
   profileHeader: {
-    backgroundColor: '#F0F9FF',
     margin: 16,
     borderRadius: 16,
     padding: 24,
@@ -176,7 +169,6 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: FiColors.surface,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
@@ -191,20 +183,16 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 24,
     fontWeight: '600',
-    color: FiColors.text,
     marginBottom: 4,
   },
   userEmail: {
     fontSize: 16,
-    color: FiColors.textSecondary,
     marginBottom: 8,
   },
   memberSince: {
     fontSize: 14,
-    color: FiColors.textSecondary,
   },
   statsCard: {
-    backgroundColor: '#F0FFF4',
     margin: 16,
     borderRadius: 16,
     padding: 20,
@@ -217,7 +205,6 @@ const styles = StyleSheet.create({
   statsTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: FiColors.text,
     marginBottom: 16,
     textAlign: 'center',
   },
@@ -231,13 +218,37 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 20,
     fontWeight: '700',
-    color: FiColors.primary,
     marginBottom: 4,
   },
   statLabel: {
     fontSize: 14,
-    color: FiColors.textSecondary,
     textAlign: 'center',
+  },
+  themeSection: {
+    borderRadius: 16,
+    margin: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  themeToggle: {
+    marginTop: 12,
+  },
+  languageSection: {
+    borderRadius: 16,
+    margin: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  languageSelector: {
+    marginTop: 12,
   },
   menuSection: {
     borderRadius: 16,
@@ -252,10 +263,8 @@ const styles = StyleSheet.create({
   menuSectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: FiColors.text,
     padding: 20,
     paddingBottom: 12,
-    backgroundColor: FiColors.surface,
   },
   menuItem: {
     flexDirection: 'row',
@@ -263,8 +272,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 16,
-    borderTopWidth: 1,
-    borderTopColor: FiColors.border + '30',
+    borderTopWidth: 0.5,
+    borderTopColor: 'rgba(0, 0, 0, 0.1)',
   },
   menuItemLeft: {
     flexDirection: 'row',
@@ -277,39 +286,14 @@ const styles = StyleSheet.create({
   },
   menuText: {
     fontSize: 16,
-    color: FiColors.text,
     fontWeight: '500',
   },
   menuArrow: {
     fontSize: 20,
-    color: FiColors.textSecondary,
     fontWeight: '300',
   },
-  logoutButton: {
-    backgroundColor: '#FF6B6B',
-    margin: 16,
-    borderRadius: 16,
-    paddingVertical: 16,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  logoutText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
-  versionContainer: {
-    alignItems: 'center',
-    paddingVertical: 20,
-    marginBottom: 20,
-  },
-  versionText: {
-    fontSize: 14,
-    color: FiColors.textSecondary,
+  bottomSpacing: {
+    height: 20,
   },
 });
 

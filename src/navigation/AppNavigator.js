@@ -3,7 +3,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Text, StyleSheet } from 'react-native';
-import { FiColors } from '../theme/consolidatedFiColors';
+import { useTheme } from '../theme/ThemeContext';
+import { getThemeColors } from '../theme/consolidatedFiColors';
 import FiHomeScreenWrapper from '../components/fi-style/FiHomeScreenWrapper';
 import InflationScreen from '../screens/InflationScreen';
 import InflationSetupScreen from '../screens/InflationSetupScreen';
@@ -17,11 +18,11 @@ const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 // Custom Tab Icon Component
-const FiTabIcon = ({ emoji, focused, label }) => (
+const FiTabIcon = ({ emoji, focused, label, colors }) => (
   <View style={styles.tabIconContainer}>
     <View style={[
       styles.tabIconWrapper,
-      focused && styles.tabIconWrapperActive
+      focused && { backgroundColor: colors.primary + '20' }
     ]}>
       <Text style={[
         styles.tabEmoji,
@@ -32,7 +33,8 @@ const FiTabIcon = ({ emoji, focused, label }) => (
     </View>
     <Text style={[
       styles.tabLabel,
-      focused && styles.tabLabelActive
+      { color: colors.textSecondary },
+      focused && { color: colors.primary, fontWeight: '600' }
     ]}>
       {label}
     </Text>
@@ -40,13 +42,16 @@ const FiTabIcon = ({ emoji, focused, label }) => (
 );
 
 const TabNavigator = ({ navigation }) => {
+  const { isDarkMode } = useTheme();
+  const colors = getThemeColors(isDarkMode);
+
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: '#1A1A1A', // Dark background like Fi
-          borderTopColor: '#E0E0E0' + '30',
+          backgroundColor: colors.background,
+          borderTopColor: colors.border,
           borderTopWidth: 0.5,
           height: 80,
           paddingBottom: 15,
@@ -59,7 +64,7 @@ const TabNavigator = ({ navigation }) => {
         component={FiHomeScreenWrapper}
         options={{
           tabBarIcon: ({ focused }) => (
-            <FiTabIcon emoji="🏠" focused={focused} label="Home" />
+            <FiTabIcon emoji="🏠" focused={focused} label="Home" colors={colors} />
           ),
         }}
       />
@@ -68,7 +73,7 @@ const TabNavigator = ({ navigation }) => {
         component={InsightsScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <FiTabIcon emoji="📊" focused={focused} label="Insights" />
+            <FiTabIcon emoji="📊" focused={focused} label="Insights" colors={colors} />
           ),
         }}
       />
@@ -77,7 +82,7 @@ const TabNavigator = ({ navigation }) => {
         component={GoalsScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <FiTabIcon emoji="🎯" focused={focused} label="Goals" />
+            <FiTabIcon emoji="🎯" focused={focused} label="Goals" colors={colors} />
           ),
         }}
       />
@@ -86,7 +91,7 @@ const TabNavigator = ({ navigation }) => {
         component={ProfileScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <FiTabIcon emoji="👤" focused={focused} label="Profile" />
+            <FiTabIcon emoji="👤" focused={focused} label="Profile" colors={colors} />
           ),
         }}
       />
@@ -95,8 +100,23 @@ const TabNavigator = ({ navigation }) => {
 };
 
 const AppNavigator = () => {
+  const { isDarkMode } = useTheme();
+  const colors = getThemeColors(isDarkMode);
+
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      theme={{
+        dark: isDarkMode,
+        colors: {
+          primary: colors.primary,
+          background: colors.background,
+          card: colors.surface,
+          text: colors.text,
+          border: colors.border,
+          notification: colors.primary,
+        },
+      }}
+    >
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Main">
           {(props) => <TabNavigator {...props} />}
@@ -138,9 +158,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     marginBottom: 4,
   },
-  tabIconWrapperActive: {
-    backgroundColor: '#00D4AA' + '20', // Fi primary color
-  },
   tabEmoji: {
     fontSize: 18,
   },
@@ -150,13 +167,8 @@ const styles = StyleSheet.create({
   tabLabel: {
     fontSize: 9,
     fontWeight: '500',
-    color: '#FFFFFF' + '60',
     textAlign: 'center',
     numberOfLines: 1,
-  },
-  tabLabelActive: {
-    color: '#00D4AA',
-    fontWeight: '600',
   },
 });
 
