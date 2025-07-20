@@ -11,6 +11,7 @@ import DetailedBreakdownScreen from '../components/results/DetailedBreakdownScre
 import InsightsScreen from '../screens/InsightsScreen';
 import GoalsScreen from '../screens/GoalsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import MetricDetailScreen from '../screens/MetricDetailScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -47,9 +48,9 @@ const TabNavigator = ({ navigation }) => {
           backgroundColor: '#1A1A1A', // Dark background like Fi
           borderTopColor: '#E0E0E0' + '30',
           borderTopWidth: 0.5,
-          height: 85,
-          paddingBottom: 20,
-          paddingTop: 10,
+          height: 80,
+          paddingBottom: 15,
+          paddingTop: 12,
         },
         tabBarShowLabel: false,
       }}>
@@ -102,6 +103,13 @@ const AppNavigator = () => {
         </Stack.Screen>
         <Stack.Screen name="InflationSetup" component={InflationSetupScreen} />
         <Stack.Screen 
+          name="MetricDetail" 
+          component={MetricDetailScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen 
           name="DetailedBreakdownScreen" 
           component={DetailedBreakdownScreen}
           options={{
@@ -119,6 +127,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 50,
+    width: 70,
   },
   tabIconWrapper: {
     width: 36,
@@ -136,15 +145,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   tabEmojiActive: {
-    fontSize: 20,
+    fontSize: 18,
   },
   tabLabel: {
-    fontSize: 11,
+    fontSize: 9,
     fontWeight: '500',
-    color: '#FFFFFF' + '60', // Light text for dark background
+    color: '#FFFFFF' + '60',
+    textAlign: 'center',
+    numberOfLines: 1,
   },
   tabLabelActive: {
-    color: '#00D4AA', // Fi primary color
+    color: '#00D4AA',
     fontWeight: '600',
   },
 });

@@ -12,6 +12,7 @@ import FiMetricsCards from '../components/fi-style/FiMetricsCards';
 import StreamlinedWelcomeScreen from '../components/onboarding/StreamlinedWelcomeScreen';
 import RevenueFocusedResultsScreen from '../components/results/RevenueFocusedResultsScreen';
 import ProfessionalDashboard from '../components/professional/ProfessionalDashboard';
+import MetricDetailScreen from '../screens/MetricDetailScreen';
 
 // Fi App Colors
 const FiColors = {
@@ -110,6 +111,14 @@ const InflationStack = () => {
           headerTintColor: FiColors.text,
         }}
       />
+      
+      <Stack.Screen 
+        name="MetricDetail" 
+        component={MetricDetailScreen}
+        options={{ 
+          headerShown: false,
+        }}
+      />
     </Stack.Navigator>
   );
 };
@@ -123,9 +132,9 @@ const FiStyleTabNavigator = () => {
           backgroundColor: FiColors.background,
           borderTopColor: FiColors.border + '30',
           borderTopWidth: 0.5,
-          height: 85,
-          paddingBottom: 20,
-          paddingTop: 10,
+          height: 80,
+          paddingBottom: 15,
+          paddingTop: 12,
         },
         tabBarShowLabel: false,
       }}
@@ -193,6 +202,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 50,
+    width: 70,
   },
   tabIconWrapper: {
     width: 36,
@@ -210,12 +220,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   tabEmojiActive: {
-    fontSize: 20,
+    fontSize: 18,
   },
   tabLabel: {
-    fontSize: 11,
+    fontSize: 9,
     fontWeight: '500',
     color: FiColors.textInverse + '60',
+    textAlign: 'center',
+    numberOfLines: 1,
   },
   tabLabelActive: {
     color: FiColors.primary,

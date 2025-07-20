@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, StatusBar, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, StatusBar, Image, Animated } from 'react-native';
 import { FadeInUp } from '../animations/AnimatedCard';
 import { TouchableArea } from '../common/AccessibilityHelpers';
 import FiInflationCard from './FiInflationCard';
@@ -17,37 +17,74 @@ const FiColors = {
 };
 
 const FiHomeScreen = ({ navigation, inflationData }) => {
+  const [scrollY] = useState(new Animated.Value(0));
+  const headerHeight = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [105, 70],
+    extrapolate: 'clamp',
+  });
+  const avatarSize = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [40, 30],
+    extrapolate: 'clamp',
+  });
+  const iconSize = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [18, 14],
+    extrapolate: 'clamp',
+  });
+  const buttonSize = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [40, 30],
+    extrapolate: 'clamp',
+  });
+  const headerPadding = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [15, 20],
+    extrapolate: 'clamp',
+  });
   // Sticky Header Component
   const StickyHeader = () => (
-    <View style={styles.stickyHeader}>
+    <Animated.View style={[styles.stickyHeader, { height: headerHeight }]}>
       <StatusBar barStyle="light-content" backgroundColor={FiColors.background} />
       
       <TouchableArea 
         style={styles.profileButton}
         onPress={() => navigation.navigate('Profile')}
       >
-        <Image 
+        <Animated.Image 
           source={require('../../../assets/avatars/avatar-1.png')} 
-          style={styles.profileAvatar}
+          style={[styles.profileAvatar, { width: avatarSize, height: avatarSize, borderRadius: Animated.divide(avatarSize, 2) }]}
         />
       </TouchableArea>
       
       <View style={styles.headerActions}>
-        <TouchableArea style={styles.headerActionButton}>
-          <Text style={styles.headerActionIcon}>🔔</Text>
-        </TouchableArea>
+        <Animated.View style={[styles.headerActionButton, { width: buttonSize, height: buttonSize, borderRadius: Animated.divide(buttonSize, 2) }]}>
+          <TouchableArea style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Animated.Text style={[styles.headerActionIcon, { fontSize: iconSize }]}>🔔</Animated.Text>
+          </TouchableArea>
+        </Animated.View>
         
-        <TouchableArea style={styles.headerActionButton}>
-          <Text style={styles.headerActionIcon}>📢</Text>
-        </TouchableArea>
+        <Animated.View style={[styles.headerActionButton, { width: buttonSize, height: buttonSize, borderRadius: Animated.divide(buttonSize, 2) }]}>
+          <TouchableArea style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Animated.Text style={[styles.headerActionIcon, { fontSize: iconSize }]}>📢</Animated.Text>
+          </TouchableArea>
+        </Animated.View>
       </View>
-    </View>
+    </Animated.View>
   );
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 17) return 'Good afternoon';
+    return 'Good evening';
+  };
 
   const WelcomeSection = () => (
     <View style={styles.welcomeSection}>
       <View style={styles.greeting}>
-        <Text style={styles.greetingText}>Good morning</Text>
+        <Text style={styles.greetingText}>{getGreeting()}</Text>
         <Text style={styles.userName}>Arjun</Text>
       </View>
 
@@ -181,7 +218,15 @@ const FiHomeScreen = ({ navigation, inflationData }) => {
     <View style={styles.container}>
       <StickyHeader />
       
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <Animated.ScrollView 
+        style={styles.content} 
+        showsVerticalScrollIndicator={false}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
+        )}
+        scrollEventThrottle={16}
+      >
         <WelcomeSection />
         
         {/* Main Inflation Card */}
@@ -193,8 +238,7 @@ const FiHomeScreen = ({ navigation, inflationData }) => {
           onCardPress={(cardId) => navigation.navigate('MetricDetail', { cardId })}
         />
         
-        {/* Quick Actions */}
-        <FiQuickActions />
+
         
         {/* Insights Preview */}
         <FiInsightsPreview />
@@ -204,7 +248,9 @@ const FiHomeScreen = ({ navigation, inflationData }) => {
         
         {/* Trust Badges */}
         <FiTrustBadges />
-      </ScrollView>
+        
+        <View style={{ height: 100 }} />
+      </Animated.ScrollView>
     </View>
   );
 };
@@ -258,12 +304,13 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
-    paddingTop: 105, // Account for sticky header
+    backgroundColor: FiColors.background,
+    paddingTop: 105,
   },
   welcomeSection: {
     backgroundColor: FiColors.background,
     paddingHorizontal: 20,
+    paddingTop: 20,
     paddingBottom: 20,
   },
   greeting: {

@@ -95,9 +95,12 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
           Your food costs increased 2.3% this week, mainly due to vegetable price surge in Mumbai markets.
         </Text>
         
-        <View style={styles.insightAction}>
+        <TouchableArea 
+          style={styles.insightAction}
+          onPress={() => onCardPress('weekly_insight')}
+        >
           <Text style={styles.actionText}>View Details →</Text>
-        </View>
+        </TouchableArea>
       </View>
     </FadeInUp>
   );
