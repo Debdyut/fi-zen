@@ -1,0 +1,820 @@
+# Fi-Zen Personal Inflation Calculator - Complete GraphQL Schema
+# Single endpoint GraphQL implementation with all advanced features
+
+# Root Query Type
+type Query {
+  # Phase 1: Core Features (COMPLETED)
+  user(id: ID!): User
+  userProfile(userId: ID!): UserProfile
+  calculateInflation(input: InflationCalculationInput!): InflationResult
+  governmentInflationRates(location: LocationInput!): GovernmentInflationData
+  salaryNegotiation(input: SalaryNegotiationInput!): SalaryNegotiationResult
+  cityComparison(input: CityComparisonInput!): CityComparisonResult
+  peerBenchmarking(input: PeerBenchmarkingInput!): PeerBenchmarkingResult
+  spendingHistory(userId: ID!, months: Int = 6): SpendingHistoryResult
+  calculationHistory(userId: ID!, limit: Int = 10): [InflationCalculation]
+  userAnalytics(userId: ID!, period: AnalyticsPeriod = THIRTY_DAYS): UserAnalytics
+  
+  # Phase 2: Conversational AI (NEW)
+  processNaturalQuery(input: NaturalQueryInput!): ConversationalResponse
+  getConversationHistory(userId: ID!, limit: Int = 10): [Conversation!]!
+  getConversationContext(conversationId: ID!): ConversationContext
+  
+  # Phase 3: Predictive Analytics (NEW)
+  analyzeBehavioralPatterns(input: BehavioralAnalysisInput!): BehavioralAnalysisResult
+  getProactiveAlerts(userId: ID!, alertType: AlertType): [ProactiveAlert!]!
+  modelFinancialScenario(input: ScenarioModelingInput!): ScenarioResult
+  
+  # Phase 4: Advanced Fi Integration (NEW)
+  getSmartOptimizations(userId: ID!, type: OptimizationType!): [SmartOptimization!]!
+  getPaymentIntelligence(input: PaymentIntelligenceInput!): PaymentRecommendation
+  getProductMatching(input: ProductMatchingInput!): [ProductMatch!]!
+  getRevenueOptimization(userId: ID, timeRange: TimeRange = THIRTY_DAYS): RevenueOptimizationData
+}
+
+# Root Mutation Type
+type Mutation {
+  # Phase 1: Core Features (COMPLETED)
+  updateUserProfile(input: UpdateUserProfileInput!): UserProfile
+  updateUserPreferences(input: UpdatePreferencesInput!): UserPreferences
+  saveSpendingData(input: SpendingDataInput!): SpendingDataResult
+  connectBankAccount(input: BankConnectionInput!): BankConnectionResult
+  exportUserData(userId: ID!, format: ExportFormat = JSON): DataExportResult
+  deleteUserData(input: DeleteUserDataInput!): DeleteDataResult
+  setupNotifications(input: NotificationSetupInput!): NotificationResult
+  
+  # Phase 2: Conversational AI (NEW)
+  submitConversationFeedback(input: ConversationFeedbackInput!): FeedbackResult
+  startNewConversation(userId: ID!, language: Language!): Conversation
+  processVoiceQuery(input: VoiceQueryInput!): ConversationalResponse
+  
+  # Phase 3: Predictive Analytics (NEW)
+  acknowledgeAlert(alertId: ID!, userId: ID!): AlertAcknowledgment
+  updatePredictionFeedback(input: PredictionFeedbackInput!): FeedbackResult
+  
+  # Phase 4: Advanced Fi Integration (NEW)
+  implementOptimization(optimizationId: ID!, userId: ID!): OptimizationResult
+  updateProductPreferences(input: ProductPreferencesInput!): UserPreferences
+}
+
+# Extended User Type with Advanced Features
+type User {
+  id: ID!
+  profile: UserProfile!
+  preferences: UserPreferences!
+  createdAt: DateTime!
+  lastActiveAt: DateTime!
+  
+  # Phase 2: Conversational AI
+  conversationHistory: [Conversation!]!
+  aiPreferences: AIPreferences!
+  
+  # Phase 3: Predictive Analytics
+  behavioralPatterns: [BehavioralPattern!]!
+  proactiveAlerts: [ProactiveAlert!]!
+  
+  # Phase 4: Advanced Fi Integration
+  optimizationRecommendations: [SmartOptimization!]!
+  fiProductUsage: FiProductUsage!
+}
+
+# Phase 2: Conversational AI Types
+type ConversationalResponse {
+  conversationId: ID!
+  response: AIResponse!
+  analysis: QueryAnalysis!
+  followUpQuestions: [String!]!
+  confidence: Int!
+  processingTime: Float!
+}
+
+type AIResponse {
+  text: String!
+  audioUrl: String
+  language: Language!
+  personalizedInsights: [String!]!
+  suggestedActions: [ActionSuggestion!]!
+}
+
+type Conversation {
+  id: ID!
+  userId: ID!
+  startedAt: DateTime!
+  lastActivity: DateTime!
+  language: Language!
+  queryCount: Int!
+  topics: [String!]!
+  status: ConversationStatus!
+}
+
+type AIPreferences {
+  preferredLanguage: Language!
+  responseStyle: ResponseStyle!
+  voiceEnabled: Boolean!
+  contextRetention: Boolean!
+}
+
+# Phase 3: Predictive Analytics Types
+type BehavioralAnalysisResult {
+  userId: ID!
+  patterns: [BehavioralPattern!]!
+  predictions: [FinancialPrediction!]!
+  confidence: Int!
+  generatedAt: DateTime!
+}
+
+type BehavioralPattern {
+  patternType: PatternType!
+  category: SpendingCategory!
+  description: String!
+  confidence: Int!
+  impact: PatternImpact!
+}
+
+type ProactiveAlert {
+  id: ID!
+  type: AlertType!
+  priority: Priority!
+  title: String!
+  message: String!
+  recommendations: [AlertRecommendation!]!
+  createdAt: DateTime!
+  status: AlertStatus!
+}
+
+# Phase 4: Advanced Fi Integration Types
+type SmartOptimization {
+  id: ID!
+  type: OptimizationType!
+  title: String!
+  description: String!
+  impact: OptimizationImpact!
+  priority: Priority!
+  confidence: Int!
+}
+
+type PaymentRecommendation {
+  preferredMethod: String!
+  reason: String!
+  benefit: PaymentBenefit!
+  alternatives: [PaymentAlternative!]!
+}
+
+type ProductMatch {
+  productId: String!
+  productName: String!
+  matchScore: Int!
+  personalizedBenefits: [String!]!
+  projectedImpact: ProductImpact!
+  conversionProbability: Int!
+}
+
+type FiProductUsage {
+  fiAccount: ProductUsageData!
+  fiCard: ProductUsageData!
+  fiJumpPremium: ProductUsageData
+  fiFederalBank: ProductUsageData
+}
+
+type UserProfile {
+  name: String!
+  email: String!
+  phone: String
+  location: Location!
+  professional: ProfessionalProfile!
+}
+
+type Location {
+  city: String!
+  state: String!
+  pincode: String
+  tier: CityTier!
+}
+
+type ProfessionalProfile {
+  industry: String!
+  experience: ExperienceRange!
+  salary: Float!
+  workMode: WorkMode!
+}
+
+# Inflation Calculation Types
+type InflationResult {
+  personalInflationRate: Float!
+  governmentInflationRate: Float!
+  difference: Float!
+  categoryBreakdown: [CategoryInflation!]!
+  confidence: Int!
+  dataSource: String!
+  calculatedAt: DateTime!
+}
+
+type CategoryInflation {
+  category: SpendingCategory!
+  inflationRate: Float!
+  contribution: Float!
+  monthlyAmount: Float!
+  weight: Float!
+}
+
+type GovernmentInflationData {
+  location: Location!
+  overallInflationRate: Float!
+  categoryRates: [CategoryInflation!]!
+  dataSource: String!
+  lastUpdated: DateTime!
+}
+
+# Professional Tools Types
+type SalaryNegotiationResult {
+  currentSalary: Float!
+  inflationAdjustedSalary: Float!
+  realSalaryLoss: Float!
+  requiredRaisePercentage: Float!
+  recommendedSalary: Float!
+  negotiationScript: String!
+  industryBenchmark: IndustryBenchmark!
+}
+
+type IndustryBenchmark {
+  averageSalary: Float!
+  averageRaise: Float!
+  percentile: Int!
+  sampleSize: Int!
+}
+
+type CityComparisonResult {
+  currentCity: CityData!
+  comparisons: [CityComparison!]!
+}
+
+type CityComparison {
+  cityName: String!
+  inflationRate: Float!
+  costOfLivingIndex: Float!
+  salaryMultiplier: Float!
+  expectedSalary: Float!
+  costSavings: Float!
+  netBenefit: Float!
+  pros: [String!]!
+  cons: [String!]!
+}
+
+type PeerBenchmarkingResult {
+  userPercentile: Int!
+  benchmarks: PeerBenchmarks!
+  insights: [String!]!
+  sampleSize: Int!
+}
+
+type PeerBenchmarks {
+  industry: BenchmarkData!
+  experience: BenchmarkData!
+  salary: BenchmarkData!
+  location: BenchmarkData!
+}
+
+type BenchmarkData {
+  title: String!
+  sampleSize: Int!
+  averageInflation: Float!
+  percentiles: Percentiles!
+}
+
+type Percentiles {
+  p25: Float!
+  p50: Float!
+  p75: Float!
+  p90: Float!
+}
+
+# Input Types
+input InflationCalculationInput {
+  userId: ID!
+  spendingData: SpendingDataInput!
+  location: LocationInput!
+  timeRange: TimeRangeInput
+}
+
+input SpendingDataInput {
+  housing: Float!
+  food: Float!
+  transport: Float!
+  healthcare: Float!
+  education: Float!
+  entertainment: Float!
+  others: Float!
+  period: PeriodInput!
+  dataSource: DataSource = MANUAL
+}
+
+input LocationInput {
+  city: String!
+  state: String!
+  pincode: String
+}
+
+input SalaryNegotiationInput {
+  userId: ID!
+  currentSalary: Float!
+  personalInflationRate: Float!
+  lastRaisePercentage: Float
+  location: LocationInput!
+  industry: String!
+  experience: ExperienceRange!
+}
+
+input CityComparisonInput {
+  userId: ID!
+  currentCity: String!
+  targetCities: [String!]!
+  currentSalary: Float!
+  industry: String!
+  experience: ExperienceRange!
+}
+
+input PeerBenchmarkingInput {
+  userId: ID!
+  personalInflationRate: Float!
+  profile: PeerProfileInput!
+}
+
+input PeerProfileInput {
+  industry: String!
+  experience: ExperienceRange!
+  salaryBracket: SalaryBracket!
+  city: String!
+}
+
+# Enums for Advanced Features
+
+# Phase 2: Conversational AI Enums
+enum QueryType {
+  GOAL_PLANNING
+  INVESTMENT_ADVICE
+  DEBT_OPTIMIZATION
+  SPENDING_ANALYSIS
+  PRODUCT_RECOMMENDATION
+  GENERAL_FINANCIAL_QUERY
+}
+
+enum ConversationStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+  ARCHIVED
+}
+
+enum ResponseStyle {
+  DETAILED
+  CONCISE
+  CONVERSATIONAL
+  TECHNICAL
+}
+
+# Phase 3: Predictive Analytics Enums
+enum PatternType {
+  SEASONAL
+  LIFESTYLE_CHANGE
+  SUBSCRIPTION_PATTERN
+  SPENDING_ANOMALY
+  INCOME_PATTERN
+}
+
+enum AlertType {
+  CASH_FLOW_STRESS
+  INVESTMENT_TIMING
+  DEBT_OPTIMIZATION
+  SUBSCRIPTION_ALERT
+  GOAL_DEVIATION
+  MARKET_OPPORTUNITY
+}
+
+enum AlertStatus {
+  ACTIVE
+  ACKNOWLEDGED
+  DISMISSED
+  RESOLVED
+}
+
+enum AnalysisType {
+  SPENDING_PATTERNS
+  SEASONAL_ANALYSIS
+  LIFESTYLE_CHANGES
+  SUBSCRIPTION_OPTIMIZATION
+  INVESTMENT_BEHAVIOR
+}
+
+enum ScenarioType {
+  HOME_PURCHASE
+  JOB_CHANGE
+  INVESTMENT_STRATEGY
+  DEBT_CONSOLIDATION
+  RETIREMENT_PLANNING
+  EDUCATION_FUNDING
+}
+
+# Phase 4: Advanced Fi Integration Enums
+enum OptimizationType {
+  CASH_OPTIMIZATION
+  PAYMENT_ROUTING
+  INVESTMENT_TIMING
+  PRODUCT_MATCHING
+  DEBT_CONSOLIDATION
+}
+
+enum ProductMatchingType {
+  SAVINGS_PRODUCTS
+  INVESTMENT_PRODUCTS
+  PREMIUM_SERVICES
+  LOAN_PRODUCTS
+  INSURANCE_PRODUCTS
+}
+
+enum RiskTolerance {
+  CONSERVATIVE
+  MODERATE
+  AGGRESSIVE
+  VERY_AGGRESSIVE
+}
+
+enum InvestmentHorizon {
+  SHORT_TERM    # < 1 year
+  MEDIUM_TERM   # 1-5 years
+  LONG_TERM     # > 5 years
+}
+
+# Common Enums
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum EffortLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum WorkMode {
+  OFFICE
+  WFH
+  HYBRID
+}
+
+enum ExperienceRange {
+  ENTRY_LEVEL      # 0-2 years
+  JUNIOR           # 2-5 years
+  MID_LEVEL        # 5-8 years
+  SENIOR           # 8-12 years
+  LEAD             # 12+ years
+}
+
+enum SalaryBracket {
+  BELOW_5L         # < 5 lakhs
+  FIVE_TO_10L      # 5-10 lakhs
+  TEN_TO_15L       # 10-15 lakhs
+  FIFTEEN_TO_25L   # 15-25 lakhs
+  TWENTY_FIVE_TO_50L # 25-50 lakhs
+  ABOVE_50L        # > 50 lakhs
+}
+
+enum CityTier {
+  TIER_1
+  TIER_2
+  TIER_3
+}
+
+enum DataSource {
+  MANUAL
+  FI_ACCOUNT
+  BANK_INTEGRATION
+}
+
+enum AnalyticsPeriod {
+  SEVEN_DAYS
+  THIRTY_DAYS
+  NINETY_DAYS
+  ONE_YEAR
+}
+
+enum ExportFormat {
+  JSON
+  CSV
+}
+
+enum Language {
+  ENGLISH
+  HINDI
+  KANNADA
+}
+
+# Scalar Types
+scalar DateTime
+scalar JSON
+
+# Additional Types for completeness
+type UserPreferences {
+  language: Language!
+  currency: String!
+  notifications: NotificationPreferences!
+}
+
+type NotificationPreferences {
+  monthlyUpdates: Boolean!
+  inflationAlerts: Boolean!
+  professionalInsights: Boolean!
+}
+
+type SpendingHistoryResult {
+  userId: ID!
+  spendingHistory: [MonthlySpending!]!
+  summary: SpendingSummary!
+}
+
+type MonthlySpending {
+  period: Period!
+  spendingData: SpendingData!
+  totalSpending: Float!
+  inflationRate: Float!
+}
+
+type SpendingSummary {
+  averageMonthlySpending: Float!
+  averageInflationRate: Float!
+  trend: SpendingTrend!
+}
+
+type Period {
+  month: Int!
+  year: Int!
+}
+
+type SpendingData {
+  housing: Float!
+  food: Float!
+  transport: Float!
+  healthcare: Float!
+  education: Float!
+  entertainment: Float!
+  others: Float!
+}
+
+type InflationCalculation {
+  id: ID!
+  personalInflationRate: Float!
+  governmentInflationRate: Float!
+  calculatedAt: DateTime!
+  location: Location!
+  confidence: Int!
+}
+
+type UserAnalytics {
+  userId: ID!
+  period: AnalyticsPeriod!
+  metrics: AnalyticsMetrics!
+}
+
+type AnalyticsMetrics {
+  calculationsPerformed: Int!
+  professionalToolsUsed: Int!
+  averageInflationRate: Float!
+  engagementScore: Int!
+  featureUsage: FeatureUsage!
+}
+
+type FeatureUsage {
+  salaryNegotiation: Int!
+  cityComparison: Int!
+  peerBenchmarking: Int!
+}
+
+type CityData {
+  name: String!
+  inflationRate: Float!
+  costOfLivingIndex: Float!
+}
+
+enum SpendingTrend {
+  INCREASING
+  DECREASING
+  STABLE
+}
+
+# Input Types for Advanced Features
+
+# Phase 2: Conversational AI Inputs
+input NaturalQueryInput {
+  userId: ID!
+  query: String!
+  language: Language!
+  context: ConversationContextInput
+  voiceData: VoiceDataInput
+}
+
+input ConversationContextInput {
+  conversationId: ID
+  previousQueries: [String!]
+  userGoals: [String!]
+  currentFinancialState: FinancialStateInput
+}
+
+input VoiceQueryInput {
+  userId: ID!
+  audioFile: Upload!
+  language: Language!
+  context: ConversationContextInput
+}
+
+input ConversationFeedbackInput {
+  userId: ID!
+  conversationId: ID!
+  responseId: ID!
+  rating: Int!
+  helpful: Boolean!
+  accuracy: Int!
+  comments: String
+}
+
+# Phase 3: Predictive Analytics Inputs
+input BehavioralAnalysisInput {
+  userId: ID!
+  analysisType: AnalysisType!
+  timeRange: TimeRangeInput!
+  includeExternal: Boolean = true
+  categories: [SpendingCategory!]
+}
+
+input ScenarioModelingInput {
+  userId: ID!
+  scenarioType: ScenarioType!
+  parameters: ScenarioParametersInput!
+  timeHorizon: Int!
+  includeInflation: Boolean = true
+}
+
+input PredictionFeedbackInput {
+  userId: ID!
+  predictionId: ID!
+  actualOutcome: String!
+  accuracy: Int!
+  feedback: String
+}
+
+# Phase 4: Advanced Fi Integration Inputs
+input PaymentIntelligenceInput {
+  userId: ID!
+  transactionData: TransactionDataInput!
+  userPaymentMethods: [PaymentMethodInput!]!
+}
+
+input ProductMatchingInput {
+  userId: ID!
+  matchingType: ProductMatchingType!
+  userProfile: UserProfileInput!
+  behavioralData: BehavioralDataInput!
+  preferences: ProductPreferencesInput
+}
+
+input ProductPreferencesInput {
+  riskTolerance: RiskTolerance!
+  investmentHorizon: InvestmentHorizon!
+  preferredProducts: [String!]
+  excludedProducts: [String!]
+}
+
+input ProfessionalProfileInput {
+  industry: String
+  experience: ExperienceRange
+  salary: Float
+  workMode: WorkMode
+}
+
+input UpdatePreferencesInput {
+  userId: ID!
+  language: Language
+  notifications: NotificationPreferencesInput
+}
+
+input NotificationPreferencesInput {
+  monthlyUpdates: Boolean
+  inflationAlerts: Boolean
+  professionalInsights: Boolean
+}
+
+input PeriodInput {
+  month: Int!
+  year: Int!
+}
+
+input TimeRangeInput {
+  startDate: DateTime!
+  endDate: DateTime!
+}
+
+input BankConnectionInput {
+  userId: ID!
+  bankCode: String!
+  accountType: AccountType!
+  consentDuration: Int = 12
+}
+
+input DeleteUserDataInput {
+  userId: ID!
+  confirmationToken: String!
+  deleteType: DeleteType = INFLATION_DATA_ONLY
+}
+
+input NotificationSetupInput {
+  userId: ID!
+  notificationTypes: [NotificationType!]!
+  preferences: NotificationConfigInput!
+}
+
+input NotificationConfigInput {
+  frequency: NotificationFrequency!
+  channels: [NotificationChannel!]!
+  threshold: ThresholdInput
+}
+
+input ThresholdInput {
+  inflationChange: Float
+}
+
+enum AccountType {
+  SAVINGS
+  CURRENT
+  SALARY
+}
+
+enum DeleteType {
+  INFLATION_DATA_ONLY
+  ALL_DATA
+}
+
+enum NotificationType {
+  MOSPI_UPDATE
+  INFLATION_ALERT
+  MARKET_CHANGE
+  MONTHLY_SUMMARY
+}
+
+enum NotificationFrequency {
+  IMMEDIATE
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+enum NotificationChannel {
+  PUSH
+  EMAIL
+  SMS
+}
+
+# Result types for mutations
+type SpendingDataResult {
+  recordId: ID!
+  savedAt: DateTime!
+  success: Boolean!
+}
+
+type BankConnectionResult {
+  connectionId: ID!
+  authUrl: String!
+  status: ConnectionStatus!
+  expiresAt: DateTime!
+}
+
+type DataExportResult {
+  exportId: ID!
+  downloadUrl: String!
+  expiresAt: DateTime!
+}
+
+type DeleteDataResult {
+  success: Boolean!
+  message: String!
+  deletedAt: DateTime!
+}
+
+type NotificationResult {
+  notificationId: ID!
+  activeNotifications: [NotificationType!]!
+  nextUpdate: DateTime
+}
+
+enum ConnectionStatus {
+  INITIATED
+  PENDING
+  CONNECTED
+  FAILED
+}

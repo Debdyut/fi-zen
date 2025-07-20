@@ -1,0 +1,498 @@
+openapi: 3.0.3
+info:
+  title: Fi-Zen Professional Tools API
+  description: Professional financial tools for urban professionals
+  version: 1.0.0
+  contact:
+    name: Fi-Zen Backend Team
+    email: backend@fi.money
+
+servers:
+  - url: https://api.fi.money/v1/professional
+    description: Production server
+  - url: https://staging-api.fi.money/v1/professional
+    description: Staging server
+
+paths:
+  /salary-negotiation:
+    post:
+      summary: Calculate Salary Negotiation Data
+      description: Generate data-backed salary negotiation recommendations
+      tags:
+        - Professional Tools
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - currentSalary
+                - personalInflationRate
+              properties:
+                userId:
+                  type: string
+                  example: "fi_user_123456"
+                currentSalary:
+                  type: number
+                  description: Current annual salary in INR
+                  example: 1200000
+                lastRaisePercentage:
+                  type: number
+                  description: Last salary raise percentage
+                  example: 8.0
+                personalInflationRate:
+                  type: number
+                  description: User's personal inflation rate
+                  example: 11.8
+                location:
+                  type: object
+                  properties:
+                    city:
+                      type: string
+                      example: "Mumbai"
+                    state:
+                      type: string
+                      example: "Maharashtra"
+                industry:
+                  type: string
+                  example: "Software Engineering"
+                experience:
+                  type: string
+                  example: "5-8 years"
+      responses:
+        '200':
+          description: Salary negotiation data calculated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      currentSalary:
+                        type: number
+                        example: 1200000
+                      inflationAdjustedSalary:
+                        type: number
+                        description: Salary needed to maintain purchasing power
+                        example: 1341600
+                      realSalaryLoss:
+                        type: number
+                        description: Loss in purchasing power
+                        example: 141600
+                      requiredRaisePercentage:
+                        type: number
+                        description: Required raise to beat inflation
+                        example: 11.8
+                      recommendedSalary:
+                        type: number
+                        description: Recommended new salary
+                        example: 1341600
+                      negotiationScript:
+                        type: string
+                        description: Data-backed negotiation script
+                        example: "Based on my personal inflation analysis, my purchasing power has decreased by ₹1,41,600 this year..."
+                      industryBenchmark:
+                        type: object
+                        properties:
+                          averageSalary:
+                            type: number
+                            example: 1350000
+                          averageRaise:
+                            type: number
+                            example: 12.5
+                          percentile:
+                            type: number
+                            description: User's position in industry (0-100)
+                            example: 75
+
+  /city-comparison:
+    post:
+      summary: Compare Cities for Relocation
+      description: Analyze financial impact of relocating to different cities
+      tags:
+        - Professional Tools
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - currentCity
+                - targetCities
+                - currentSalary
+              properties:
+                userId:
+                  type: string
+                  example: "fi_user_123456"
+                currentCity:
+                  type: string
+                  example: "Mumbai"
+                targetCities:
+                  type: array
+                  items:
+                    type: string
+                  example: ["Bangalore", "Pune", "Chennai"]
+                currentSalary:
+                  type: number
+                  example: 1200000
+                industry:
+                  type: string
+                  example: "Software Engineering"
+                experience:
+                  type: string
+                  example: "5-8 years"
+      responses:
+        '200':
+          description: City comparison data generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      currentCity:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            example: "Mumbai"
+                          inflationRate:
+                            type: number
+                            example: 11.8
+                          costOfLivingIndex:
+                            type: number
+                            example: 100
+                      cityComparisons:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            cityName:
+                              type: string
+                              example: "Bangalore"
+                            inflationRate:
+                              type: number
+                              example: 9.4
+                            costOfLivingIndex:
+                              type: number
+                              example: 82
+                            salaryMultiplier:
+                              type: number
+                              description: Expected salary adjustment
+                              example: 0.85
+                            expectedSalary:
+                              type: number
+                              example: 1020000
+                            costSavings:
+                              type: number
+                              description: Monthly cost savings
+                              example: 18000
+                            netBenefit:
+                              type: number
+                              description: Net financial benefit percentage
+                              example: 12.3
+                            pros:
+                              type: array
+                              items:
+                                type: string
+                              example: ["Tech hub", "Better weather", "Lower housing costs"]
+                            cons:
+                              type: array
+                              items:
+                                type: string
+                              example: ["Traffic issues", "Water scarcity", "Language barrier"]
+
+  /peer-benchmarking:
+    post:
+      summary: Get Anonymous Peer Benchmarking
+      description: Compare user's inflation with similar professionals
+      tags:
+        - Professional Tools
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - personalInflationRate
+                - profile
+              properties:
+                userId:
+                  type: string
+                  example: "fi_user_123456"
+                personalInflationRate:
+                  type: number
+                  example: 11.8
+                profile:
+                  type: object
+                  properties:
+                    industry:
+                      type: string
+                      example: "Software Engineering"
+                    experience:
+                      type: string
+                      example: "5-8 years"
+                    salaryBracket:
+                      type: string
+                      example: "10-15L"
+                    city:
+                      type: string
+                      example: "Mumbai"
+      responses:
+        '200':
+          description: Peer benchmarking data retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      userPercentile:
+                        type: number
+                        description: User's percentile among peers (0-100)
+                        example: 75
+                      benchmarks:
+                        type: object
+                        properties:
+                          industry:
+                            type: object
+                            properties:
+                              title:
+                                type: string
+                                example: "Software Engineers in Mumbai"
+                              sampleSize:
+                                type: number
+                                example: 2847
+                              averageInflation:
+                                type: number
+                                example: 10.2
+                              percentiles:
+                                type: object
+                                properties:
+                                  p25:
+                                    type: number
+                                    example: 8.7
+                                  p50:
+                                    type: number
+                                    example: 10.2
+                                  p75:
+                                    type: number
+                                    example: 11.8
+                                  p90:
+                                    type: number
+                                    example: 13.4
+                          experience:
+                            type: object
+                            properties:
+                              title:
+                                type: string
+                                example: "5-8 Years Experience"
+                              sampleSize:
+                                type: number
+                                example: 1234
+                              averageInflation:
+                                type: number
+                                example: 10.8
+                          salary:
+                            type: object
+                            properties:
+                              title:
+                                type: string
+                                example: "₹10-15L Annual Salary"
+                              sampleSize:
+                                type: number
+                                example: 3156
+                              averageInflation:
+                                type: number
+                                example: 11.1
+                      insights:
+                        type: array
+                        items:
+                          type: string
+                        example: [
+                          "You're in the 75th percentile for inflation management",
+                          "Most peers struggle with housing costs (avg 48% of income)",
+                          "Top performers optimize transport and food delivery costs"
+                        ]
+
+  /spending-analysis:
+    post:
+      summary: Analyze Spending Patterns
+      description: Provide behavioral insights on spending patterns
+      tags:
+        - Professional Tools
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - spendingData
+                - timeRange
+              properties:
+                userId:
+                  type: string
+                  example: "fi_user_123456"
+                spendingData:
+                  type: object
+                  description: Monthly spending by category
+                  properties:
+                    housing:
+                      type: number
+                      example: 45000
+                    food:
+                      type: number
+                      example: 28000
+                    transport:
+                      type: number
+                      example: 15000
+                    healthcare:
+                      type: number
+                      example: 8000
+                    education:
+                      type: number
+                      example: 12000
+                    entertainment:
+                      type: number
+                      example: 10000
+                timeRange:
+                  type: object
+                  properties:
+                    months:
+                      type: number
+                      description: Number of months of data
+                      example: 6
+                profile:
+                  type: object
+                  properties:
+                    workMode:
+                      type: string
+                      enum: [office, wfh, hybrid]
+                      example: "wfh"
+                    careerStage:
+                      type: string
+                      enum: [entry, growth, senior, executive]
+                      example: "growth"
+      responses:
+        '200':
+          description: Spending analysis completed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      behavioralPatterns:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            pattern:
+                              type: string
+                              example: "Work From Home Impact"
+                            impact:
+                              type: string
+                              example: "Transport costs down 40%, Food delivery up 60%"
+                            inflationEffect:
+                              type: string
+                              example: "+0.8% to personal rate"
+                            recommendation:
+                              type: string
+                              example: "Optimize home office setup costs"
+                      categoryInsights:
+                        type: object
+                        properties:
+                          housing:
+                            type: object
+                            properties:
+                              monthlyAverage:
+                                type: number
+                                example: 45000
+                              trend:
+                                type: number
+                                description: Percentage change
+                                example: 8.5
+                              vsPeers:
+                                type: number
+                                description: Comparison with peers
+                                example: 15
+                              inflationContribution:
+                                type: number
+                                example: 2.4
+                              insight:
+                                type: string
+                                example: "Your housing costs are 15% above peer average"
+                              recommendation:
+                                type: string
+                                example: "Consider co-living or suburban areas"
+                      professionalBenchmark:
+                        type: object
+                        properties:
+                          industry:
+                            type: string
+                            example: "Software Engineering"
+                          experience:
+                            type: string
+                            example: "5-8 years"
+                          location:
+                            type: string
+                            example: "Mumbai"
+                          percentile:
+                            type: number
+                            example: 75
+
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: "INVALID_REQUEST"
+            message:
+              type: string
+              example: "Invalid professional data provided"
+
+  securitySchemes:
+    FiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Fi user authentication token
+
+security:
+  - FiAuth: []

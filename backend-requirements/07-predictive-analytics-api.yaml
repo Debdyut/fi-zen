@@ -1,0 +1,381 @@
+openapi: 3.0.3
+info:
+  title: Fi-Zen Predictive Analytics API
+  description: Behavioral pattern recognition and proactive financial recommendations
+  version: 2.0.0
+  contact:
+    name: Fi-Zen Analytics Team
+    email: analytics@fi.money
+
+servers:
+  - url: https://api.fi.money/v2/predictive
+    description: Production server
+
+paths:
+  /behavioral-analysis:
+    post:
+      summary: Analyze User Behavioral Patterns
+      description: Identify spending habits and seasonal variations using ML
+      tags:
+        - Behavioral Analytics
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - analysisType
+              properties:
+                userId:
+                  type: string
+                  example: "fi_user_123456"
+                analysisType:
+                  type: string
+                  enum: [spending_patterns, seasonal_analysis, lifestyle_changes, subscription_optimization]
+                  example: "spending_patterns"
+                timeRange:
+                  type: object
+                  properties:
+                    months:
+                      type: number
+                      example: 12
+                includeExternal:
+                  type: boolean
+                  description: Include external bank data
+                  example: true
+      responses:
+        '200':
+          description: Behavioral analysis completed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      userId:
+                        type: string
+                        example: "fi_user_123456"
+                      analysisType:
+                        type: string
+                        example: "spending_patterns"
+                      patterns:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            patternType:
+                              type: string
+                              example: "seasonal_spike"
+                            category:
+                              type: string
+                              example: "entertainment"
+                            description:
+                              type: string
+                              example: "40% increase in entertainment spending during festival months"
+                            confidence:
+                              type: number
+                              example: 87
+                            impact:
+                              type: object
+                              properties:
+                                inflationContribution:
+                                  type: number
+                                  example: 1.2
+                                monthlyVariation:
+                                  type: number
+                                  example: 8500
+                      predictions:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            prediction:
+                              type: string
+                              example: "Festival season cash flow stress predicted"
+                            probability:
+                              type: number
+                              example: 78
+                            timeframe:
+                              type: string
+                              example: "Next 2 months"
+                            suggestedActions:
+                              type: array
+                              items:
+                                type: string
+                              example: ["Optimize EMI payments", "Build festival fund"]
+
+  /proactive-alerts:
+    get:
+      summary: Get Proactive Financial Alerts
+      description: Retrieve AI-generated proactive recommendations
+      tags:
+        - Proactive Alerts
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+          example: "fi_user_123456"
+        - name: alertType
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [cash_flow, investment_timing, debt_optimization, subscription_alerts]
+        - name: priority
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [high, medium, low]
+      responses:
+        '200':
+          description: Proactive alerts retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      alerts:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            alertId:
+                              type: string
+                              example: "alert_789123"
+                            type:
+                              type: string
+                              example: "cash_flow_stress"
+                            priority:
+                              type: string
+                              enum: [high, medium, low]
+                              example: "high"
+                            title:
+                              type: string
+                              example: "Festival Season Cash Flow Alert"
+                            message:
+                              type: string
+                              example: "Festival season cash flow stress predicted - optimize these EMIs now"
+                            prediction:
+                              type: object
+                              properties:
+                                probability:
+                                  type: number
+                                  example: 82
+                                timeframe:
+                                  type: string
+                                  example: "Next 45 days"
+                                impact:
+                                  type: object
+                                  properties:
+                                    cashFlowShortfall:
+                                      type: number
+                                      example: 35000
+                                    affectedCategories:
+                                      type: array
+                                      items:
+                                        type: string
+                                      example: ["entertainment", "food", "shopping"]
+                            recommendations:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  action:
+                                    type: string
+                                    example: "Prepay EMI for 2 months"
+                                  impact:
+                                    type: string
+                                    example: "Frees up ₹25,000 for festival expenses"
+                                  effort:
+                                    type: string
+                                    enum: [low, medium, high]
+                                    example: "medium"
+                            createdAt:
+                              type: string
+                              format: date-time
+                              example: "2024-07-20T10:00:00Z"
+
+  /scenario-modeling:
+    post:
+      summary: Advanced Financial Scenario Modeling
+      description: Model complex financial scenarios with predictive analytics
+      tags:
+        - Scenario Modeling
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - scenarioType
+                - parameters
+              properties:
+                userId:
+                  type: string
+                  example: "fi_user_123456"
+                scenarioType:
+                  type: string
+                  enum: [home_purchase, job_change, investment_strategy, debt_consolidation, retirement_planning]
+                  example: "home_purchase"
+                parameters:
+                  type: object
+                  properties:
+                    homePrice:
+                      type: number
+                      example: 8000000
+                    downPayment:
+                      type: number
+                      example: 1600000
+                    loanTenure:
+                      type: number
+                      example: 20
+                    currentAge:
+                      type: number
+                      example: 28
+                    retirementAge:
+                      type: number
+                      example: 60
+                timeHorizon:
+                  type: number
+                  description: Years to model
+                  example: 30
+                includeInflation:
+                  type: boolean
+                  example: true
+      responses:
+        '200':
+          description: Scenario modeling completed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      scenarioId:
+                        type: string
+                        example: "scenario_456789"
+                      scenarioType:
+                        type: string
+                        example: "home_purchase"
+                      analysis:
+                        type: object
+                        properties:
+                          feasibility:
+                            type: object
+                            properties:
+                              score:
+                                type: number
+                                description: Feasibility score (0-100)
+                                example: 78
+                              verdict:
+                                type: string
+                                enum: [highly_feasible, feasible, challenging, not_recommended]
+                                example: "feasible"
+                          impact:
+                            type: object
+                            properties:
+                              monthlyEMI:
+                                type: number
+                                example: 65000
+                              totalInterest:
+                                type: number
+                                example: 7600000
+                              retirementCorpus:
+                                type: object
+                                properties:
+                                  withHome:
+                                    type: number
+                                    example: 25000000
+                                  withoutHome:
+                                    type: number
+                                    example: 32000000
+                          recommendations:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                recommendation:
+                                  type: string
+                                  example: "Increase SIP by ₹15,000 to maintain retirement goals"
+                                priority:
+                                  type: string
+                                  example: "high"
+                                impact:
+                                  type: string
+                                  example: "Maintains retirement corpus at ₹3.2 crores"
+
+components:
+  schemas:
+    BehavioralPattern:
+      type: object
+      properties:
+        patternType:
+          type: string
+          enum: [seasonal, lifestyle, subscription, anomaly]
+        confidence:
+          type: number
+        description:
+          type: string
+        impact:
+          type: object
+
+    ProactiveAlert:
+      type: object
+      properties:
+        alertId:
+          type: string
+        type:
+          type: string
+        priority:
+          type: string
+        message:
+          type: string
+        recommendations:
+          type: array
+          items:
+            type: object
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+
+  securitySchemes:
+    FiAuth:
+      type: http
+      scheme: bearer
+
+security:
+  - FiAuth: []

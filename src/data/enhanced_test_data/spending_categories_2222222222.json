@@ -1,0 +1,167 @@
+{
+  "userId": "2222222222",
+  "profile": "Mumbai High Earner - Tech Professional",
+  "location": {
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "tier": "tier1",
+    "coordinates": {
+      "lat": 19.0760,
+      "lng": 72.8777
+    }
+  },
+  "monthlyIncome": 180000,
+  "spendingData": {
+    "food": {
+      "amount": 28000,
+      "percentage": 35.0,
+      "breakdown": {
+        "groceries": 12000,
+        "restaurants": 11000,
+        "food_delivery": 5000
+      },
+      "inflationSensitivity": "high",
+      "seasonalVariation": 0.15
+    },
+    "housing": {
+      "amount": 45000,
+      "percentage": 56.25,
+      "breakdown": {
+        "rent": 40000,
+        "utilities": 3000,
+        "maintenance": 2000
+      },
+      "inflationSensitivity": "very_high",
+      "seasonalVariation": 0.05
+    },
+    "transport": {
+      "amount": 15000,
+      "percentage": 18.75,
+      "breakdown": {
+        "fuel": 8000,
+        "uber_ola": 4000,
+        "public_transport": 1500,
+        "parking": 1500
+      },
+      "inflationSensitivity": "high",
+      "seasonalVariation": 0.20
+    },
+    "healthcare": {
+      "amount": 8000,
+      "percentage": 10.0,
+      "breakdown": {
+        "insurance": 5000,
+        "medicines": 2000,
+        "consultations": 1000
+      },
+      "inflationSensitivity": "medium",
+      "seasonalVariation": 0.10
+    },
+    "education": {
+      "amount": 5000,
+      "percentage": 6.25,
+      "breakdown": {
+        "courses": 3000,
+        "books": 1000,
+        "subscriptions": 1000
+      },
+      "inflationSensitivity": "low",
+      "seasonalVariation": 0.05
+    },
+    "entertainment": {
+      "amount": 12000,
+      "percentage": 15.0,
+      "breakdown": {
+        "movies": 3000,
+        "subscriptions": 2000,
+        "events": 4000,
+        "shopping": 3000
+      },
+      "inflationSensitivity": "medium",
+      "seasonalVariation": 0.25
+    },
+    "clothing": {
+      "amount": 6000,
+      "percentage": 7.5,
+      "breakdown": {
+        "formal_wear": 3000,
+        "casual_wear": 2000,
+        "accessories": 1000
+      },
+      "inflationSensitivity": "low",
+      "seasonalVariation": 0.30
+    },
+    "miscellaneous": {
+      "amount": 8000,
+      "percentage": 10.0,
+      "breakdown": {
+        "personal_care": 3000,
+        "gifts": 2000,
+        "donations": 1500,
+        "others": 1500
+      },
+      "inflationSensitivity": "medium",
+      "seasonalVariation": 0.20
+    }
+  },
+  "totalMonthlySpending": 127000,
+  "savingsRate": 0.29,
+  "calculatedPersonalInflation": {
+    "overall": 11.8,
+    "categoryContributions": {
+      "food": 4.13,
+      "housing": 2.36,
+      "transport": 1.28,
+      "healthcare": 0.59,
+      "education": 0.26,
+      "entertainment": 1.10,
+      "clothing": 0.29,
+      "miscellaneous": 0.61
+    },
+    "locationMultiplier": 1.15,
+    "seasonalAdjustment": 1.08,
+    "confidenceLevel": 0.85
+  },
+  "historicalData": [
+    {
+      "month": "2024-01",
+      "totalSpending": 115000,
+      "personalInflation": 10.2
+    },
+    {
+      "month": "2024-02",
+      "totalSpending": 118000,
+      "personalInflation": 10.8
+    },
+    {
+      "month": "2024-03",
+      "totalSpending": 122000,
+      "personalInflation": 11.1
+    },
+    {
+      "month": "2024-04",
+      "totalSpending": 125000,
+      "personalInflation": 11.4
+    },
+    {
+      "month": "2024-05",
+      "totalSpending": 128000,
+      "personalInflation": 11.7
+    },
+    {
+      "month": "2024-06",
+      "totalSpending": 127000,
+      "personalInflation": 11.8
+    }
+  ],
+  "insights": {
+    "primaryInflationDrivers": ["housing", "food", "transport"],
+    "recommendations": [
+      "Consider relocating to a tier-2 city to reduce housing costs",
+      "Optimize food delivery usage - high inflation category",
+      "Use public transport more to reduce fuel cost impact"
+    ],
+    "inflationBeatingReturn": 16.8,
+    "requiredSalaryIncrease": 11.8
+  }
+}

@@ -1,0 +1,191 @@
+{
+  "userId": "7777777777",
+  "profile": "Debt-Heavy Low Performer - Financial Stress",
+  "location": {
+    "city": "Pune",
+    "state": "Maharashtra", 
+    "tier": "tier1",
+    "coordinates": {
+      "lat": 18.5204,
+      "lng": 73.8567
+    }
+  },
+  "monthlyIncome": 75000,
+  "spendingData": {
+    "food": {
+      "amount": 18000,
+      "percentage": 26.9,
+      "breakdown": {
+        "groceries": 8000,
+        "restaurants": 6000,
+        "food_delivery": 4000
+      },
+      "inflationSensitivity": "very_high",
+      "seasonalVariation": 0.12,
+      "note": "High food delivery due to time constraints from debt stress"
+    },
+    "housing": {
+      "amount": 22000,
+      "percentage": 32.8,
+      "breakdown": {
+        "rent": 18000,
+        "utilities": 2500,
+        "maintenance": 1500
+      },
+      "inflationSensitivity": "high",
+      "seasonalVariation": 0.08
+    },
+    "transport": {
+      "amount": 8000,
+      "percentage": 11.9,
+      "breakdown": {
+        "fuel": 5000,
+        "public_transport": 2000,
+        "maintenance": 1000
+      },
+      "inflationSensitivity": "high",
+      "seasonalVariation": 0.15
+    },
+    "healthcare": {
+      "amount": 3000,
+      "percentage": 4.5,
+      "breakdown": {
+        "medicines": 1500,
+        "consultations": 1000,
+        "insurance": 500
+      },
+      "inflationSensitivity": "medium",
+      "seasonalVariation": 0.20,
+      "note": "Minimal healthcare spending due to financial constraints"
+    },
+    "education": {
+      "amount": 1000,
+      "percentage": 1.5,
+      "breakdown": {
+        "subscriptions": 500,
+        "books": 300,
+        "courses": 200
+      },
+      "inflationSensitivity": "low",
+      "seasonalVariation": 0.05,
+      "note": "Very low education spending"
+    },
+    "entertainment": {
+      "amount": 4000,
+      "percentage": 6.0,
+      "breakdown": {
+        "subscriptions": 1000,
+        "movies": 1500,
+        "shopping": 1500
+      },
+      "inflationSensitivity": "medium",
+      "seasonalVariation": 0.30,
+      "note": "Stress spending on entertainment"
+    },
+    "clothing": {
+      "amount": 2000,
+      "percentage": 3.0,
+      "breakdown": {
+        "basic_clothing": 1500,
+        "accessories": 500
+      },
+      "inflationSensitivity": "low",
+      "seasonalVariation": 0.25
+    },
+    "debt_payments": {
+      "amount": 35000,
+      "percentage": 52.2,
+      "breakdown": {
+        "credit_card_1": 15000,
+        "credit_card_2": 8000,
+        "personal_loan": 12000
+      },
+      "inflationSensitivity": "very_high",
+      "seasonalVariation": 0.05,
+      "note": "High debt burden affecting overall financial health"
+    },
+    "miscellaneous": {
+      "amount": 3000,
+      "percentage": 4.5,
+      "breakdown": {
+        "personal_care": 1500,
+        "emergency": 1000,
+        "others": 500
+      },
+      "inflationSensitivity": "medium",
+      "seasonalVariation": 0.15
+    }
+  },
+  "totalMonthlySpending": 96000,
+  "savingsRate": -0.28,
+  "debtToIncomeRatio": 0.47,
+  "calculatedPersonalInflation": {
+    "overall": 14.2,
+    "categoryContributions": {
+      "food": 3.82,
+      "housing": 2.23,
+      "transport": 0.95,
+      "healthcare": 0.27,
+      "education": 0.06,
+      "entertainment": 0.43,
+      "clothing": 0.11,
+      "debt_payments": 5.25,
+      "miscellaneous": 0.27
+    },
+    "locationMultiplier": 1.12,
+    "seasonalAdjustment": 1.05,
+    "confidenceLevel": 0.90,
+    "note": "High inflation due to debt interest rates and financial stress spending"
+  },
+  "historicalData": [
+    {
+      "month": "2024-01",
+      "totalSpending": 92000,
+      "personalInflation": 13.1,
+      "debtPayments": 32000
+    },
+    {
+      "month": "2024-02",
+      "totalSpending": 94000,
+      "personalInflation": 13.5,
+      "debtPayments": 33000
+    },
+    {
+      "month": "2024-03",
+      "totalSpending": 95000,
+      "personalInflation": 13.8,
+      "debtPayments": 34000
+    },
+    {
+      "month": "2024-04",
+      "totalSpending": 96000,
+      "personalInflation": 14.0,
+      "debtPayments": 35000
+    },
+    {
+      "month": "2024-05",
+      "totalSpending": 97000,
+      "personalInflation": 14.1,
+      "debtPayments": 35000
+    },
+    {
+      "month": "2024-06",
+      "totalSpending": 96000,
+      "personalInflation": 14.2,
+      "debtPayments": 35000
+    }
+  ],
+  "insights": {
+    "primaryInflationDrivers": ["debt_payments", "food", "housing"],
+    "recommendations": [
+      "URGENT: Debt consolidation to reduce interest burden",
+      "Reduce food delivery expenses - switch to home cooking",
+      "Consider debt counseling services",
+      "Emergency fund building should be priority after debt reduction"
+    ],
+    "inflationBeatingReturn": 20.3,
+    "requiredSalaryIncrease": 14.2,
+    "riskLevel": "high",
+    "financialHealthScore": 2.1
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "userId": "9999999999",
+  "profile": "Fixed Income Fanatic - Conservative Investor",
+  "location": {
+    "city": "Coimbatore",
+    "state": "Tamil Nadu",
+    "tier": "tier2",
+    "coordinates": {
+      "lat": 11.0168,
+      "lng": 76.9558
+    }
+  },
+  "monthlyIncome": 85000,
+  "spendingData": {
+    "food": {
+      "amount": 12000,
+      "percentage": 20.0,
+      "breakdown": {
+        "groceries": 9000,
+        "restaurants": 2000,
+        "food_delivery": 1000
+      },
+      "inflationSensitivity": "low",
+      "seasonalVariation": 0.08,
+      "note": "Predominantly home-cooked meals, minimal dining out"
+    },
+    "housing": {
+      "amount": 18000,
+      "percentage": 30.0,
+      "breakdown": {
+        "rent": 15000,
+        "utilities": 2000,
+        "maintenance": 1000
+      },
+      "inflationSensitivity": "low",
+      "seasonalVariation": 0.03,
+      "note": "Tier-2 city advantage with lower housing costs"
+    },
+    "transport": {
+      "amount": 5000,
+      "percentage": 8.3,
+      "breakdown": {
+        "fuel": 3000,
+        "public_transport": 1500,
+        "maintenance": 500
+      },
+      "inflationSensitivity": "medium",
+      "seasonalVariation": 0.10
+    },
+    "healthcare": {
+      "amount": 4000,
+      "percentage": 6.7,
+      "breakdown": {
+        "insurance": 2500,
+        "medicines": 1000,
+        "consultations": 500
+      },
+      "inflationSensitivity": "low",
+      "seasonalVariation": 0.05
+    },
+    "education": {
+      "amount": 2000,
+      "percentage": 3.3,
+      "breakdown": {
+        "books": 1000,
+        "courses": 500,
+        "subscriptions": 500
+      },
+      "inflationSensitivity": "very_low",
+      "seasonalVariation": 0.02
+    },
+    "entertainment": {
+      "amount": 3000,
+      "percentage": 5.0,
+      "breakdown": {
+        "movies": 1000,
+        "subscriptions": 800,
+        "events": 700,
+        "shopping": 500
+      },
+      "inflationSensitivity": "low",
+      "seasonalVariation": 0.15
+    },
+    "clothing": {
+      "amount": 2000,
+      "percentage": 3.3,
+      "breakdown": {
+        "basic_clothing": 1500,
+        "accessories": 500
+      },
+      "inflationSensitivity": "very_low",
+      "seasonalVariation": 0.20
+    },
+    "investments": {
+      "amount": 25000,
+      "percentage": 41.7,
+      "breakdown": {
+        "fixed_deposits": 12000,
+        "debt_mutual_funds": 8000,
+        "gold_etf": 3000,
+        "ppf": 2000
+      },
+      "inflationSensitivity": "negative",
+      "seasonalVariation": 0.0,
+      "note": "Heavy focus on fixed income and conservative investments"
+    },
+    "miscellaneous": {
+      "amount": 2000,
+      "percentage": 3.3,
+      "breakdown": {
+        "personal_care": 1000,
+        "donations": 500,
+        "others": 500
+      },
+      "inflationSensitivity": "low",
+      "seasonalVariation": 0.10
+    }
+  },
+  "totalMonthlySpending": 60000,
+  "savingsRate": 0.29,
+  "investmentRate": 0.29,
+  "calculatedPersonalInflation": {
+    "overall": 5.8,
+    "categoryContributions": {
+      "food": 1.04,
+      "housing": 1.26,
+      "transport": 0.34,
+      "healthcare": 0.20,
+      "education": 0.08,
+      "entertainment": 0.22,
+      "clothing": 0.13,
+      "miscellaneous": 0.13
+    },
+    "locationMultiplier": 0.92,
+    "seasonalAdjustment": 0.98,
+    "investmentHedge": -0.5,
+    "confidenceLevel": 0.85,
+    "note": "Low personal inflation due to tier-2 city location and conservative spending"
+  },
+  "historicalData": [
+    {
+      "month": "2024-01",
+      "totalSpending": 58000,
+      "personalInflation": 5.5,
+      "investmentAmount": 25000
+    },
+    {
+      "month": "2024-02",
+      "totalSpending": 59000,
+      "personalInflation": 5.6,
+      "investmentAmount": 25000
+    },
+    {
+      "month": "2024-03",
+      "totalSpending": 59500,
+      "personalInflation": 5.7,
+      "investmentAmount": 25000
+    },
+    {
+      "month": "2024-04",
+      "totalSpending": 60000,
+      "personalInflation": 5.7,
+      "investmentAmount": 25000
+    },
+    {
+      "month": "2024-05",
+      "totalSpending": 60500,
+      "personalInflation": 5.8,
+      "investmentAmount": 25000
+    },
+    {
+      "month": "2024-06",
+      "totalSpending": 60000,
+      "personalInflation": 5.8,
+      "investmentAmount": 25000
+    }
+  ],
+  "insights": {
+    "primaryInflationDrivers": ["housing", "food", "transport"],
+    "recommendations": [
+      "Consider adding 10-15% equity exposure for better inflation protection",
+      "Your conservative approach works well in tier-2 cities",
+      "Gold ETF allocation is good for inflation hedging",
+      "Consider increasing PPF contribution for tax benefits"
+    ],
+    "inflationBeatingReturn": 8.3,
+    "requiredSalaryIncrease": 5.8,
+    "riskLevel": "very_low",
+    "financialHealthScore": 7.8,
+    "conservativeScore": 9.2
+  }
+}

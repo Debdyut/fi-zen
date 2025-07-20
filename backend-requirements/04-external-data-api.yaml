@@ -1,0 +1,548 @@
+openapi: 3.0.3
+info:
+  title: Fi-Zen External Data Integration API
+  description: APIs for integrating with external data sources (MOSPI, Banks, etc.)
+  version: 1.0.0
+  contact:
+    name: Fi-Zen Backend Team
+    email: backend@fi.money
+
+servers:
+  - url: https://api.fi.money/v1/external
+    description: Production server
+  - url: https://staging-api.fi.money/v1/external
+    description: Staging server
+
+paths:
+  /mospi/inflation-data:
+    get:
+      summary: Get MOSPI Inflation Data
+      description: Fetch official inflation data from Ministry of Statistics (MOSPI)
+      tags:
+        - Government Data
+      parameters:
+        - name: state
+          in: query
+          required: false
+          schema:
+            type: string
+          example: "Maharashtra"
+        - name: city
+          in: query
+          required: false
+          schema:
+            type: string
+          example: "Mumbai"
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [housing, food, transport, healthcare, education, entertainment, overall]
+          example: "overall"
+        - name: period
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          example: "2024-07"
+      responses:
+        '200':
+          description: MOSPI data retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      source:
+                        type: string
+                        example: "Ministry of Statistics & Programme Implementation"
+                      dataType:
+                        type: string
+                        example: "Consumer Price Index"
+                      location:
+                        type: object
+                        properties:
+                          state:
+                            type: string
+                            example: "Maharashtra"
+                          city:
+                            type: string
+                            example: "Mumbai"
+                          region:
+                            type: string
+                            example: "Western India"
+                      period:
+                        type: object
+                        properties:
+                          month:
+                            type: number
+                            example: 7
+                          year:
+                            type: number
+                            example: 2024
+                      inflationRates:
+                        type: object
+                        properties:
+                          overall:
+                            type: number
+                            example: 6.5
+                          housing:
+                            type: number
+                            example: 7.2
+                          food:
+                            type: number
+                            example: 8.1
+                          transport:
+                            type: number
+                            example: 4.3
+                          healthcare:
+                            type: number
+                            example: 5.8
+                          education:
+                            type: number
+                            example: 6.9
+                          entertainment:
+                            type: number
+                            example: 3.2
+                      historicalData:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            period:
+                              type: string
+                              example: "2024-06"
+                            overallRate:
+                              type: number
+                              example: 6.3
+                      lastUpdated:
+                        type: string
+                        format: date-time
+                        example: "2024-07-15T00:00:00Z"
+                      dataQuality:
+                        type: object
+                        properties:
+                          confidence:
+                            type: number
+                            example: 95
+                          sampleSize:
+                            type: number
+                            example: 50000
+                          methodology:
+                            type: string
+                            example: "Laspeyres Index"
+
+  /fi-account/transactions:
+    post:
+      summary: Fetch Fi Account Transactions
+      description: Get user's transaction data from Fi account for spending analysis
+      tags:
+        - Fi Integration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - dateRange
+              properties:
+                userId:
+                  type: string
+                  example: "fi_user_123456"
+                dateRange:
+                  type: object
+                  properties:
+                    startDate:
+                      type: string
+                      format: date
+                      example: "2024-01-01"
+                    endDate:
+                      type: string
+                      format: date
+                      example: "2024-07-20"
+                categories:
+                  type: array
+                  items:
+                    type: string
+                  example: ["housing", "food", "transport"]
+                includeUPI:
+                  type: boolean
+                  default: true
+                  example: true
+      responses:
+        '200':
+          description: Fi account transactions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      userId:
+                        type: string
+                        example: "fi_user_123456"
+                      accountSummary:
+                        type: object
+                        properties:
+                          totalTransactions:
+                            type: number
+                            example: 1247
+                          totalAmount:
+                            type: number
+                            example: 750000
+                          period:
+                            type: object
+                            properties:
+                              startDate:
+                                type: string
+                                format: date
+                                example: "2024-01-01"
+                              endDate:
+                                type: string
+                                format: date
+                                example: "2024-07-20"
+                      categorizedSpending:
+                        type: object
+                        properties:
+                          housing:
+                            type: object
+                            properties:
+                              totalAmount:
+                                type: number
+                                example: 270000
+                              monthlyAverage:
+                                type: number
+                                example: 45000
+                              transactionCount:
+                                type: number
+                                example: 42
+                              topMerchants:
+                                type: array
+                                items:
+                                  type: string
+                                example: ["Housing Society", "Rent Payment", "Maintenance"]
+                          food:
+                            type: object
+                            properties:
+                              totalAmount:
+                                type: number
+                                example: 168000
+                              monthlyAverage:
+                                type: number
+                                example: 28000
+                              transactionCount:
+                                type: number
+                                example: 324
+                              breakdown:
+                                type: object
+                                properties:
+                                  groceries:
+                                    type: number
+                                    example: 98000
+                                  restaurants:
+                                    type: number
+                                    example: 45000
+                                  delivery:
+                                    type: number
+                                    example: 25000
+                      spendingTrends:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            month:
+                              type: string
+                              example: "2024-07"
+                            totalSpending:
+                              type: number
+                              example: 125000
+                            categoryBreakdown:
+                              type: object
+                              properties:
+                                housing:
+                                  type: number
+                                  example: 45000
+                                food:
+                                  type: number
+                                  example: 28000
+                      dataPrivacy:
+                        type: object
+                        properties:
+                          anonymized:
+                            type: boolean
+                            example: true
+                          retentionPeriod:
+                            type: string
+                            example: "24 months"
+                          userConsent:
+                            type: boolean
+                            example: true
+
+  /bank-integration/connect:
+    post:
+      summary: Connect External Bank Account
+      description: Initiate connection to external bank account via Account Aggregator
+      tags:
+        - Bank Integration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - bankCode
+              properties:
+                userId:
+                  type: string
+                  example: "fi_user_123456"
+                bankCode:
+                  type: string
+                  description: Bank identifier code
+                  example: "HDFC0000001"
+                accountType:
+                  type: string
+                  enum: [savings, current, salary]
+                  example: "salary"
+                consentDuration:
+                  type: number
+                  description: Consent duration in months
+                  example: 12
+      responses:
+        '200':
+          description: Bank connection initiated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      connectionId:
+                        type: string
+                        example: "bank_conn_789"
+                      authUrl:
+                        type: string
+                        description: URL for bank authentication
+                        example: "https://api.sahamati.org.in/auth/hdfc/connect"
+                      status:
+                        type: string
+                        enum: [initiated, pending, connected, failed]
+                        example: "initiated"
+                      expiresAt:
+                        type: string
+                        format: date-time
+                        example: "2024-07-20T10:00:00Z"
+
+  /market-data/cost-of-living:
+    get:
+      summary: Get Cost of Living Data
+      description: Fetch cost of living indices for different cities
+      tags:
+        - Market Data
+      parameters:
+        - name: cities
+          in: query
+          required: true
+          schema:
+            type: string
+          example: "Mumbai,Bangalore,Pune,Chennai"
+        - name: categories
+          in: query
+          required: false
+          schema:
+            type: string
+          example: "housing,food,transport"
+      responses:
+        '200':
+          description: Cost of living data retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      baseCurrency:
+                        type: string
+                        example: "INR"
+                      baseCity:
+                        type: string
+                        example: "Mumbai"
+                      cities:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            cityName:
+                              type: string
+                              example: "Bangalore"
+                            overallIndex:
+                              type: number
+                              description: Cost of living index (Mumbai = 100)
+                              example: 82
+                            categoryIndices:
+                              type: object
+                              properties:
+                                housing:
+                                  type: number
+                                  example: 75
+                                food:
+                                  type: number
+                                  example: 85
+                                transport:
+                                  type: number
+                                  example: 90
+                            averageSalary:
+                              type: object
+                              properties:
+                                software:
+                                  type: number
+                                  example: 1020000
+                                finance:
+                                  type: number
+                                  example: 950000
+                                marketing:
+                                  type: number
+                                  example: 850000
+                      lastUpdated:
+                        type: string
+                        format: date-time
+                        example: "2024-07-15T00:00:00Z"
+                      dataSource:
+                        type: string
+                        example: "Numbeo, PayScale, Glassdoor"
+
+  /notifications/setup:
+    post:
+      summary: Setup Data Update Notifications
+      description: Configure notifications for data updates
+      tags:
+        - Notifications
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - notificationTypes
+              properties:
+                userId:
+                  type: string
+                  example: "fi_user_123456"
+                notificationTypes:
+                  type: array
+                  items:
+                    type: string
+                    enum: [mospi_update, inflation_alert, market_change, monthly_summary]
+                  example: ["mospi_update", "monthly_summary"]
+                preferences:
+                  type: object
+                  properties:
+                    frequency:
+                      type: string
+                      enum: [immediate, daily, weekly, monthly]
+                      example: "monthly"
+                    channels:
+                      type: array
+                      items:
+                        type: string
+                        enum: [push, email, sms]
+                      example: ["push", "email"]
+                    threshold:
+                      type: object
+                      properties:
+                        inflationChange:
+                          type: number
+                          description: Notify if inflation changes by this percentage
+                          example: 0.5
+      responses:
+        '200':
+          description: Notifications setup successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      notificationId:
+                        type: string
+                        example: "notif_setup_456"
+                      activeNotifications:
+                        type: array
+                        items:
+                          type: string
+                        example: ["mospi_update", "monthly_summary"]
+                      nextUpdate:
+                        type: string
+                        format: date-time
+                        example: "2024-08-15T00:00:00Z"
+
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: "EXTERNAL_API_ERROR"
+            message:
+              type: string
+              example: "Failed to fetch MOSPI data"
+            details:
+              type: string
+              example: "MOSPI API temporarily unavailable"
+
+  securitySchemes:
+    FiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Fi user authentication token
+    
+    ExternalAPIKey:
+      type: apiKey
+      in: header
+      name: X-External-API-Key
+      description: API key for external data sources
+
+security:
+  - FiAuth: []
+  - ExternalAPIKey: []

@@ -1,0 +1,540 @@
+openapi: 3.0.3
+info:
+  title: Fi-Zen Advanced Fi Integration API
+  description: Smart Fi product optimization and revenue amplification
+  version: 2.0.0
+  contact:
+    name: Fi-Zen Integration Team
+    email: integration@fi.money
+
+servers:
+  - url: https://api.fi.money/v2/fi-integration
+    description: Production server
+
+paths:
+  /smart-optimization:
+    post:
+      summary: Smart Fi Product Optimization
+      description: Intelligent recommendations for Fi product usage optimization
+      tags:
+        - Smart Optimization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - optimizationType
+              properties:
+                userId:
+                  type: string
+                  example: "fi_user_123456"
+                optimizationType:
+                  type: string
+                  enum: [cash_optimization, payment_routing, investment_timing, product_matching]
+                  example: "cash_optimization"
+                accountData:
+                  type: object
+                  properties:
+                    currentBalance:
+                      type: number
+                      example: 125000
+                    averageBalance:
+                      type: number
+                      example: 95000
+                    spendingPattern:
+                      type: object
+                      properties:
+                        monthlyExpenses:
+                          type: number
+                          example: 85000
+                        variability:
+                          type: number
+                          example: 15000
+                    existingProducts:
+                      type: array
+                      items:
+                        type: string
+                      example: ["fi_account", "fi_card"]
+      responses:
+        '200':
+          description: Optimization recommendations generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      optimizationType:
+                        type: string
+                        example: "cash_optimization"
+                      recommendations:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            productId:
+                              type: string
+                              example: "fi_auto_sweep"
+                            title:
+                              type: string
+                              example: "Enable Fi Auto-Sweep"
+                            description:
+                              type: string
+                              example: "Enable Fi Auto-Sweep for idle ₹25K and earn 2% extra interest"
+                            impact:
+                              type: object
+                              properties:
+                                monthlyEarnings:
+                                  type: number
+                                  example: 500
+                                annualBenefit:
+                                  type: number
+                                  example: 6000
+                                riskLevel:
+                                  type: string
+                                  enum: [low, medium, high]
+                                  example: "low"
+                            implementation:
+                              type: object
+                              properties:
+                                effort:
+                                  type: string
+                                  enum: [low, medium, high]
+                                  example: "low"
+                                timeRequired:
+                                  type: string
+                                  example: "2 minutes"
+                                steps:
+                                  type: array
+                                  items:
+                                    type: string
+                                  example: [
+                                    "Open Fi app",
+                                    "Go to Auto-Sweep settings",
+                                    "Set threshold to ₹25,000",
+                                    "Enable auto-sweep"
+                                  ]
+                            priority:
+                              type: string
+                              enum: [high, medium, low]
+                              example: "high"
+                            confidence:
+                              type: number
+                              description: AI confidence in recommendation (0-100)
+                              example: 92
+
+  /payment-intelligence:
+    post:
+      summary: Smart Payment Routing Intelligence
+      description: Optimize payment methods for maximum cashback and rewards
+      tags:
+        - Payment Intelligence
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - transactionData
+              properties:
+                userId:
+                  type: string
+                  example: "fi_user_123456"
+                transactionData:
+                  type: object
+                  properties:
+                    merchant:
+                      type: string
+                      example: "Swiggy"
+                    category:
+                      type: string
+                      example: "food_delivery"
+                    amount:
+                      type: number
+                      example: 850
+                    frequency:
+                      type: string
+                      enum: [one_time, weekly, monthly, frequent]
+                      example: "frequent"
+                userPaymentMethods:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      methodId:
+                        type: string
+                        example: "fi_card_primary"
+                      type:
+                        type: string
+                        enum: [fi_card, other_card, upi, netbanking]
+                        example: "fi_card"
+                      cashbackRate:
+                        type: number
+                        example: 2.5
+                      monthlyLimit:
+                        type: number
+                        example: 50000
+                      currentUsage:
+                        type: number
+                        example: 25000
+      responses:
+        '200':
+          description: Payment optimization recommendation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      recommendation:
+                        type: object
+                        properties:
+                          preferredMethod:
+                            type: string
+                            example: "fi_card_primary"
+                          reason:
+                            type: string
+                            example: "Use Fi card for Swiggy orders to maximize cashback rewards"
+                          benefit:
+                            type: object
+                            properties:
+                              cashbackAmount:
+                                type: number
+                                example: 21.25
+                              monthlyPotential:
+                                type: number
+                                example: 255
+                              annualSavings:
+                                type: number
+                                example: 3060
+                          optimization:
+                            type: object
+                            properties:
+                              currentCashback:
+                                type: number
+                                example: 8.50
+                              optimizedCashback:
+                                type: number
+                                example: 21.25
+                              improvement:
+                                type: string
+                                example: "150% more cashback"
+                      alternatives:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            method:
+                              type: string
+                              example: "other_card"
+                            cashback:
+                              type: number
+                              example: 12.75
+                            reason:
+                              type: string
+                              example: "Lower cashback rate for food category"
+
+  /product-matching:
+    post:
+      summary: Dynamic Fi Product Matching
+      description: AI-powered personalized Fi product recommendations
+      tags:
+        - Product Matching
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - matchingType
+              properties:
+                userId:
+                  type: string
+                  example: "fi_user_123456"
+                matchingType:
+                  type: string
+                  enum: [savings_products, investment_products, premium_services, loan_products]
+                  example: "savings_products"
+                userProfile:
+                  type: object
+                  properties:
+                    salary:
+                      type: number
+                      example: 1200000
+                    age:
+                      type: number
+                      example: 28
+                    riskProfile:
+                      type: string
+                      enum: [conservative, moderate, aggressive]
+                      example: "moderate"
+                    financialGoals:
+                      type: array
+                      items:
+                        type: string
+                      example: ["emergency_fund", "home_purchase", "retirement"]
+                    currentProducts:
+                      type: array
+                      items:
+                        type: string
+                      example: ["fi_account", "fi_card"]
+                behavioralData:
+                  type: object
+                  properties:
+                    spendingPattern:
+                      type: string
+                      example: "high_saver"
+                    investmentBehavior:
+                      type: string
+                      example: "systematic_investor"
+                    digitalEngagement:
+                      type: string
+                      enum: [high, medium, low]
+                      example: "high"
+      responses:
+        '200':
+          description: Personalized product recommendations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      matchingType:
+                        type: string
+                        example: "savings_products"
+                      recommendations:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            productId:
+                              type: string
+                              example: "fi_federal_savings_plus"
+                            productName:
+                              type: string
+                              example: "Fi Federal Bank Savings+"
+                            matchScore:
+                              type: number
+                              description: AI matching score (0-100)
+                              example: 94
+                            personalizedBenefits:
+                              type: array
+                              items:
+                                type: string
+                              example: [
+                                "Earn 7% interest on savings",
+                                "No minimum balance requirement",
+                                "Free unlimited transactions",
+                                "Integrated with Fi ecosystem"
+                              ]
+                            projectedImpact:
+                              type: object
+                              properties:
+                                monthlyBenefit:
+                                  type: number
+                                  example: 2500
+                                annualBenefit:
+                                  type: number
+                                  example: 30000
+                                goalAlignment:
+                                  type: string
+                                  example: "Accelerates emergency fund by 6 months"
+                            conversionProbability:
+                              type: number
+                              description: Predicted conversion probability
+                              example: 78
+                            recommendationReason:
+                              type: string
+                              example: "Based on your high savings rate and moderate risk profile, Fi Federal Savings+ aligns perfectly with your emergency fund goal"
+
+  /revenue-optimization:
+    get:
+      summary: Revenue Optimization Analytics
+      description: Track and optimize Fi product conversion rates
+      tags:
+        - Revenue Analytics
+      parameters:
+        - name: userId
+          in: query
+          required: false
+          schema:
+            type: string
+          example: "fi_user_123456"
+        - name: productCategory
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [savings, investments, cards, loans, premium]
+        - name: timeRange
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [7d, 30d, 90d, 1y]
+            default: 30d
+      responses:
+        '200':
+          description: Revenue optimization data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      conversionMetrics:
+                        type: object
+                        properties:
+                          fiFederalBank:
+                            type: object
+                            properties:
+                              currentConversion:
+                                type: number
+                                example: 15
+                              targetConversion:
+                                type: number
+                                example: 45
+                              improvement:
+                                type: string
+                                example: "200% increase through AI matching"
+                              revenueImpact:
+                                type: number
+                                example: 2500000
+                          fiCard:
+                            type: object
+                            properties:
+                              transactionVolumeIncrease:
+                                type: number
+                                example: 35
+                              averageTransactionValue:
+                                type: number
+                                example: 1250
+                              monthlyActiveUsers:
+                                type: number
+                                example: 45000
+                          fiJumpPremium:
+                            type: object
+                            properties:
+                              currentSubscribers:
+                                type: number
+                                example: 50000
+                              targetSubscribers:
+                                type: number
+                                example: 150000
+                              monthlyRevenue:
+                                type: number
+                                example: 29850000
+                      optimizationOpportunities:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            opportunity:
+                              type: string
+                              example: "Personalized Fi Federal Bank timing"
+                            potentialImpact:
+                              type: string
+                              example: "₹50L additional monthly revenue"
+                            implementation:
+                              type: string
+                              example: "AI-powered salary credit detection"
+
+components:
+  schemas:
+    OptimizationRecommendation:
+      type: object
+      properties:
+        productId:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        impact:
+          type: object
+        implementation:
+          type: object
+        priority:
+          type: string
+        confidence:
+          type: number
+
+    PaymentIntelligence:
+      type: object
+      properties:
+        preferredMethod:
+          type: string
+        reason:
+          type: string
+        benefit:
+          type: object
+        optimization:
+          type: object
+
+    ProductMatch:
+      type: object
+      properties:
+        productId:
+          type: string
+        productName:
+          type: string
+        matchScore:
+          type: number
+        personalizedBenefits:
+          type: array
+          items:
+            type: string
+        projectedImpact:
+          type: object
+        conversionProbability:
+          type: number
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+
+  securitySchemes:
+    FiAuth:
+      type: http
+      scheme: bearer
+
+security:
+  - FiAuth: []

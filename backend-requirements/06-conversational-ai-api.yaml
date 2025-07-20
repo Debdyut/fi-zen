@@ -1,0 +1,416 @@
+openapi: 3.0.3
+info:
+  title: Fi-Zen Conversational AI API
+  description: Natural language financial planning with Google Gemini integration
+  version: 2.0.0
+  contact:
+    name: Fi-Zen AI Team
+    email: ai@fi.money
+
+servers:
+  - url: https://api.fi.money/v2/ai
+    description: Production server
+  - url: https://staging-api.fi.money/v2/ai
+    description: Staging server
+
+paths:
+  /chat/query:
+    post:
+      summary: Process Natural Language Financial Query
+      description: Handle conversational financial planning queries in multiple languages
+      tags:
+        - Conversational AI
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - query
+                - language
+              properties:
+                userId:
+                  type: string
+                  example: "fi_user_123456"
+                query:
+                  type: string
+                  description: Natural language financial query
+                  example: "Agar main ghar kharid un toh retirement mein kitna paisa bachega?"
+                language:
+                  type: string
+                  enum: [hindi, english, kannada, hinglish]
+                  example: "hindi"
+                context:
+                  type: object
+                  description: Previous conversation context
+                  properties:
+                    conversationId:
+                      type: string
+                      example: "conv_789123"
+                    previousQueries:
+                      type: array
+                      items:
+                        type: string
+                    userProfile:
+                      type: object
+                      properties:
+                        age:
+                          type: number
+                          example: 28
+                        salary:
+                          type: number
+                          example: 1200000
+                        city:
+                          type: string
+                          example: "Mumbai"
+                        goals:
+                          type: array
+                          items:
+                            type: string
+                          example: ["home_purchase", "retirement"]
+      responses:
+        '200':
+          description: AI response generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      conversationId:
+                        type: string
+                        example: "conv_789123"
+                      response:
+                        type: object
+                        properties:
+                          text:
+                            type: string
+                            example: "Aapka current salary ₹12L hai aur inflation 11.8%. Ghar kharidne ke baad retirement ke liye aapko ₹2.5 crore chahiye hoga..."
+                          audioUrl:
+                            type: string
+                            description: Text-to-speech audio URL
+                            example: "https://api.fi.money/audio/response_123.mp3"
+                          language:
+                            type: string
+                            example: "hindi"
+                      analysis:
+                        type: object
+                        properties:
+                          queryType:
+                            type: string
+                            enum: [goal_planning, investment_advice, debt_optimization, general_query]
+                            example: "goal_planning"
+                          confidence:
+                            type: number
+                            description: AI confidence in response (0-100)
+                            example: 92
+                          suggestedActions:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                action:
+                                  type: string
+                                  example: "increase_sip"
+                                description:
+                                  type: string
+                                  example: "SIP amount 25% badhayein"
+                                priority:
+                                  type: string
+                                  enum: [high, medium, low]
+                                  example: "high"
+                      followUpQuestions:
+                        type: array
+                        items:
+                          type: string
+                        example: [
+                          "Kya aap home loan lena chahte hain?",
+                          "Retirement ke liye kitna risk le sakte hain?"
+                        ]
+
+  /chat/voice:
+    post:
+      summary: Process Voice Query
+      description: Handle voice-based financial queries with speech-to-text
+      tags:
+        - Voice AI
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - userId
+                - audioFile
+                - language
+              properties:
+                userId:
+                  type: string
+                  example: "fi_user_123456"
+                audioFile:
+                  type: string
+                  format: binary
+                  description: Audio file (WAV, MP3, M4A)
+                language:
+                  type: string
+                  enum: [hindi, english, kannada]
+                  example: "hindi"
+                context:
+                  type: string
+                  description: JSON string of conversation context
+      responses:
+        '200':
+          description: Voice query processed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      transcription:
+                        type: string
+                        example: "Mera inflation kitna hai aur kya karna chahiye?"
+                      response:
+                        type: object
+                        properties:
+                          text:
+                            type: string
+                            example: "Aapka personal inflation 11.8% hai..."
+                          audioUrl:
+                            type: string
+                            example: "https://api.fi.money/audio/response_456.mp3"
+
+  /chat/context:
+    get:
+      summary: Get Conversation Context
+      description: Retrieve conversation history and context
+      tags:
+        - Context Management
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+          example: "fi_user_123456"
+        - name: conversationId
+          in: query
+          required: false
+          schema:
+            type: string
+          example: "conv_789123"
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: number
+            default: 10
+          example: 10
+      responses:
+        '200':
+          description: Conversation context retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      conversations:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            conversationId:
+                              type: string
+                              example: "conv_789123"
+                            startedAt:
+                              type: string
+                              format: date-time
+                              example: "2024-07-20T10:00:00Z"
+                            lastActivity:
+                              type: string
+                              format: date-time
+                              example: "2024-07-20T10:15:00Z"
+                            queryCount:
+                              type: number
+                              example: 5
+                            topics:
+                              type: array
+                              items:
+                                type: string
+                              example: ["home_purchase", "retirement_planning"]
+                            language:
+                              type: string
+                              example: "hindi"
+
+  /chat/feedback:
+    post:
+      summary: Submit AI Response Feedback
+      description: Collect user feedback to improve AI responses
+      tags:
+        - Feedback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - conversationId
+                - responseId
+                - feedback
+              properties:
+                userId:
+                  type: string
+                  example: "fi_user_123456"
+                conversationId:
+                  type: string
+                  example: "conv_789123"
+                responseId:
+                  type: string
+                  example: "resp_456789"
+                feedback:
+                  type: object
+                  properties:
+                    rating:
+                      type: number
+                      minimum: 1
+                      maximum: 5
+                      example: 4
+                    helpful:
+                      type: boolean
+                      example: true
+                    accuracy:
+                      type: number
+                      minimum: 1
+                      maximum: 5
+                      example: 5
+                    comments:
+                      type: string
+                      example: "Response was helpful but could be more specific"
+                    suggestedImprovement:
+                      type: string
+                      example: "Include specific SIP amount recommendations"
+      responses:
+        '200':
+          description: Feedback submitted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Feedback submitted successfully"
+
+components:
+  schemas:
+    ConversationContext:
+      type: object
+      properties:
+        userId:
+          type: string
+        userProfile:
+          type: object
+          properties:
+            age:
+              type: number
+            salary:
+              type: number
+            city:
+              type: string
+            riskProfile:
+              type: string
+              enum: [conservative, moderate, aggressive]
+            goals:
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum: [home_purchase, retirement, education, travel, emergency]
+                  targetAmount:
+                    type: number
+                  timeHorizon:
+                    type: number
+                    description: Years to achieve goal
+        financialData:
+          type: object
+          properties:
+            personalInflationRate:
+              type: number
+            monthlyExpenses:
+              type: number
+            investments:
+              type: array
+              items:
+                type: object
+            debts:
+              type: array
+              items:
+                type: object
+
+    AIResponse:
+      type: object
+      properties:
+        text:
+          type: string
+        confidence:
+          type: number
+        language:
+          type: string
+        audioUrl:
+          type: string
+        suggestedActions:
+          type: array
+          items:
+            type: object
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: "AI_PROCESSING_ERROR"
+            message:
+              type: string
+              example: "Failed to process natural language query"
+
+  securitySchemes:
+    FiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Fi user authentication token
+
+security:
+  - FiAuth: []

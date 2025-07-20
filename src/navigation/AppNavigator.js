@@ -3,8 +3,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text } from 'react-native';
-import { FiColors } from '../theme/colors';
-import HomeScreen from '../screens/HomeScreen';
+import { FiColors } from '../theme/consolidatedFiColors';
+import FiHomeScreenWrapper from '../components/fi-style/FiHomeScreenWrapper';
 import InflationScreen from '../screens/InflationScreen';
 import InflationSetupScreen from '../screens/InflationSetupScreen';
 
@@ -32,7 +32,7 @@ const TabNavigator = () => {
       }}>
       <Tab.Screen 
         name="Home" 
-        component={HomeScreen}
+        component={FiHomeScreenWrapper}
         options={{
           tabBarLabel: 'Home',
           tabBarIcon: () => <Text style={{ fontSize: 20 }}>🏠</Text>,

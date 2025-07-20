@@ -1,0 +1,191 @@
+{
+  "userId": "8888888888",
+  "profile": "SIP Samurai - Disciplined Investor",
+  "location": {
+    "city": "Bangalore",
+    "state": "Karnataka",
+    "tier": "tier1",
+    "coordinates": {
+      "lat": 12.9716,
+      "lng": 77.5946
+    }
+  },
+  "monthlyIncome": 120000,
+  "spendingData": {
+    "food": {
+      "amount": 16000,
+      "percentage": 20.0,
+      "breakdown": {
+        "groceries": 10000,
+        "restaurants": 4000,
+        "food_delivery": 2000
+      },
+      "inflationSensitivity": "medium",
+      "seasonalVariation": 0.10,
+      "note": "Controlled food spending with focus on home cooking"
+    },
+    "housing": {
+      "amount": 30000,
+      "percentage": 37.5,
+      "breakdown": {
+        "rent": 25000,
+        "utilities": 3000,
+        "maintenance": 2000
+      },
+      "inflationSensitivity": "medium",
+      "seasonalVariation": 0.05
+    },
+    "transport": {
+      "amount": 8000,
+      "percentage": 10.0,
+      "breakdown": {
+        "fuel": 4000,
+        "public_transport": 2000,
+        "uber_ola": 2000
+      },
+      "inflationSensitivity": "medium",
+      "seasonalVariation": 0.12
+    },
+    "healthcare": {
+      "amount": 5000,
+      "percentage": 6.25,
+      "breakdown": {
+        "insurance": 3000,
+        "medicines": 1000,
+        "consultations": 1000
+      },
+      "inflationSensitivity": "low",
+      "seasonalVariation": 0.08
+    },
+    "education": {
+      "amount": 3000,
+      "percentage": 3.75,
+      "breakdown": {
+        "courses": 2000,
+        "books": 500,
+        "subscriptions": 500
+      },
+      "inflationSensitivity": "low",
+      "seasonalVariation": 0.05
+    },
+    "entertainment": {
+      "amount": 6000,
+      "percentage": 7.5,
+      "breakdown": {
+        "subscriptions": 1500,
+        "movies": 2000,
+        "events": 1500,
+        "shopping": 1000
+      },
+      "inflationSensitivity": "medium",
+      "seasonalVariation": 0.20
+    },
+    "clothing": {
+      "amount": 3000,
+      "percentage": 3.75,
+      "breakdown": {
+        "formal_wear": 1500,
+        "casual_wear": 1000,
+        "accessories": 500
+      },
+      "inflationSensitivity": "low",
+      "seasonalVariation": 0.25
+    },
+    "investments": {
+      "amount": 26500,
+      "percentage": 33.1,
+      "breakdown": {
+        "equity_sip": 15000,
+        "debt_sip": 7500,
+        "international_sip": 4000
+      },
+      "inflationSensitivity": "negative",
+      "seasonalVariation": 0.0,
+      "note": "Consistent SIP investments help hedge against inflation"
+    },
+    "miscellaneous": {
+      "amount": 4000,
+      "percentage": 5.0,
+      "breakdown": {
+        "personal_care": 2000,
+        "gifts": 1000,
+        "others": 1000
+      },
+      "inflationSensitivity": "medium",
+      "seasonalVariation": 0.15
+    }
+  },
+  "totalMonthlySpending": 80000,
+  "savingsRate": 0.33,
+  "investmentRate": 0.22,
+  "calculatedPersonalInflation": {
+    "overall": 8.4,
+    "categoryContributions": {
+      "food": 1.68,
+      "housing": 1.58,
+      "transport": 0.68,
+      "healthcare": 0.29,
+      "education": 0.15,
+      "entertainment": 0.45,
+      "clothing": 0.14,
+      "miscellaneous": 0.31
+    },
+    "locationMultiplier": 1.08,
+    "seasonalAdjustment": 1.02,
+    "investmentHedge": -0.8,
+    "confidenceLevel": 0.88,
+    "note": "Lower personal inflation due to disciplined spending and investment hedging"
+  },
+  "historicalData": [
+    {
+      "month": "2024-01",
+      "totalSpending": 78000,
+      "personalInflation": 8.1,
+      "sipAmount": 26500
+    },
+    {
+      "month": "2024-02",
+      "totalSpending": 79000,
+      "personalInflation": 8.2,
+      "sipAmount": 26500
+    },
+    {
+      "month": "2024-03",
+      "totalSpending": 79500,
+      "personalInflation": 8.3,
+      "sipAmount": 26500
+    },
+    {
+      "month": "2024-04",
+      "totalSpending": 80000,
+      "personalInflation": 8.3,
+      "sipAmount": 26500
+    },
+    {
+      "month": "2024-05",
+      "totalSpending": 80500,
+      "personalInflation": 8.4,
+      "sipAmount": 26500
+    },
+    {
+      "month": "2024-06",
+      "totalSpending": 80000,
+      "personalInflation": 8.4,
+      "sipAmount": 26500
+    }
+  ],
+  "insights": {
+    "primaryInflationDrivers": ["food", "housing", "transport"],
+    "recommendations": [
+      "Continue disciplined SIP approach - excellent inflation hedge",
+      "Consider increasing international exposure to 10-15%",
+      "Your spending discipline keeps personal inflation below city average",
+      "Emergency fund appears adequate - focus on wealth building"
+    ],
+    "inflationBeatingReturn": 12.0,
+    "requiredSalaryIncrease": 8.4,
+    "riskLevel": "low",
+    "financialHealthScore": 8.2,
+    "sipConsistency": 1.0
+  }
+}
