@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { EnhancedFiColors } from '../../theme/enhancedColors';
+import { FiColors } from '../../theme/consolidatedFiColors';
 
 // Professional icon component using emoji with better styling
-const Icon = ({ name, size = 20, color = EnhancedFiColors.text, style = {} }) => {
+const Icon = ({ name, size = 20, color = FiColors.text, style = {} }) => {
   const iconMap = {
     // Financial icons
     'trending-up': '📈',
@@ -74,12 +74,12 @@ const Icon = ({ name, size = 20, color = EnhancedFiColors.text, style = {} }) =>
 // Specialized inflation status icon
 const InflationStatusIcon = ({ inflationRate, size = 24 }) => {
   const getStatusIcon = (rate) => {
-    if (rate < 3) return { icon: '🤑', color: EnhancedFiColors.inflationVeryLow };
-    if (rate < 6) return { icon: '😊', color: EnhancedFiColors.inflationLow };
-    if (rate < 9) return { icon: '😐', color: EnhancedFiColors.inflationModerate };
-    if (rate < 12) return { icon: '😟', color: EnhancedFiColors.inflationHigh };
-    if (rate < 15) return { icon: '😰', color: EnhancedFiColors.inflationVeryHigh };
-    return { icon: '😱', color: EnhancedFiColors.inflationExtreme };
+    if (rate < 3) return { icon: '🤑', color: FiColors.success };
+    if (rate < 6) return { icon: '😊', color: FiColors.inflationLow };
+    if (rate < 9) return { icon: '😐', color: FiColors.inflationModerate };
+    if (rate < 12) return { icon: '😟', color: FiColors.inflationHigh };
+    if (rate < 15) return { icon: '😰', color: FiColors.inflationVeryHigh };
+    return { icon: '😱', color: FiColors.error };
   };
 
   const status = getStatusIcon(inflationRate);
@@ -96,15 +96,15 @@ const InflationStatusIcon = ({ inflationRate, size = 24 }) => {
 // Category icon with background
 const CategoryIcon = ({ category, size = 32, showBackground = true }) => {
   const categoryConfig = {
-    food: { icon: '🍽️', color: EnhancedFiColors.chartColors[0] },
-    housing: { icon: '🏠', color: EnhancedFiColors.chartColors[1] },
-    transport: { icon: '🚗', color: EnhancedFiColors.chartColors[2] },
-    healthcare: { icon: '🏥', color: EnhancedFiColors.chartColors[3] },
-    education: { icon: '📚', color: EnhancedFiColors.chartColors[4] },
-    entertainment: { icon: '🎬', color: EnhancedFiColors.chartColors[5] },
-    clothing: { icon: '👕', color: EnhancedFiColors.chartColors[6] },
-    debt_payments: { icon: '💳', color: EnhancedFiColors.error },
-    miscellaneous: { icon: '📦', color: EnhancedFiColors.secondary },
+    food: { icon: '🍽️', color: FiColors.primary },
+    housing: { icon: '🏠', color: FiColors.primaryLight },
+    transport: { icon: '🚗', color: FiColors.primaryDark },
+    healthcare: { icon: '🏥', color: FiColors.success },
+    education: { icon: '📚', color: FiColors.info },
+    entertainment: { icon: '🎬', color: FiColors.warning },
+    clothing: { icon: '👕', color: FiColors.textSecondary },
+    debt_payments: { icon: '💳', color: FiColors.error },
+    miscellaneous: { icon: '📦', color: FiColors.textTertiary },
   };
 
   const config = categoryConfig[category] || categoryConfig.miscellaneous;

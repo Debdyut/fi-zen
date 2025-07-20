@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, Dimensions } from 'react-native';
-import { FiColors } from '../theme/colors';
-import InflationCard from '../components/InflationCard';
+import { FiColors } from '../theme/consolidatedFiColors';
+import InflationCard from '../components/fi-style/FiInflationCard';
 import DataService from '../services/DataService';
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 
-const InflationScreen = ({ navigation }) => {
+const InflationScreen = () => {
+  const navigation = useNavigation();
   const [currentUser] = useState(DataService.getCurrentUser());
+  console.log('InflationScreen navigation:', navigation);
+  console.log('Navigation methods:', Object.keys(navigation || {}));
 
   return (
     <SafeAreaView style={styles.container}>
@@ -17,7 +21,7 @@ const InflationScreen = ({ navigation }) => {
       </View>
       
       <ScrollView style={styles.content}>
-        <InflationCard userId={currentUser} navigation={navigation} />
+        <InflationCard inflationData={{ personal: 11.8 }} />
         
         <View style={styles.insightCard}>
           <Text style={styles.insightTitle}>💡 Why This Matters</Text>

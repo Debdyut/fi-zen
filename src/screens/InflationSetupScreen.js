@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, SafeAreaView, ScrollView } from 'react-native';
-import { FiColors } from '../theme/colors';
+import { FiColors } from '../theme/consolidatedFiColors';
 
 const InflationSetupScreen = ({ navigation, route }) => {
   const [currentStep, setCurrentStep] = useState(0);

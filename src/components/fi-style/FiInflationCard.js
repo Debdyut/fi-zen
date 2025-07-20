@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { AnimatedCard, AnimatedNumber, FadeInUp } from '../animations/AnimatedCard';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 // Fi App Colors (from screenshots)
 const FiColors = {
@@ -13,41 +13,40 @@ const FiColors = {
   error: '#FF6B6B'
 };
 
-const FiInflationCard = ({ inflationData }) => {
+const FiInflationCard = ({ inflationData = {} }) => {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
-      <FadeInUp delay={0}>
-        <View style={styles.card}>
-          {/* Fi-style header */}
-          <View style={styles.header}>
-            <Text style={styles.title}>Personal Inflation</Text>
-            <View style={styles.locationBadge}>
-              <Text style={styles.locationText}>Mumbai</Text>
-            </View>
-          </View>
-
-          {/* Large number display (Fi wealth style) */}
-          <View style={styles.rateDisplay}>
-            <AnimatedNumber 
-              value={inflationData.personal}
-              style={styles.mainRate}
-              suffix="%"
-            />
-            <Text style={styles.rateLabel}>vs Govt 6.5%</Text>
-          </View>
-
-          {/* Fi-style impact section */}
-          <View style={styles.impactSection}>
-            <Text style={styles.impactTitle}>Impact on ₹1L</Text>
-            <Text style={styles.impactValue}>+₹11,800 needed</Text>
-          </View>
-
-          {/* Fi-style action button */}
-          <View style={styles.actionButton}>
-            <Text style={styles.buttonText}>View Details</Text>
+      <View style={styles.card}>
+        {/* Fi-style header */}
+        <View style={styles.header}>
+          <Text style={styles.title}>Personal Inflation</Text>
+          <View style={styles.locationBadge}>
+            <Text style={styles.locationText}>Mumbai</Text>
           </View>
         </View>
-      </FadeInUp>
+
+        {/* Large number display (Fi wealth style) */}
+        <View style={styles.rateDisplay}>
+          <Text style={styles.mainRate}>{inflationData.personal || 0}%</Text>
+          <Text style={styles.rateLabel}>vs Govt 6.5%</Text>
+        </View>
+
+        {/* Fi-style impact section */}
+        <View style={styles.impactSection}>
+          <Text style={styles.impactTitle}>Impact on ₹1L</Text>
+          <Text style={styles.impactValue}>+₹11,800 needed</Text>
+        </View>
+
+        {/* Fi-style action button */}
+        <TouchableOpacity 
+          style={styles.actionButton} 
+          onPress={() => navigation.navigate('DetailedBreakdownScreen')}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.buttonText}>View Details</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -125,6 +124,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingVertical: 14,
     alignItems: 'center',
+    minHeight: 48,
+    justifyContent: 'center',
   },
   buttonText: {
     fontSize: 16,

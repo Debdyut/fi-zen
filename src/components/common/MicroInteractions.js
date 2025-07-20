@@ -6,14 +6,15 @@ import {
   Animated, 
   Easing,
   Vibration,
-  Platform 
+  Platform,
+  TouchableOpacity 
 } from 'react-native';
-import { EnhancedFiColors } from '../../theme/enhancedColors';
+import { FiColors } from '../../theme/consolidatedFiColors';
 
 const ProgressIndicator = ({ 
   progress = 0, 
   duration = 1000, 
-  color = EnhancedFiColors.primary,
+  color = FiColors.primary,
   height = 4,
   showPercentage = false,
   style = {} 
@@ -98,7 +99,7 @@ const CountUpNumber = ({
 const RippleEffect = ({ 
   children, 
   onPress, 
-  rippleColor = EnhancedFiColors.primary + '30',
+  rippleColor = FiColors.primary + '30',
   style = {} 
 }) => {
   const scaleAnim = useRef(new Animated.Value(0)).current;
@@ -265,7 +266,7 @@ const FadeInUp = ({ children, delay = 0, duration = 600 }) => {
 
 const styles = StyleSheet.create({
   progressContainer: {
-    backgroundColor: EnhancedFiColors.border,
+    backgroundColor: FiColors.border,
     borderRadius: 2,
     overflow: 'hidden',
     position: 'relative',
@@ -278,7 +279,7 @@ const styles = StyleSheet.create({
     right: 8,
     top: -20,
     fontSize: 12,
-    color: EnhancedFiColors.textSecondary,
+    color: FiColors.textSecondary,
   },
   rippleContainer: {
     overflow: 'hidden',
