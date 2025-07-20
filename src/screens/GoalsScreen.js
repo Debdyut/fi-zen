@@ -47,13 +47,13 @@ const GoalsScreen = ({ navigation }) => {
     },
   ]);
 
-  const GoalCard = ({ goal }) => {
+  const GoalCard = ({ goal, bgColor }) => {
     const progress = (goal.current / goal.target) * 100;
     const remaining = goal.target - goal.current;
     
     return (
       <FadeInUp delay={100}>
-        <TouchableArea style={styles.goalCard}>
+        <TouchableArea style={[styles.goalCard, { backgroundColor: bgColor }]}>
           <View style={styles.goalHeader}>
             <View style={styles.goalTitleSection}>
               <Text style={styles.goalIcon}>{goal.icon}</Text>
@@ -156,6 +156,19 @@ const GoalsScreen = ({ navigation }) => {
           <Text style={styles.headerTitle}>Financial Goals</Text>
           <Text style={styles.headerSubtitle}>Track your progress & stay motivated</Text>
         </View>
+        {/* Goal Summary */}
+        <View style={styles.infoSection}>
+          <Text style={styles.infoTitle}>Goal Summary</Text>
+          <View style={styles.infoItem}>
+            <Text style={styles.infoLabel}>Vacation Fund</Text>
+            <Text style={styles.infoValue}>₹35,000 of ₹1.5L (23%)</Text>
+          </View>
+          <View style={styles.infoItem}>
+            <Text style={styles.infoLabel}>Total Progress</Text>
+            <Text style={styles.infoValue}>30% across all goals</Text>
+          </View>
+        </View>
+
         {/* Goals Overview */}
         <View style={styles.overviewCard}>
           <Text style={styles.overviewTitle}>Goals Overview</Text>
@@ -178,9 +191,12 @@ const GoalsScreen = ({ navigation }) => {
         {/* Active Goals */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Your Goals</Text>
-          {activeGoals.map((goal) => (
-            <GoalCard key={goal.id} goal={goal} />
-          ))}
+          {activeGoals.slice(0, 2).map((goal, index) => {
+            const colors = ['#F0FFF4', '#FFF5F5'];
+            return (
+              <GoalCard key={goal.id} goal={goal} bgColor={colors[index % colors.length]} />
+            );
+          })}
         </View>
 
         {/* Inflation Impact */}
@@ -198,7 +214,7 @@ const GoalsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: FiColors.background,
   },
   content: {
     flex: 1,
@@ -223,7 +239,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   overviewCard: {
-    backgroundColor: FiColors.surface,
+    backgroundColor: '#F0F9FF',
     margin: 16,
     borderRadius: 16,
     padding: 20,
@@ -266,10 +282,9 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   goalCard: {
-    backgroundColor: FiColors.surface,
     borderRadius: 16,
     padding: 20,
-    marginBottom: 16,
+    marginBottom: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -413,7 +428,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   actionCard: {
-    backgroundColor: FiColors.surface,
+    backgroundColor: '#FFFBF0',
     borderRadius: 12,
     padding: 16,
     width: '48%',
@@ -432,6 +447,35 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     color: FiColors.text,
+  },
+  infoSection: {
+    backgroundColor: FiColors.background,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    marginHorizontal: 16,
+    borderRadius: 12,
+    marginBottom: 16,
+  },
+  infoTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: FiColors.textInverse,
+    marginBottom: 12,
+  },
+  infoItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 6,
+  },
+  infoLabel: {
+    fontSize: 14,
+    color: FiColors.textInverse + '80',
+  },
+  infoValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: FiColors.textInverse,
   },
 });
 

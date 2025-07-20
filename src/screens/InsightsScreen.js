@@ -16,7 +16,7 @@ const FiColors = {
 const InsightsScreen = ({ navigation }) => {
   const InsightCard = ({ title, value, trend, icon, description }) => (
     <FadeInUp delay={100}>
-      <TouchableArea style={styles.insightCard}>
+      <TouchableArea>
         <View style={styles.cardHeader}>
           <Text style={styles.cardIcon}>{icon}</Text>
           <View style={styles.cardTitleContainer}>
@@ -57,33 +57,32 @@ const InsightsScreen = ({ navigation }) => {
           <Text style={styles.headerTitle}>Financial Insights</Text>
           <Text style={styles.headerSubtitle}>Your spending patterns & trends</Text>
         </View>
+        {/* Market Overview */}
+        <View style={styles.infoSection}>
+          <Text style={styles.infoTitle}>Market Overview</Text>
+          <View style={styles.infoItem}>
+            <Text style={styles.infoLabel}>Purchasing Power</Text>
+            <Text style={styles.infoValue}>87.3% ↘ -2.1%</Text>
+          </View>
+          <View style={styles.infoItem}>
+            <Text style={styles.infoLabel}>Cost of Living Index</Text>
+            <Text style={styles.infoValue}>142.8 ↗ +8.7%</Text>
+          </View>
+        </View>
+
         {/* Key Metrics */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Key Metrics</Text>
           
-          <InsightCard
-            title="Monthly Inflation Impact"
-            value="₹2,450"
-            trend={12.5}
-            icon="📈"
-            description="Additional cost due to inflation"
-          />
-          
-          <InsightCard
-            title="Purchasing Power"
-            value="87.3%"
-            trend={-2.1}
-            icon="💰"
-            description="Compared to last year"
-          />
-          
-          <InsightCard
-            title="Cost of Living Index"
-            value="142.8"
-            trend={8.7}
-            icon="🏠"
-            description="Your city vs national average"
-          />
+          <View style={[styles.insightCard, { backgroundColor: '#FFF5F5' }]}>
+            <InsightCard
+              title="Monthly Inflation Impact"
+              value="₹2,450"
+              trend={12.5}
+              icon="📈"
+              description="Additional cost due to inflation"
+            />
+          </View>
         </View>
 
         {/* Spending Breakdown */}
@@ -160,7 +159,7 @@ const InsightsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: FiColors.background,
   },
   content: {
     flex: 1,
@@ -194,7 +193,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   insightCard: {
-    backgroundColor: FiColors.surface,
     borderRadius: 16,
     padding: 20,
     marginBottom: 12,
@@ -247,7 +245,7 @@ const styles = StyleSheet.create({
     color: FiColors.primary,
   },
   spendingCard: {
-    backgroundColor: FiColors.surface,
+    backgroundColor: '#FFFBF0',
     borderRadius: 16,
     padding: 20,
     shadowColor: '#000',
@@ -291,7 +289,7 @@ const styles = StyleSheet.create({
     color: FiColors.textSecondary,
   },
   recommendationCard: {
-    backgroundColor: FiColors.surface,
+    backgroundColor: '#F0FDFA',
     borderRadius: 16,
     padding: 20,
     marginBottom: 12,
@@ -320,6 +318,34 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: FiColors.textSecondary,
     lineHeight: 20,
+  },
+  infoSection: {
+    backgroundColor: FiColors.background,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    marginHorizontal: 16,
+    borderRadius: 12,
+  },
+  infoTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: FiColors.textInverse,
+    marginBottom: 12,
+  },
+  infoItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 6,
+  },
+  infoLabel: {
+    fontSize: 14,
+    color: FiColors.textInverse + '80',
+  },
+  infoValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: FiColors.textInverse,
   },
 });
 

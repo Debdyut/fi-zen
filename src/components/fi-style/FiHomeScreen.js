@@ -199,17 +199,48 @@ const FiHomeScreen = ({ navigation, inflationData }) => {
     <FadeInUp delay={500}>
       <View style={styles.trustSection}>
         <Text style={styles.trustTitle}>Trusted & Secure</Text>
-        <View style={styles.trustBadges}>
-          <View style={styles.trustBadge}>
-            <Text style={styles.trustText}>🏦 RBI</Text>
-          </View>
-          <View style={styles.trustBadge}>
-            <Text style={styles.trustText}>📊 MOSPI</Text>
-          </View>
-          <View style={styles.trustBadge}>
-            <Text style={styles.trustText}>🔒 Secure</Text>
-          </View>
-        </View>
+        <ScrollView 
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.trustBadges}
+          contentContainerStyle={styles.trustBadgesContent}
+        >
+          <Image 
+            source={require('../../../assets/logos/Reserve_Bank_of_India_logo.svg.png')} 
+            style={styles.trustLogo}
+            resizeMode="contain"
+          />
+          <Image 
+            source={require('../../../assets/logos/Logo-MOSPI-01.58746789e2643aae82fb.png')} 
+            style={styles.trustLogo}
+            resizeMode="contain"
+          />
+          <Image 
+            source={require('../../../assets/logos/NPCI_logo.svg.png')} 
+            style={styles.trustLogo}
+            resizeMode="contain"
+          />
+          <Image 
+            source={require('../../../assets/logos/PCI-DSS-1.png')} 
+            style={styles.trustLogo}
+            resizeMode="contain"
+          />
+          <Image 
+            source={require('../../../assets/logos/sebi-new-logo-445.jpg')} 
+            style={styles.trustLogo}
+            resizeMode="contain"
+          />
+          <Image 
+            source={require('../../../assets/logos/Ministry-of-ELectronics-Information-Technology-MeiTY-logo.-Image-via-MEitY..png')} 
+            style={styles.trustLogo}
+            resizeMode="contain"
+          />
+          <Image 
+            source={require('../../../assets/logos/iso-27001-certified.jpg')} 
+            style={styles.trustLogo}
+            resizeMode="contain"
+          />
+        </ScrollView>
       </View>
     </FadeInUp>
   );
@@ -485,20 +516,19 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   trustBadges: {
+    marginTop: 12,
+  },
+  trustBadgesContent: {
     flexDirection: 'row',
-    gap: 12,
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    gap: 20,
   },
-  trustBadge: {
-    backgroundColor: FiColors.primary + '20',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
+  trustLogo: {
+    width: 120,
+    height: 70,
   },
-  trustText: {
-    fontSize: 12,
-    color: FiColors.primary,
-    fontWeight: '600',
-  },
+
 });
 
 export default FiHomeScreen;

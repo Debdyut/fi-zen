@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
+// Using View with backgroundColor as fallback for gradients
+// import LinearGradient from 'react-native-linear-gradient';
 import { AnimatedCard, FadeInUp } from '../animations/AnimatedCard';
 import { TouchableArea } from '../common/AccessibilityHelpers';
 
@@ -26,7 +28,8 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
       subtitle: 'vs Govt 6.5%',
       trend: 'up',
       color: FiColors.error,
-      icon: '📈'
+      icon: '📈',
+      gradient: ['#FFF5F5', '#FFFFFF']
     },
     {
       id: 'salary_impact',
@@ -35,7 +38,8 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
       subtitle: 'extra needed/month',
       trend: 'neutral',
       color: FiColors.warning,
-      icon: '💼'
+      icon: '💼',
+      gradient: ['#FFFBF0', '#FFFFFF']
     },
     {
       id: 'investment_target',
@@ -44,7 +48,8 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
       subtitle: 'to beat inflation',
       trend: 'up',
       color: FiColors.success,
-      icon: '🎯'
+      icon: '🎯',
+      gradient: ['#F0FFF4', '#FFFFFF']
     },
     {
       id: 'city_rank',
@@ -53,16 +58,19 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
       subtitle: 'most expensive',
       trend: 'neutral',
       color: FiColors.primary,
-      icon: '🏙️'
+      icon: '🏙️',
+      gradient: ['#F0FDFA', '#FFFFFF']
     }
   ];
 
   const MetricCard = ({ metric, index }) => (
     <FadeInUp delay={index * 100}>
       <TouchableArea
-        style={styles.metricCard}
         onPress={() => onCardPress(metric.id)}
       >
+        <View
+          style={[styles.metricCard, { backgroundColor: metric.gradient[0] }]}
+        >
         <View style={styles.cardHeader}>
           <Text style={styles.cardIcon}>{metric.icon}</Text>
           <View style={[styles.trendIndicator, { backgroundColor: metric.color + '20' }]}>
@@ -79,13 +87,16 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
         </Text>
         
         <Text style={styles.cardSubtitle}>{metric.subtitle}</Text>
+        </View>
       </TouchableArea>
     </FadeInUp>
   );
 
   const WeeklyInsightCard = () => (
     <FadeInUp delay={400}>
-      <View style={styles.insightCard}>
+      <View
+        style={[styles.insightCard, { backgroundColor: '#F0F9FF' }]}
+      >
         <View style={styles.insightHeader}>
           <Text style={styles.insightTitle}>This Week's Insight</Text>
           <Text style={styles.insightBadge}>New</Text>
@@ -162,17 +173,16 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   metricCard: {
-    backgroundColor: FiColors.surface,
     borderRadius: 16,
     padding: 16,
     width: '100%',
-    minHeight: 130, // Increased minimum height
+    minHeight: 130,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
-    justifyContent: 'space-between', // Better content distribution
+    justifyContent: 'space-between',
   },
   cardHeader: {
     flexDirection: 'row',
@@ -209,10 +219,9 @@ const styles = StyleSheet.create({
     color: FiColors.textLight,
   },
   insightCard: {
-    backgroundColor: FiColors.surface,
     borderRadius: 16,
     padding: 20,
-    marginHorizontal: 0, // Remove horizontal margin since container handles it
+    marginHorizontal: 0,
     marginBottom: 20,
     borderLeftWidth: 4,
     borderLeftColor: FiColors.primary,

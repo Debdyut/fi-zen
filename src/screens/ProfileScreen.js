@@ -56,9 +56,9 @@ const ProfileScreen = ({ navigation }) => {
     </FadeInUp>
   );
 
-  const MenuSection = ({ title, items, delay = 200 }) => (
+  const MenuSection = ({ title, items, delay = 200, bgColor = '#FFFFFF' }) => (
     <FadeInUp delay={delay}>
-      <View style={styles.menuSection}>
+      <View style={[styles.menuSection, { backgroundColor: bgColor }]}>
         <Text style={styles.menuSectionTitle}>{title}</Text>
         {items.map((item, index) => (
           <TouchableArea key={index} style={styles.menuItem}>
@@ -106,9 +106,9 @@ const ProfileScreen = ({ navigation }) => {
         <ProfileHeader />
         <StatsCard />
         
-        <MenuSection title="Personal" items={personalItems} delay={200} />
-        <MenuSection title="App Settings" items={appItems} delay={300} />
-        <MenuSection title="Support" items={supportItems} delay={400} />
+        <MenuSection title="Personal" items={personalItems} delay={200} bgColor="#FFFBF0" />
+        <MenuSection title="App Settings" items={appItems} delay={300} bgColor="#F0FDFA" />
+        <MenuSection title="Support" items={supportItems} delay={400} bgColor="#FFF5F5" />
         
         {/* Logout Button */}
         <FadeInUp delay={500}>
@@ -129,7 +129,7 @@ const ProfileScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: FiColors.background,
   },
   content: {
     flex: 1,
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   profileHeader: {
-    backgroundColor: FiColors.surface,
+    backgroundColor: '#F0F9FF',
     margin: 16,
     borderRadius: 16,
     padding: 24,
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     color: FiColors.textSecondary,
   },
   statsCard: {
-    backgroundColor: FiColors.surface,
+    backgroundColor: '#F0FFF4',
     margin: 16,
     borderRadius: 16,
     padding: 20,
@@ -240,9 +240,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   menuSection: {
-    backgroundColor: FiColors.surface,
-    margin: 16,
     borderRadius: 16,
+    margin: 16,
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
