@@ -1,5 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { createContext, useContext, useState } from 'react';
 import { translations } from './translations';
 
 const LanguageContext = createContext();
@@ -20,33 +19,11 @@ export const SUPPORTED_LANGUAGES = [
 
 export const LanguageProvider = ({ children }) => {
   const [currentLanguage, setCurrentLanguage] = useState('en');
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    loadLanguagePreference();
-  }, []);
-
-  const loadLanguagePreference = async () => {
-    try {
-      const savedLanguage = await AsyncStorage.getItem('app_language');
-      if (savedLanguage && translations[savedLanguage]) {
-        setCurrentLanguage(savedLanguage);
-      }
-    } catch (error) {
-      console.log('Error loading language preference:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const changeLanguage = async (languageCode) => {
-    try {
-      if (translations[languageCode]) {
-        setCurrentLanguage(languageCode);
-        await AsyncStorage.setItem('app_language', languageCode);
-      }
-    } catch (error) {
-      console.log('Error saving language preference:', error);
+  const changeLanguage = (languageCode) => {
+    if (translations[languageCode]) {
+      setCurrentLanguage(languageCode);
     }
   };
 

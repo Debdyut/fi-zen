@@ -98,7 +98,7 @@ export const FiTypography = {
   // Large wealth/number display (Fi style)
   wealth: {
     fontSize: 36,
-    fontWeight: '300', // Fi's characteristic light weight
+    fontWeight: 'normal',
     lineHeight: 44,
   },
   

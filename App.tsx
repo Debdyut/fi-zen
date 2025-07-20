@@ -1,6 +1,6 @@
 import React from 'react';
-import { ThemeProvider } from './src/theme/ThemeContext';
 import { LanguageProvider } from './src/localization/LanguageContext';
+import { ThemeProvider } from './src/theme/ThemeContext';
 import AppNavigator from './src/navigation/AppNavigator';
 
 function App() {

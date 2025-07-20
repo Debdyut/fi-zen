@@ -1,10 +1,12 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
 import { getThemeColors } from '../theme/consolidatedFiColors';
+import fonts from '../theme/fonts';
 import FiHomeScreenWrapper from '../components/fi-style/FiHomeScreenWrapper';
 import InflationScreen from '../screens/InflationScreen';
 import InflationSetupScreen from '../screens/InflationSetupScreen';
@@ -104,7 +106,8 @@ const AppNavigator = () => {
   const colors = getThemeColors(isDarkMode);
 
   return (
-    <NavigationContainer
+    <SafeAreaProvider>
+      <NavigationContainer
       theme={{
         dark: isDarkMode,
         colors: {
@@ -115,6 +118,7 @@ const AppNavigator = () => {
           border: colors.border,
           notification: colors.primary,
         },
+        fonts: fonts,
       }}
     >
       <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -138,7 +142,8 @@ const AppNavigator = () => {
           }}
         />
       </Stack.Navigator>
-    </NavigationContainer>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 };
 
