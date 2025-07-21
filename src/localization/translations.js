@@ -130,6 +130,48 @@ export const translations = {
       getTips: 'Get Tips',
       autoInvest: 'Auto-Invest'
     },
+
+    // Profile additional keys
+    profile: {
+      yourRate: 'Your Rate',
+      mospiRate: 'MOSPI Rate',
+      weight: 'Weight',
+      breakdown: 'Breakdown'
+    },
+
+    // Breakdown Screen
+    breakdown: {
+      subtitle: 'How each spending category contributes to your 11.8% annual inflation rate (vs last year)',
+      impact: 'Impact',
+      methodology: 'Calculation Methodology',
+      backToTop: 'Back to Top',
+      breakdown: 'Breakdown',
+      groceries: 'Groceries',
+      restaurants: 'Restaurants',
+      foodDelivery: 'Food Delivery',
+      fooddelivery: 'Food Delivery',
+      rent: 'Rent',
+      utilities: 'Utilities',
+      maintenance: 'Maintenance',
+      fuel: 'Fuel',
+      uberOla: 'Uber/Ola',
+      uberola: 'Uber/Ola',
+      publicTransport: 'Public Transport',
+      publictransport: 'Public Transport',
+      yourRate: 'Your Rate',
+      mospiRate: 'MOSPI Rate',
+      weight: 'Weight',
+      step1Title: '1. Categorization:',
+      step1Text: 'Your transactions are automatically categorized using machine learning',
+      step2Title: '2. Weight Calculation:',
+      step2Text: 'Each category\'s weight is based on your actual spending proportion',
+      step3Title: '3. MOSPI Comparison:',
+      step3Text: 'Your category inflation vs Mumbai MOSPI CPI data',
+      step4Title: '4. Final Rate:',
+      step4Text: 'Weighted average of all category contributions',
+      dataSource: 'Data source: Ministry of Statistics & Programme Implementation (MOSPI), Govt. of India',
+      month: 'month'
+    },
     
     // Common UI elements
     common: {
@@ -321,6 +363,48 @@ export const translations = {
       getTips: 'सुझाव पाएं',
       autoInvest: 'ऑटो-इन्वेस्ट'
     },
+
+    // Profile additional keys
+    profile: {
+      yourRate: 'आपकी दर',
+      mospiRate: 'एमओएसपीआई दर',
+      weight: 'भार',
+      breakdown: 'विभाजन'
+    },
+
+    // Breakdown Screen
+    breakdown: {
+      subtitle: 'प्रत्येक खर्च श्रेणी आपकी 11.8% वार्षिक महंगाई दर में कैसे योगदान देती है',
+      impact: 'प्रभाव',
+      methodology: 'गणना पद्धति',
+      backToTop: 'शीर्ष पर वापस',
+      breakdown: 'विभाजन',
+      groceries: 'किराना',
+      restaurants: 'रेस्तरां',
+      foodDelivery: 'फूड डिलीवरी',
+      fooddelivery: 'फूड डिलीवरी',
+      rent: 'किराया',
+      utilities: 'उपयोगिताएं',
+      maintenance: 'रखरखाव',
+      fuel: 'ईंधन',
+      uberOla: 'उबर/ओला',
+      uberola: 'उबर/ओला',
+      publicTransport: 'सार्वजनिक यातायात',
+      publictransport: 'सार्वजनिक यातायात',
+      yourRate: 'आपकी दर',
+      mospiRate: 'एमओएसपीआई दर',
+      weight: 'भार',
+      step1Title: '1. वर्गीकरण:',
+      step1Text: 'आपके लेनदेन मशीन लर्निंग का उपयोग करके आपो आप वर्गीकृत होते हैं',
+      step2Title: '2. भार गणना:',
+      step2Text: 'प्रत्येक श्रेणी का भार आपके वास्तविक खर्च अनुपात पर आधारित है',
+      step3Title: '3. एमओएसपीआई तुलना:',
+      step3Text: 'आपकी श्रेणी महंगाई बनाम मुंबई एमओएसपीआई सीपीआई डेटा',
+      step4Title: '4. अंतिम दर:',
+      step4Text: 'सभी श्रेणी योगदान का भारित औसत',
+      dataSource: 'डेटा स्रोत: सांख्यिकी और कार्यक्रम कार्यान्वयन मंत्रालय (एमओएसपीआई), भारत सरकार',
+      month: 'महीना'
+    },
     
     // Common UI elements
     common: {
@@ -468,7 +552,7 @@ export const translations = {
       monthlyInflationImpact: 'ಮಾಸಿಕ ಹೆಚ್ಚುವರಿ ಪರಿಣಾಮ',
       additionalCost: 'ಹೆಚ್ಚುವರಿಯ ಕಾರಣದಿಂದ ಅಧಿಕ ಲಾಗತ',
       inflationImpactByCategory: 'ವರ್ಗದ ಅನುಸಾರ ಹೆಚ್ಚುವರಿ ಪರಿಣಾಮ',
-      foodDining: 'ಆಹಾರ ಮತ್ತು ಭೋಜನ',
+      foodDining: 'ಆಹಾರ',
       transportation: 'ಯಾತಾಯಾತ',
       housing: 'ಆವಾಸ',
       healthcare: 'ಆರೋಗ್ಯ ಸೇವೆ',
@@ -511,6 +595,48 @@ export const translations = {
       trackProgress: 'ಪ್ರಗತಿ ಟ್ರ್ಯಾಕ್ ಮಾಡಿ',
       getTips: 'ಸುಝಾವಗಳನ್ನು ಸಿಗಿ',
       autoInvest: 'ಆಟೋ-ಇನ್ವೆಸ್ಟ್'
+    },
+
+    // Profile additional keys
+    profile: {
+      yourRate: 'ನಿಮ್ಮ ದರ',
+      mospiRate: 'ಮೋಸ್ಪಿ ದರ',
+      weight: 'ಭಾರ',
+      breakdown: 'ವಿಭಾಗ'
+    },
+
+    // Breakdown Screen
+    breakdown: {
+      subtitle: 'ಪ್ರತಿ ಖರ್ಚು ವರ್ಗವು ನಿಮ್ಮ 11.8% ವಾರ್ಷಿಕ ಹೆಚ್ಚುವರಿ ದರಕ್ಕೆ ಹೆಗೆ ಯೋಗದಾನ ನೀಡುತ್ತದೆ',
+      impact: 'ಪರಿಣಾಮ',
+      methodology: 'ಗಣನೆ ಪದ್ಧತಿ',
+      backToTop: 'ಮೇಲೆ ಹೋಗಿ',
+      breakdown: 'ವಿಭಾಗ',
+      groceries: 'ಕಿರಾಣಿ',
+      restaurants: 'ರೆಸ್ಟೋರೆಂಟ್‌ಗಳು',
+      foodDelivery: 'ಆಹಾರ ಡಿಲಿವರಿ',
+      fooddelivery: 'ಆಹಾರ ಡಿಲಿವರಿ',
+      rent: 'ಭಾಡಕೆ',
+      utilities: 'ಉಪಯೋಗಿತೆಗಳು',
+      maintenance: 'ನಿರ್ವಹಣೆ',
+      fuel: 'ಇಂಧನ',
+      uberOla: 'ಉಬರ್/ಓಲಾ',
+      uberola: 'ಉಬರ್/ಓಲಾ',
+      publicTransport: 'ಸಾರ್ವಜನಿಕ ಪರಿವಹನ',
+      publictransport: 'ಸಾರ್ವಜನಿಕ ಪರಿವಹನ',
+      yourRate: 'ನಿಮ್ಮ ದರ',
+      mospiRate: 'ಮೋಸ್ಪಿ ದರ',
+      weight: 'ಭಾರ',
+      step1Title: '1. ವರ್ಗೀಕರಣ:',
+      step1Text: 'ನಿಮ್ಮ ಲೇನದೇನಗಳು ಮೆಶೀನ್ ಲರ್ನಿಂಗ್ ಬೇರಿಸಿ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ವರ್ಗೀಕರಿಸಲಾಗುತ್ತದೆ',
+      step2Title: '2. ಭಾರ ಗಣನೆ:',
+      step2Text: 'ಪ್ರತಿ ವರ್ಗದ ಭಾರವು ನಿಮ್ಮ ವಾಸ್ತವಿಕ ಖರ್ಚು ಅನುಪಾತದ ಮೇಲೆ ಆಧಾರಿತವಾಗಿದೆ',
+      step3Title: '3. ಮೋಸ್ಪಿ ಹೆಂಡಾಣಿಕೆ:',
+      step3Text: 'ನಿಮ್ಮ ವರ್ಗ ಹೆಚ್ಚುವರಿ ಬನಾಮ ಮುಂಬೈ ಮೋಸ್ಪಿ ಸಿಪಿಆಇ ಡೇಟಾ',
+      step4Title: '4. ಅಂತಿಮ ದರ:',
+      step4Text: 'ಎಲ್ಲಾ ವರ್ಗ ಯೋಗದಾನಗಳ ಭಾರಿತ ಸರಾಸರಿ',
+      dataSource: 'ಡೇಟಾ ಸ್ರೋತ: ಸಂಖ್ಯೆಗಳ ಮತ್ತು ಕಾರ್ಯಕ್ರಮ ಕಾರ್ಯಾನ್ವಯನ ಮಂತ್ರಾಲಯ (ಮೋಸ್ಪಿ), ಭಾರತ ಸರ್ಕಾರ',
+      month: 'ತಿಂಗಳು'
     },
     
     // Common UI elements
