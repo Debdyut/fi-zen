@@ -138,7 +138,8 @@ const DetailedBreakdownScreen = () => {
   );
 
   return (
-    <ScrollView ref={scrollViewRef} style={[styles.container, { backgroundColor: colors.primary + '10' }]}>
+    <View style={{ flex: 1, paddingTop: 50 }}>
+      <ScrollView ref={scrollViewRef} style={[styles.container, { backgroundColor: colors.primary + '10' }]}>
       <FadeInUp delay={0}>
         <View style={styles.header}>
           <View style={styles.headerTop}>
@@ -195,6 +196,7 @@ const DetailedBreakdownScreen = () => {
         <Text style={[styles.backToTopText, { color: colors.primary }]}>↑ {t('breakdown.backToTop')}</Text>
       </TouchableOpacity>
     </ScrollView>
+    </View>
   );
 };
 
@@ -205,7 +207,7 @@ const styles = StyleSheet.create({
   },
   header: {
     marginBottom: 24,
-    marginTop: 20,
+    marginTop: 0,
   },
   headerTop: {
     flexDirection: 'row',

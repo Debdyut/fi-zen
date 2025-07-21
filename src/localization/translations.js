@@ -551,7 +551,7 @@ export const translations = {
       keyMetrics: 'ಮುಖ್ಯ ಮೆಟ್ರಿಕ್ಸ್',
       monthlyInflationImpact: 'ಮಾಸಿಕ ಹೆಚ್ಚುವರಿ ಪರಿಣಾಮ',
       additionalCost: 'ಹೆಚ್ಚುವರಿಯ ಕಾರಣದಿಂದ ಅಧಿಕ ಲಾಗತ',
-      inflationImpactByCategory: 'ವರ್ಗದ ಅನುಸಾರ ಹೆಚ್ಚುವರಿ ಪರಿಣಾಮ',
+      inflationImpactByCategory: 'ಹೆಚ್ಚುವರಿ ಪರಿಣಾಮ',
       foodDining: 'ಆಹಾರ',
       transportation: 'ಯಾತಾಯಾತ',
       housing: 'ಆವಾಸ',

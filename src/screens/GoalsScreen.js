@@ -154,7 +154,7 @@ const GoalsScreen = ({ navigation }) => {
     <View style={[styles.container, { backgroundColor: isDarkMode ? '#1A1A1A' : '#E6FBF7' }]}>
       <StatusBar barStyle="light-content" backgroundColor={FiColors.background} />
       
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false} contentInsetAdjustmentBehavior="automatic">
         {/* Header */}
         <View style={[styles.header, { backgroundColor: isDarkMode ? '#1A1A1A' : '#E6FBF7' }]}>
           <Text style={[styles.headerTitle, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>{t('goals.title')}</Text>
@@ -219,13 +219,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#E6FBF7',
+    paddingTop: 50,
   },
   content: {
     flex: 1,
   },
   header: {
     backgroundColor: '#E6FBF7',
-    paddingTop: 50,
+    paddingTop: 10,
     paddingHorizontal: 20,
     paddingBottom: 20,
   },

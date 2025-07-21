@@ -103,6 +103,7 @@ const ProfileScreen = ({ navigation }) => {
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
+        contentInsetAdjustmentBehavior="automatic"
       >
         <ProfileHeader />
         <StatsCard />
@@ -135,12 +136,13 @@ const ProfileScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 50,
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    paddingTop: 50,
+    paddingTop: 10,
     paddingBottom: 100,
   },
   profileHeader: {
