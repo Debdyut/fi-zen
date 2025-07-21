@@ -19,20 +19,24 @@ import { FadeInUp } from '../components/animations/AnimatedCard';
 import { TouchableArea } from '../components/common/AccessibilityHelpers';
 
 const { width } = Dimensions.get('window');
-const cardWidth = (width - 60) / 4; // 4 columns with margins
+const cardWidth = (width - 60) / 2; // 2 columns with margins
 
 const LoginScreen = ({ navigation }) => {
   const { isDarkMode } = useTheme();
   const { t } = useLanguage();
   const colors = getThemeColors(isDarkMode);
-  const [selectedUser, setSelectedUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const scrollViewRef = React.useRef(null);
 
   const userProfiles = UserProfileService.getAllUserProfiles();
   const userIds = Object.keys(userProfiles);
+  const [selectedUser, setSelectedUser] = useState(userIds[Math.floor(Math.random() * userIds.length)]);
 
   const handleUserSelect = (userId) => {
     setSelectedUser(userId);
+    setTimeout(() => {
+      scrollViewRef.current?.scrollTo({ y: 0, animated: true, duration: 800 });
+    }, 100);
   };
 
   const handleLogin = async () => {
@@ -46,7 +50,7 @@ const LoginScreen = ({ navigation }) => {
       
       if (success) {
         // Navigate to main app
-        navigation.replace('Main');
+        navigation.replace('MainTabs');
       } else {
         console.error('Failed to set user');
       }
@@ -111,6 +115,7 @@ const LoginScreen = ({ navigation }) => {
       />
       
       <ScrollView 
+        ref={scrollViewRef}
         style={styles.scrollContainer} 
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
@@ -125,28 +130,9 @@ const LoginScreen = ({ navigation }) => {
           </Text>
         </View>
 
-        {/* User Profiles Grid */}
-        <View style={styles.profilesContainer}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>
-            Choose Your Profile
-          </Text>
-          
-          <View style={styles.profilesGrid}>
-            {userIds.map((userId) => (
-              <UserProfileCard
-                key={userId}
-                userId={userId}
-                profile={userProfiles[userId]}
-                isSelected={selectedUser === userId}
-                onPress={handleUserSelect}
-              />
-            ))}
-          </View>
-        </View>
-
         {/* Selected User Info */}
         {selectedUser && (
-          <FadeInUp delay={100}>
+          <View>
             <View style={[styles.selectedUserInfo, { backgroundColor: colors.surface }]}>
               <Text style={[styles.selectedUserTitle, { color: colors.text }]}>
                 Selected Profile
@@ -172,7 +158,7 @@ const LoginScreen = ({ navigation }) => {
                 </View>
               </View>
             </View>
-          </FadeInUp>
+          </View>
         )}
 
         {/* Login Button */}
@@ -195,6 +181,35 @@ const LoginScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
+        {/* User Profiles Grid */}
+        <View style={styles.profilesContainer}>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>
+            Choose Your Profile
+          </Text>
+          
+          <View style={styles.profilesGrid}>
+            {userIds.map((userId) => (
+              <UserProfileCard
+                key={userId}
+                userId={userId}
+                profile={userProfiles[userId]}
+                isSelected={selectedUser === userId}
+                onPress={handleUserSelect}
+              />
+            ))}
+          </View>
+        </View>
+
+        {/* Back to Top Button */}
+        <View style={styles.backToTopContainer}>
+          <TouchableOpacity
+            style={[styles.backToTopButton, { backgroundColor: colors.primary + '20' }]}
+            onPress={() => scrollViewRef.current?.scrollTo({ y: 0, animated: true, duration: 800 })}
+          >
+            <Text style={[styles.backToTopText, { color: colors.primary }]}>↑ Back to Top</Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={[styles.footerText, { color: colors.textTertiary }]}>
@@ -209,6 +224,7 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 50,
   },
   scrollContainer: {
     flex: 1,
@@ -251,9 +267,11 @@ const styles = StyleSheet.create({
   },
   profileCard: {
     width: cardWidth,
+    height: 140,
     borderRadius: 12,
     padding: 8,
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -379,6 +397,19 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'center',
     lineHeight: 16,
+  },
+  backToTopContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  backToTopButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+  },
+  backToTopText: {
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
 

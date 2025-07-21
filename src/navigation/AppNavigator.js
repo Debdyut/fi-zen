@@ -135,33 +135,26 @@ const AppNavigator = () => {
       }}
     >
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {!isLoggedIn ? (
-          // Show login screen if not logged in
-          <Stack.Screen name="Login" component={LoginScreen} />
-        ) : (
-          // Show main app if logged in
-          <>
-            <Stack.Screen name="Main">
-              {(props) => <TabNavigator {...props} />}
-            </Stack.Screen>
-            <Stack.Screen name="InflationSetup" component={InflationSetupScreen} />
-            <Stack.Screen 
-              name="MetricDetail" 
-              component={MetricDetailScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen 
-              name="DetailedBreakdownScreen" 
-              component={DetailedBreakdownScreen}
-              options={{
-                presentation: 'modal',
-                headerShown: false,
-              }}
-            />
-          </>
-        )}
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="MainTabs">
+          {(props) => <TabNavigator {...props} />}
+        </Stack.Screen>
+        <Stack.Screen name="InflationSetup" component={InflationSetupScreen} />
+        <Stack.Screen 
+          name="MetricDetail" 
+          component={MetricDetailScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen 
+          name="DetailedBreakdownScreen" 
+          component={DetailedBreakdownScreen}
+          options={{
+            presentation: 'modal',
+            headerShown: false,
+          }}
+        />
       </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
