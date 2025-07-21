@@ -214,13 +214,13 @@ const GoalsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: FiColors.background,
+    backgroundColor: '#E6FBF7',
   },
   content: {
     flex: 1,
   },
   header: {
-    backgroundColor: FiColors.background,
+    backgroundColor: '#E6FBF7',
     paddingTop: 50,
     paddingHorizontal: 20,
     paddingBottom: 20,
@@ -228,12 +228,12 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 28,
     fontWeight: '600',
-    color: FiColors.textInverse,
+    color: '#1A1A1A',
     marginBottom: 4,
   },
   headerSubtitle: {
     fontSize: 16,
-    color: FiColors.textInverse + '80',
+    color: '#1A1A1A',
   },
   content: {
     flex: 1,
@@ -449,7 +449,7 @@ const styles = StyleSheet.create({
     color: FiColors.text,
   },
   infoSection: {
-    backgroundColor: FiColors.background,
+    backgroundColor: '#E6FBF7',
     paddingHorizontal: 20,
     paddingVertical: 16,
     marginHorizontal: 16,
@@ -459,7 +459,7 @@ const styles = StyleSheet.create({
   infoTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: FiColors.textInverse,
+    color: '#1A1A1A',
     marginBottom: 12,
   },
   infoItem: {
@@ -470,12 +470,12 @@ const styles = StyleSheet.create({
   },
   infoLabel: {
     fontSize: 14,
-    color: FiColors.textInverse + '80',
+    color: '#1A1A1A',
   },
   infoValue: {
     fontSize: 14,
     fontWeight: '600',
-    color: FiColors.textInverse,
+    color: '#1A1A1A',
   },
 });
 
