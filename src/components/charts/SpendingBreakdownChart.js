@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
-import { FiColors } from '../../theme/colors';
+import { FiColors } from '../../theme/consolidatedFiColors';
 
 const { width } = Dimensions.get('window');
 

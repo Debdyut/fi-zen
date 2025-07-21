@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { FiColors } from '../../theme/consolidatedFiColors';
+import { useTheme } from '../../theme/ThemeContext';
+import { getThemeColors } from '../../theme/consolidatedFiColors';
 import { AnimatedCard, FadeInUp } from '../animations/AnimatedCard';
 import { CategoryIcon } from '../common/Icons';
 import { ProgressIndicator } from '../common/MicroInteractions';
@@ -9,6 +10,8 @@ import { AccessibleHeading } from '../common/AccessibilityHelpers';
 
 const DetailedBreakdownScreen = () => {
   const navigation = useNavigation();
+  const { isDarkMode } = useTheme();
+  const colors = getThemeColors(isDarkMode);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const scrollViewRef = React.useRef(null);
 
@@ -54,45 +57,45 @@ const DetailedBreakdownScreen = () => {
 
   const CategoryCard = ({ categoryKey, data }) => (
     <FadeInUp delay={200}>
-      <AnimatedCard style={styles.categoryCard}>
+      <AnimatedCard style={[styles.categoryCard, { backgroundColor: colors.surface, shadowColor: colors.primary }]}>
         <View style={styles.categoryHeader}>
           <CategoryIcon category={categoryKey} size={32} />
           <View style={styles.categoryInfo}>
-            <Text style={styles.categoryName}>
+            <Text style={[styles.categoryName, { color: colors.text }]}>
               {categoryKey.charAt(0).toUpperCase() + categoryKey.slice(1)}
             </Text>
-            <Text style={styles.categorySpend}>
+            <Text style={[styles.categorySpend, { color: colors.textSecondary }]}>
               ₹{data.monthlySpend.toLocaleString()}/month
             </Text>
           </View>
           <View style={styles.categoryImpact}>
-            <Text style={styles.impactValue}>+{data.contribution}%</Text>
-            <Text style={styles.impactLabel}>Impact</Text>
+            <Text style={[styles.impactValue, { color: colors.primary }]}>+{data.contribution}%</Text>
+            <Text style={[styles.impactLabel, { color: colors.textSecondary }]}>Impact</Text>
           </View>
           <TouchableOpacity 
-            style={styles.infoButton}
+            style={[styles.infoButton, { backgroundColor: colors.primary + '20', borderColor: colors.text }]}
             onPress={() => {
               scrollViewRef.current?.scrollToEnd({ animated: true });
             }}
           >
-            <Text style={styles.infoIcon}>i</Text>
+            <Text style={[styles.infoIcon, { color: colors.text }]}>i</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.progressSection}>
           <ProgressIndicator 
             progress={data.contribution / 11.8} // Total personal inflation
-            color={FiColors.primary}
+            color={colors.primary}
             height={8}
             showPercentage={false}
           />
         </View>
 
-        <View style={styles.comparisonRow}>
+        <View style={[styles.comparisonRow, { backgroundColor: colors.primaryLight + '20' }]}>
           <View style={styles.comparisonItem}>
-            <Text style={styles.comparisonLabel}>Your Rate</Text>
+            <Text style={[styles.comparisonLabel, { color: colors.textSecondary }]}>Your Rate</Text>
             <View style={styles.rateWithArrow}>
-              <Text style={[styles.comparisonValue, { color: data.personalRate > data.mospiRate ? FiColors.error : FiColors.success }]}>
+              <Text style={[styles.comparisonValue, { color: data.personalRate > data.mospiRate ? colors.error : colors.success }]}>
                 {data.personalRate}%
               </Text>
               <Text style={styles.arrowIcon}>
@@ -101,27 +104,27 @@ const DetailedBreakdownScreen = () => {
             </View>
           </View>
           <View style={styles.comparisonItem}>
-            <Text style={styles.comparisonLabel}>MOSPI Rate</Text>
-            <Text style={[styles.comparisonValue, { color: FiColors.textSecondary }]}>
+            <Text style={[styles.comparisonLabel, { color: colors.textSecondary }]}>MOSPI Rate</Text>
+            <Text style={[styles.comparisonValue, { color: colors.textSecondary }]}>
               {data.mospiRate}%
             </Text>
           </View>
           <View style={styles.comparisonItem}>
-            <Text style={styles.comparisonLabel}>Weight</Text>
-            <Text style={styles.comparisonValue}>{data.weight}%</Text>
+            <Text style={[styles.comparisonLabel, { color: colors.textSecondary }]}>Weight</Text>
+            <Text style={[styles.comparisonValue, { color: colors.text }]}>{data.weight}%</Text>
           </View>
         </View>
 
         {/* Subcategories */}
-        <View style={styles.subcategoriesSection}>
-          <Text style={styles.subcategoriesTitle}>Breakdown:</Text>
+        <View style={[styles.subcategoriesSection, { borderTopColor: colors.border }]}>
+          <Text style={[styles.subcategoriesTitle, { color: colors.text }]}>Breakdown:</Text>
           {Object.entries(data.subcategories).map(([subcat, subdata]) => (
             <View key={subcat} style={styles.subcategoryItem}>
-              <Text style={styles.subcategoryName}>{subcat}</Text>
-              <Text style={styles.subcategoryAmount}>₹{subdata.amount.toLocaleString()}</Text>
+              <Text style={[styles.subcategoryName, { color: colors.text }]}>{subcat}</Text>
+              <Text style={[styles.subcategoryAmount, { color: colors.textSecondary }]}>₹{subdata.amount.toLocaleString()}</Text>
               <Text style={[
                 styles.subcategoryInflation,
-                { color: subdata.inflation > 10 ? FiColors.error : FiColors.success }
+                { color: subdata.inflation > 10 ? colors.error : colors.success }
               ]}>
                 {subdata.inflation}%
               </Text>
@@ -133,21 +136,21 @@ const DetailedBreakdownScreen = () => {
   );
 
   return (
-    <ScrollView ref={scrollViewRef} style={styles.container}>
+    <ScrollView ref={scrollViewRef} style={[styles.container, { backgroundColor: colors.primary + '10' }]}>
       <FadeInUp delay={0}>
         <View style={styles.header}>
           <View style={styles.headerTop}>
-            <AccessibleHeading level={1} style={styles.title}>
+            <AccessibleHeading level={1} style={[styles.title, { color: colors.text }]}>
               Detailed Breakdown
             </AccessibleHeading>
-            <TouchableOpacity style={styles.closeButton} onPress={() => navigation.goBack()}>
-              <Text style={styles.closeButtonText}>✕</Text>
+            <TouchableOpacity style={[styles.closeButton, { backgroundColor: colors.primary + '20' }]} onPress={() => navigation.goBack()}>
+              <Text style={[styles.closeButtonText, { color: colors.text }]}>✕</Text>
             </TouchableOpacity>
           </View>
-          <Text style={styles.subtitle}>
+          <Text style={[styles.subtitle, { color: colors.text }]}>
             How each spending category contributes to your 11.8% annual inflation rate (vs last year)
           </Text>
-          <Text style={styles.locationText}>
+          <Text style={[styles.locationText, { color: colors.text }]}>
             📍 Mumbai
           </Text>
         </View>
@@ -159,17 +162,17 @@ const DetailedBreakdownScreen = () => {
 
       <FadeInUp delay={600}>
         <View style={styles.methodologyCard}>
-          <Text style={styles.methodologyTitle}>📋 Calculation Methodology</Text>
-          <Text style={styles.methodologyText}>
+          <Text style={[styles.methodologyTitle, { color: colors.text }]}>📋 Calculation Methodology</Text>
+          <Text style={[styles.methodologyText, { color: colors.text }]}>
             <Text style={styles.bold}>1. Categorization:</Text> Your transactions are automatically categorized using machine learning
           </Text>
-          <Text style={styles.methodologyText}>
+          <Text style={[styles.methodologyText, { color: colors.text }]}>
             <Text style={styles.bold}>2. Weight Calculation:</Text> Each category's weight is based on your actual spending proportion (e.g., if you spend 40% on food, food gets 40% weight)
           </Text>
-          <Text style={styles.methodologyText}>
+          <Text style={[styles.methodologyText, { color: colors.text }]}>
             <Text style={styles.bold}>3. MOSPI Comparison:</Text> Your category inflation vs Mumbai MOSPI CPI data
           </Text>
-          <Text style={styles.methodologyText}>
+          <Text style={[styles.methodologyText, { color: colors.text }]}>
             <Text style={styles.bold}>4. Final Rate:</Text> Weighted average of all category contributions
           </Text>
           <View style={styles.mospiCredit}>
@@ -178,16 +181,16 @@ const DetailedBreakdownScreen = () => {
               style={styles.mospiLogo}
               resizeMode="contain"
             />
-            <Text style={styles.mospiText}>Data source: Ministry of Statistics & Programme Implementation (MOSPI), Govt. of India</Text>
+            <Text style={[styles.mospiText, { color: colors.textSecondary }]}>Data source: Ministry of Statistics & Programme Implementation (MOSPI), Govt. of India</Text>
           </View>
         </View>
       </FadeInUp>
       
       <TouchableOpacity 
-        style={styles.backToTopButton}
+        style={[styles.backToTopButton, { backgroundColor: colors.primary + '20' }]}
         onPress={() => scrollViewRef.current?.scrollTo({ y: 0, animated: true })}
       >
-        <Text style={styles.backToTopText}>↑ Back to Top</Text>
+        <Text style={[styles.backToTopText, { color: colors.primary }]}>↑ Back to Top</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -196,7 +199,6 @@ const DetailedBreakdownScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: FiColors.primary + '10',
     padding: 20,
   },
   header: {
@@ -213,39 +215,32 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: FiColors.primary + '20',
     justifyContent: 'center',
     alignItems: 'center',
   },
   closeButtonText: {
     fontSize: 16,
-    color: FiColors.text,
     fontWeight: '600',
   },
   title: {
     fontSize: 24,
     fontWeight: '700',
-    color: FiColors.text,
     flex: 1,
   },
   subtitle: {
     fontSize: 16,
-    color: FiColors.text,
     lineHeight: 22,
   },
   locationText: {
     fontSize: 14,
-    color: FiColors.text,
     fontWeight: '600',
     marginTop: 4,
   },
   categoryCard: {
-    backgroundColor: FiColors.surface,
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
     borderWidth: 0,
-    shadowColor: FiColors.primary,
     shadowOffset: { width: 3, height: 3 },
     shadowOpacity: 0.15,
     shadowRadius: 6,
@@ -263,12 +258,10 @@ const styles = StyleSheet.create({
   categoryName: {
     fontSize: 18,
     fontWeight: '600',
-    color: FiColors.text,
     marginBottom: 4,
   },
   categorySpend: {
     fontSize: 14,
-    color: FiColors.textSecondary,
   },
   categoryImpact: {
     alignItems: 'center',
@@ -276,11 +269,9 @@ const styles = StyleSheet.create({
   impactValue: {
     fontSize: 20,
     fontWeight: '700',
-    color: FiColors.primary,
   },
   impactLabel: {
     fontSize: 12,
-    color: FiColors.textSecondary,
   },
   progressSection: {
     marginBottom: 16,
@@ -290,7 +281,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     marginBottom: 16,
     paddingVertical: 12,
-    backgroundColor: FiColors.primaryLight + '20',
     borderRadius: 8,
   },
   comparisonItem: {
@@ -298,13 +288,11 @@ const styles = StyleSheet.create({
   },
   comparisonLabel: {
     fontSize: 12,
-    color: FiColors.textSecondary,
     marginBottom: 4,
   },
   comparisonValue: {
     fontSize: 16,
     fontWeight: '600',
-    color: FiColors.text,
   },
   rateWithArrow: {
     flexDirection: 'row',
@@ -318,9 +306,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: FiColors.primary + '20',
     borderWidth: 1,
-    borderColor: '#000',
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 8,
@@ -328,17 +314,14 @@ const styles = StyleSheet.create({
   infoIcon: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#000',
   },
   subcategoriesSection: {
     borderTopWidth: 1,
-    borderTopColor: FiColors.border,
     paddingTop: 16,
   },
   subcategoriesTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: FiColors.text,
     marginBottom: 12,
   },
   subcategoryItem: {
@@ -349,12 +332,10 @@ const styles = StyleSheet.create({
   },
   subcategoryName: {
     fontSize: 14,
-    color: FiColors.text,
     flex: 1,
   },
   subcategoryAmount: {
     fontSize: 14,
-    color: FiColors.textSecondary,
     marginRight: 16,
   },
   subcategoryInflation: {
@@ -378,12 +359,10 @@ const styles = StyleSheet.create({
   methodologyTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: FiColors.text,
     marginBottom: 12,
   },
   methodologyText: {
     fontSize: 14,
-    color: FiColors.text,
     lineHeight: 20,
     marginBottom: 8,
   },
@@ -405,7 +384,6 @@ const styles = StyleSheet.create({
   },
   mospiText: {
     fontSize: 12,
-    color: FiColors.textSecondary,
     fontStyle: 'italic',
     textAlign: 'center',
   },
@@ -414,13 +392,11 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     paddingVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: FiColors.primary + '20',
     borderRadius: 20,
     alignSelf: 'center',
   },
   backToTopText: {
     fontSize: 14,
-    color: FiColors.primary,
     fontWeight: '600',
   },
 });

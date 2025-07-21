@@ -36,17 +36,28 @@ export const DarkTheme = {
   border: '#404040',            // Dark border
   borderLight: '#333333',       // Darker border
   shadow: 'rgba(0, 0, 0, 0.3)', // Stronger shadow for dark mode
+  secondary: '#666666',         // Secondary color
+  white: '#FFFFFF',             // White color
+  
+  // Attention surfaces
+  surfaceAttentionYellow: '#FFFBF0',   // Light pastel yellow
+  surfaceAttentionTeal: '#F0FDFA',     // Light pastel teal
+  surfaceAttentionRed: '#FFF5F5',      // Light pastel red
   
   // Backgrounds for different contexts
   backgroundLight: '#2A2A2A',   // Dark background for content areas
   backgroundCard: '#2A2A2A',    // Dark card backgrounds
   backgroundAccent: '#00D4AA20', // Teal with 20% opacity
+  backgroundCardYellow: '#FFFBF0', // Light pastel yellow cards
+  backgroundCardTeal: '#F0FDFA',   // Light pastel teal cards
+  backgroundCardRed: '#FFF5F5',    // Light pastel red cards
+  backgroundHeader: '#00D4AA',     // Signature teal for headers
 };
 
 // Light Theme Colors
 export const LightTheme = {
   // Light mode backgrounds
-  background: '#FFFFFF',        // White background
+  background: '#E6FBF7',        // Light teal background
   surface: '#FFFFFF',           // White cards
   surfaceSecondary: '#F8F9FA',  // Light gray surface
   
@@ -78,11 +89,22 @@ export const LightTheme = {
   border: '#E0E0E0',            // Light border
   borderLight: '#F0F0F0',       // Very light border
   shadow: 'rgba(0, 0, 0, 0.1)', // Subtle shadow
+  secondary: '#666666',         // Secondary color
+  white: '#FFFFFF',             // White color
+  
+  // Attention surfaces
+  surfaceAttentionYellow: '#FFFBF0',   // Light pastel yellow
+  surfaceAttentionTeal: '#F0FDFA',     // Light pastel teal
+  surfaceAttentionRed: '#FFF5F5',      // Light pastel red
   
   // Backgrounds for different contexts
   backgroundLight: '#F5F5F5',   // Light background for content areas
   backgroundCard: '#FFFFFF',    // Card backgrounds
   backgroundAccent: '#00D4AA20', // Teal with 20% opacity
+  backgroundCardYellow: '#FFFBF0', // Light pastel yellow cards
+  backgroundCardTeal: '#F0FDFA',   // Light pastel teal cards
+  backgroundCardRed: '#FFF5F5',    // Light pastel red cards
+  backgroundHeader: '#00D4AA',     // Signature teal for headers
 };
 
 // Function to get current theme colors
@@ -198,6 +220,40 @@ export const getFiStyles = (colors) => ({
     backgroundColor: colors.surface,
     fontSize: 16,
     color: colors.text,
+  },
+  
+  // Attention card styles
+  cardAttentionYellow: {
+    backgroundColor: colors.backgroundCardYellow || colors.surface,
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  
+  cardAttentionTeal: {
+    backgroundColor: colors.backgroundCardTeal || colors.surface,
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  
+  cardAttentionRed: {
+    backgroundColor: colors.backgroundCardRed || colors.surface,
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 8,
+    elevation: 4,
   },
 });
 

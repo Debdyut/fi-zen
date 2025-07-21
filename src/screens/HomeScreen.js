@@ -9,7 +9,7 @@ import {
   ScrollView,
   Image,
 } from 'react-native';
-import { FiColors } from '../theme/colors';
+import { FiColors } from '../theme/consolidatedFiColors';
 import BalanceCard from '../components/BalanceCard';
 import PlantRewards from '../components/PlantRewards';
 import QuickActions from '../components/QuickActions';

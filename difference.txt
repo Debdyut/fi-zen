@@ -1,0 +1,4241 @@
+diff --git a/App.tsx b/App.tsx
+index 7c2aa39..b6db44e 100644
+--- a/App.tsx
++++ b/App.tsx
+@@ -1,8 +1,16 @@
+ import React from 'react';
++import { LanguageProvider } from './src/localization/LanguageContext';
++import { ThemeProvider } from './src/theme/ThemeContext';
+ import AppNavigator from './src/navigation/AppNavigator';
+ 
+ function App() {
+-  return <AppNavigator />;
++  return (
++    <LanguageProvider>
++      <ThemeProvider>
++        <AppNavigator />
++      </ThemeProvider>
++    </LanguageProvider>
++  );
+ }
+ 
+ export default App;
+diff --git a/assets/logos/Ministry-of-ELectronics-Information-Technology-MeiTY-logo.-Image-via-MEitY..png b/assets/logos/Ministry-of-ELectronics-Information-Technology-MeiTY-logo.-Image-via-MEitY..png
+new file mode 100644
+index 0000000..8347d88
+Binary files /dev/null and b/assets/logos/Ministry-of-ELectronics-Information-Technology-MeiTY-logo.-Image-via-MEitY..png differ
+diff --git a/docs/LANGUAGE_SYSTEM.md b/docs/LANGUAGE_SYSTEM.md
+new file mode 100644
+index 0000000..cbe6060
+--- /dev/null
++++ b/docs/LANGUAGE_SYSTEM.md
+@@ -0,0 +1,212 @@
++# Fi-Zen Language System Documentation
++
++## Overview
++The Fi-Zen app now supports multiple languages with a comprehensive internationalization (i18n) system. Users can switch between languages seamlessly with persistent storage.
++
++## Supported Languages
++- **English** 🇺🇸 (Default)
++- **Hindi** 🇮🇳 (हिंदी)
++- **Kannada** 🇮🇳 (ಕನ್ನಡ)
++
++## Features
++- **Persistent Language Selection**: User's language preference is saved and restored
++- **Real-time Switching**: Language changes instantly without app restart
++- **Fallback System**: Falls back to English if translation is missing
++- **Easy Integration**: Simple translation function for components
++
++## Implementation
++
++### 1. Language Context (`src/localization/LanguageContext.js`)
++Provides language state management and translation functions:
++```javascript
++import { useLanguage } from '../localization/LanguageContext';
++
++const { currentLanguage, changeLanguage, t } = useLanguage();
++```
++
++### 2. Translations (`src/localization/translations.js`)
++Contains all text content in supported languages:
++```javascript
++export const translations = {
++  en: { profile: { title: 'Profile' } },
++  hi: { profile: { title: 'प्रोफाइल' } },
++  kn: { profile: { title: 'ಪ್ರೊಫೈಲ್' } }
++};
++```
++
++### 3. Language Selector (`src/components/common/LanguageSelector.js`)
++Ready-to-use language picker component:
++```javascript
++import LanguageSelector from '../components/common/LanguageSelector';
++
++<LanguageSelector style={customStyles} />
++```
++
++## Usage Examples
++
++### Basic Translation
++```javascript
++import { useLanguage } from '../localization/LanguageContext';
++
++const MyComponent = () => {
++  const { t } = useLanguage();
++  
++  return (
++    <Text>{t('profile.title')}</Text>
++  );
++};
++```
++
++### Language Switching
++```javascript
++import { useLanguage } from '../localization/LanguageContext';
++
++const LanguageSwitcher = () => {
++  const { currentLanguage, changeLanguage } = useLanguage();
++  
++  return (
++    <TouchableOpacity onPress={() => changeLanguage('hi')}>
++      <Text>Switch to Hindi</Text>
++    </TouchableOpacity>
++  );
++};
++```
++
++### Getting Current Language Info
++```javascript
++const { currentLanguage, supportedLanguages } = useLanguage();
++const currentLang = supportedLanguages.find(lang => lang.code === currentLanguage);
++```
++
++## Translation Structure
++
++### Nested Keys
++```javascript
++// translations.js
++{
++  profile: {
++    title: 'Profile',
++    settings: {
++      theme: 'Theme',
++      language: 'Language'
++    }
++  }
++}
++
++// Usage
++t('profile.title')           // "Profile"
++t('profile.settings.theme')  // "Theme"
++```
++
++### Common Sections
++- `nav.*` - Navigation labels
++- `common.*` - Common UI elements (buttons, messages)
++- `profile.*` - Profile screen content
++- `theme.*` - Theme-related text
++- `language.*` - Language-related text
++
++## Adding New Languages
++
++### 1. Add Language to Supported List
++```javascript
++// LanguageContext.js
++export const SUPPORTED_LANGUAGES = [
++  // existing languages...
++  { code: 'ta', name: 'Tamil', nativeName: 'தமிழ்', flag: '🇮🇳' },
++];
++```
++
++### 2. Add Translations
++```javascript
++// translations.js
++export const translations = {
++  // existing translations...
++  ta: {
++    nav: { home: 'முகப்பு' },
++    profile: { title: 'சுயவிவரம்' }
++    // ... all other translations
++  }
++};
++```
++
++## Adding New Translation Keys
++
++### 1. Add to All Languages
++```javascript
++// translations.js
++export const translations = {
++  en: {
++    newSection: {
++      newKey: 'New English Text'
++    }
++  },
++  hi: {
++    newSection: {
++      newKey: 'नया हिंदी टेक्स्ट'
++    }
++  },
++  kn: {
++    newSection: {
++      newKey: 'ಹೊಸ ಕನ್ನಡ ಪಠ್ಯ'
++    }
++  }
++};
++```
++
++### 2. Use in Components
++```javascript
++const text = t('newSection.newKey');
++```
++
++## Language Selector Locations
++
++The language selector is currently available in:
++- **Profile Screen**: Under "Language" section
++
++## File Structure
++```
++src/
++├── localization/
++│   ├── LanguageContext.js    # Language state management
++│   ├── translations.js       # All translations
++│   └── languageContent.js    # Legacy content (can be removed)
++├── components/
++│   └── common/
++│       └── LanguageSelector.js # Language picker component
++└── screens/
++    └── ProfileScreen.js      # Updated with language support
++```
++
++## Best Practices
++
++1. **Always use translation keys**: Never hardcode text in components
++2. **Use descriptive keys**: `profile.personalInfo` not `text1`
++3. **Group related translations**: Keep related text under same parent key
++4. **Test all languages**: Ensure UI works with different text lengths
++5. **Handle missing translations**: System falls back to English automatically
++
++## Migration Guide
++
++To migrate existing hardcoded text:
++
++1. **Identify text strings** in components
++2. **Add translation keys** to all language files
++3. **Replace hardcoded text** with `t('key')`
++4. **Test in all languages**
++
++Example:
++```javascript
++// Before
++<Text>Profile</Text>
++
++// After
++<Text>{t('profile.title')}</Text>
++```
++
++## Future Enhancements
++
++- **RTL Language Support** (Arabic, Hebrew)
++- **Pluralization Rules** for complex grammar
++- **Date/Number Formatting** per locale
++- **Dynamic Language Loading** for app size optimization
++- **Translation Management** system for non-developers
+diff --git a/docs/THEME_SYSTEM.md b/docs/THEME_SYSTEM.md
+new file mode 100644
+index 0000000..3978d12
+--- /dev/null
++++ b/docs/THEME_SYSTEM.md
+@@ -0,0 +1,183 @@
++# Fi-Zen Theme System Documentation
++
++## Overview
++The Fi-Zen app now supports both dark mode and light mode with a comprehensive theme system that maintains Fi's brand identity across both themes.
++
++## Features
++- **Persistent Theme Selection**: User's theme preference is saved and restored on app restart
++- **Fi Brand Consistency**: Both themes maintain Fi's signature teal color and design language
++- **Easy Integration**: Simple hooks and context for theme-aware components
++- **Smooth Transitions**: Instant theme switching without app restart
++
++## Implementation
++
++### 1. Theme Context (`src/theme/ThemeContext.js`)
++Provides theme state management and persistence:
++```javascript
++import { useTheme } from '../theme/ThemeContext';
++
++const { isDarkMode, toggleTheme, isLoading } = useTheme();
++```
++
++### 2. Theme Colors (`src/theme/consolidatedFiColors.js`)
++Updated to support both dark and light themes:
++```javascript
++import { getThemeColors } from '../theme/consolidatedFiColors';
++
++const colors = getThemeColors(isDarkMode);
++```
++
++### 3. Theme Toggle Component (`src/components/common/ThemeToggle.js`)
++Ready-to-use toggle component with Fi styling:
++```javascript
++import ThemeToggle from '../components/common/ThemeToggle';
++
++<ThemeToggle style={customStyles} />
++```
++
++### 4. Themed Styles Hook (`src/theme/useThemedStyles.js`)
++Convenient hook for getting themed colors and styles:
++```javascript
++import { useThemedStyles } from '../theme/useThemedStyles';
++
++const { colors, fiStyles, isDarkMode } = useThemedStyles();
++```
++
++## Color Schemes
++
++### Dark Theme (Default - Fi Style)
++- **Background**: `#1A1A1A` (Fi's signature dark)
++- **Surface**: `#2A2A2A` (Dark cards)
++- **Text**: `#FFFFFF` (White text)
++- **Primary**: `#00D4AA` (Fi teal - consistent across themes)
++
++### Light Theme
++- **Background**: `#FFFFFF` (Clean white)
++- **Surface**: `#FFFFFF` (White cards)
++- **Text**: `#1A1A1A` (Dark text)
++- **Primary**: `#00D4AA` (Fi teal - consistent across themes)
++
++## Usage Examples
++
++### Basic Component with Theme
++```javascript
++import React from 'react';
++import { View, Text } from 'react-native';
++import { useThemedStyles } from '../theme/useThemedStyles';
++
++const MyComponent = () => {
++  const { colors, fiStyles } = useThemedStyles();
++  
++  return (
++    <View style={[fiStyles.card, { backgroundColor: colors.surface }]}>
++      <Text style={{ color: colors.text }}>Hello Fi-Zen!</Text>
++    </View>
++  );
++};
++```
++
++### Using Theme Context Directly
++```javascript
++import React from 'react';
++import { TouchableOpacity, Text } from 'react-native';
++import { useTheme } from '../theme/ThemeContext';
++import { getThemeColors } from '../theme/consolidatedFiColors';
++
++const ThemeAwareButton = () => {
++  const { isDarkMode, toggleTheme } = useTheme();
++  const colors = getThemeColors(isDarkMode);
++  
++  return (
++    <TouchableOpacity 
++      onPress={toggleTheme}
++      style={{ backgroundColor: colors.primary }}
++    >
++      <Text style={{ color: colors.textInverse }}>
++        Switch to {isDarkMode ? 'Light' : 'Dark'} Mode
++      </Text>
++    </TouchableOpacity>
++  );
++};
++```
++
++## Integration Steps for Existing Components
++
++### 1. Import Theme Hooks
++```javascript
++import { useThemedStyles } from '../theme/useThemedStyles';
++// or
++import { useTheme } from '../theme/ThemeContext';
++import { getThemeColors } from '../theme/consolidatedFiColors';
++```
++
++### 2. Get Theme Colors
++```javascript
++const { colors, fiStyles, isDarkMode } = useThemedStyles();
++```
++
++### 3. Apply Theme Colors to Styles
++```javascript
++// Before
++<View style={{ backgroundColor: '#FFFFFF' }}>
++  <Text style={{ color: '#1A1A1A' }}>Text</Text>
++</View>
++
++// After
++<View style={{ backgroundColor: colors.surface }}>
++  <Text style={{ color: colors.text }}>Text</Text>
++</View>
++```
++
++### 4. Update StatusBar
++```javascript
++<StatusBar 
++  barStyle={isDarkMode ? "light-content" : "dark-content"} 
++  backgroundColor={colors.background} 
++/>
++```
++
++## Theme Toggle Locations
++
++The theme toggle is currently available in:
++- **Profile Screen**: Under "Appearance" section
++
++## File Structure
++```
++src/
++├── theme/
++│   ├── ThemeContext.js          # Theme state management
++│   ├── consolidatedFiColors.js  # Color definitions for both themes
++│   └── useThemedStyles.js       # Convenience hook
++├── components/
++│   └── common/
++│       ├── ThemeToggle.js       # Toggle component
++│       └── ThemedCard.js        # Example themed component
++└── screens/
++    └── ProfileScreen.js         # Updated with theme support
++```
++
++## Best Practices
++
++1. **Always use theme colors**: Never hardcode colors in components
++2. **Test both themes**: Ensure components work well in both dark and light modes
++3. **Maintain Fi branding**: Keep Fi's teal color and design language consistent
++4. **Use semantic color names**: Use `colors.text` instead of specific hex values
++5. **Handle loading states**: Check `isLoading` from theme context if needed
++
++## Migration Guide
++
++To migrate existing components to support themes:
++
++1. Replace hardcoded colors with theme colors
++2. Add theme context usage
++3. Update StatusBar styling
++4. Test in both dark and light modes
++5. Ensure accessibility compliance
++
++## Future Enhancements
++
++- System theme detection (follow device settings)
++- Custom theme colors
++- Theme-specific animations
++- High contrast mode support
++- Theme scheduling (auto dark mode at night)
+diff --git a/package-lock.json b/package-lock.json
+index 9a91421..cc7bd22 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -8,6 +8,7 @@
+       "name": "DemoApp",
+       "version": "0.0.1",
+       "dependencies": {
++        "@react-native-async-storage/async-storage": "^2.2.0",
+         "@react-native/new-app-screen": "0.80.1",
+         "@react-navigation/bottom-tabs": "^7.4.2",
+         "@react-navigation/native": "^7.1.14",
+@@ -2740,6 +2741,18 @@
+         "node": ">= 8"
+       }
+     },
++    "node_modules/@react-native-async-storage/async-storage": {
++      "version": "2.2.0",
++      "resolved": "https://nexus.enterprise-tools.aws.delta.com/repository/npm-proxy/@react-native-async-storage/async-storage/-/async-storage-2.2.0.tgz",
++      "integrity": "sha512-gvRvjR5JAaUZF8tv2Kcq/Gbt3JHwbKFYfmb445rhOj6NUMx3qPLixmDx5pZAyb9at1bYvJ4/eTUipU5aki45xw==",
++      "license": "MIT",
++      "dependencies": {
++        "merge-options": "^3.0.4"
++      },
++      "peerDependencies": {
++        "react-native": "^0.0.0-0 || >=0.65 <1.0"
++      }
++    },
+     "node_modules/@react-native-community/cli": {
+       "version": "19.0.0",
+       "resolved": "https://registry.npmjs.org/@react-native-community/cli/-/cli-19.0.0.tgz",
+@@ -7717,6 +7730,15 @@
+         "node": ">=8"
+       }
+     },
++    "node_modules/is-plain-obj": {
++      "version": "2.1.0",
++      "resolved": "https://nexus.enterprise-tools.aws.delta.com/repository/npm-proxy/is-plain-obj/-/is-plain-obj-2.1.0.tgz",
++      "integrity": "sha512-YWnfyRwxL/+SsrWYfOpUtz5b3YD+nyfkHvjbcanzk8zgyO4ASD67uVMRt8k5bM4lLMDnXfriRhOpemw+NfT1eA==",
++      "license": "MIT",
++      "engines": {
++        "node": ">=8"
++      }
++    },
+     "node_modules/is-regex": {
+       "version": "1.2.1",
+       "resolved": "https://registry.npmjs.org/is-regex/-/is-regex-1.2.1.tgz",
+@@ -9414,6 +9436,18 @@
+       "integrity": "sha512-zYiwtZUcYyXKo/np96AGZAckk+FWWsUdJ3cHGGmld7+AhvcWmQyGCYUh1hc4Q/pkOhb65dQR/pqCyK0cOaHz4Q==",
+       "license": "MIT"
+     },
++    "node_modules/merge-options": {
++      "version": "3.0.4",
++      "resolved": "https://nexus.enterprise-tools.aws.delta.com/repository/npm-proxy/merge-options/-/merge-options-3.0.4.tgz",
++      "integrity": "sha512-2Sug1+knBjkaMsMgf1ctR1Ujx+Ayku4EdJN4Z+C2+JzoeF7A3OZ9KM2GY0CpQS51NR61LTurMJrRKPhSs3ZRTQ==",
++      "license": "MIT",
++      "dependencies": {
++        "is-plain-obj": "^2.1.0"
++      },
++      "engines": {
++        "node": ">=10"
++      }
++    },
+     "node_modules/merge-stream": {
+       "version": "2.0.0",
+       "resolved": "https://registry.npmjs.org/merge-stream/-/merge-stream-2.0.0.tgz",
+diff --git a/package.json b/package.json
+index 64acf32..a3f2f28 100644
+--- a/package.json
++++ b/package.json
+@@ -10,6 +10,7 @@
+     "test": "jest"
+   },
+   "dependencies": {
++    "@react-native-async-storage/async-storage": "^2.2.0",
+     "@react-native/new-app-screen": "0.80.1",
+     "@react-navigation/bottom-tabs": "^7.4.2",
+     "@react-navigation/native": "^7.1.14",
+diff --git a/src/components/charts/SpendingBreakdownChart.js b/src/components/charts/SpendingBreakdownChart.js
+index f0af1fb..844bcda 100644
+--- a/src/components/charts/SpendingBreakdownChart.js
++++ b/src/components/charts/SpendingBreakdownChart.js
+@@ -1,7 +1,7 @@
+ import React from 'react';
+ import { View, Text, StyleSheet, Dimensions } from 'react-native';
+ import { PieChart } from 'react-native-chart-kit';
+-import { FiColors } from '../../theme/colors';
++import { FiColors } from '../../theme/consolidatedFiColors';
+ 
+ const { width } = Dimensions.get('window');
+ 
+diff --git a/src/components/common/LanguageSelector.js b/src/components/common/LanguageSelector.js
+index 81fbe0c..9477d19 100644
+--- a/src/components/common/LanguageSelector.js
++++ b/src/components/common/LanguageSelector.js
+@@ -1,63 +1,190 @@
+-import React from 'react';
+-import { View, Text, StyleSheet } from 'react-native';
+-import { FiBrandColors, FiTypography } from '../../theme/fiBrandColors';
+-import { TouchableArea } from './AccessibilityHelpers';
++import React, { useState } from 'react';
++import { View, Text, TouchableOpacity, Modal, StyleSheet, ScrollView } from 'react-native';
++import { useLanguage, SUPPORTED_LANGUAGES } from '../../localization/LanguageContext';
++import { useThemedStyles } from '../../theme/useThemedStyles';
+ 
+-const LanguageSelector = ({ selectedLanguage, onLanguageChange }) => {
+-  const languages = [
+-    { code: 'english', name: 'English', native: 'English' },
+-    { code: 'hindi', name: 'Hindi', native: 'हिंदी' },
+-    { code: 'kannada', name: 'Kannada', native: 'ಕನ್ನಡ' }
+-  ];
++const LanguageSelector = ({ style }) => {
++  const { currentLanguage, changeLanguage, t } = useLanguage();
++  const { colors } = useThemedStyles();
++  const [modalVisible, setModalVisible] = useState(false);
++
++  const currentLangInfo = SUPPORTED_LANGUAGES.find(lang => lang.code === currentLanguage);
++
++  const handleLanguageSelect = (languageCode) => {
++    changeLanguage(languageCode);
++    setModalVisible(false);
++  };
+ 
+   return (
+-    <View style={styles.container}>
+-      {languages.map((lang) => (
+-        <TouchableArea
+-          key={lang.code}
+-          style={[
+-            styles.langButton,
+-            selectedLanguage === lang.code && styles.activeLangButton
+-          ]}
+-          onPress={() => onLanguageChange(lang.code)}
+-        >
+-          <Text style={[
+-            styles.langText,
+-            selectedLanguage === lang.code && styles.activeLangText
+-          ]}>
+-            {lang.native}
+-          </Text>
+-        </TouchableArea>
+-      ))}
+-    </View>
++    <>
++      <TouchableOpacity
++        style={[styles.container, { backgroundColor: colors.surface }, style]}
++        onPress={() => setModalVisible(true)}
++        activeOpacity={0.7}
++      >
++        <View style={styles.languageInfo}>
++          <Text style={styles.flag}>{currentLangInfo?.flag}</Text>
++          <View style={styles.textContainer}>
++            <Text style={[styles.languageName, { color: colors.text }]}>
++              {currentLangInfo?.nativeName}
++            </Text>
++            <Text style={[styles.languageSubtext, { color: colors.textSecondary }]}>
++              {t('language.current')}
++            </Text>
++          </View>
++        </View>
++        <Text style={[styles.arrow, { color: colors.textSecondary }]}>›</Text>
++      </TouchableOpacity>
++
++      <Modal
++        animationType="slide"
++        transparent={true}
++        visible={modalVisible}
++        onRequestClose={() => setModalVisible(false)}
++      >
++        <View style={styles.modalOverlay}>
++          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
++            <View style={[styles.modalHeader, { borderBottomColor: colors.border }]}>
++              <Text style={[styles.modalTitle, { color: colors.text }]}>
++                {t('language.select')}
++              </Text>
++              <TouchableOpacity
++                onPress={() => setModalVisible(false)}
++                style={styles.closeButton}
++              >
++                <Text style={[styles.closeButtonText, { color: colors.textSecondary }]}>✕</Text>
++              </TouchableOpacity>
++            </View>
++            
++            <ScrollView style={styles.languageList}>
++              {SUPPORTED_LANGUAGES.map((language) => (
++                <TouchableOpacity
++                  key={language.code}
++                  style={[
++                    styles.languageOption,
++                    { borderBottomColor: colors.borderLight },
++                    currentLanguage === language.code && { backgroundColor: colors.primary + '10' }
++                  ]}
++                  onPress={() => handleLanguageSelect(language.code)}
++                >
++                  <Text style={styles.languageFlag}>{language.flag}</Text>
++                  <View style={styles.languageDetails}>
++                    <Text style={[styles.languageOptionName, { color: colors.text }]}>
++                      {language.nativeName}
++                    </Text>
++                    <Text style={[styles.languageOptionSubname, { color: colors.textSecondary }]}>
++                      {language.name}
++                    </Text>
++                  </View>
++                  {currentLanguage === language.code && (
++                    <Text style={[styles.checkmark, { color: colors.primary }]}>✓</Text>
++                  )}
++                </TouchableOpacity>
++              ))}
++            </ScrollView>
++          </View>
++        </View>
++      </Modal>
++    </>
+   );
+ };
+ 
+ const styles = StyleSheet.create({
+   container: {
+     flexDirection: 'row',
+-    backgroundColor: FiBrandColors.surface,
++    alignItems: 'center',
++    justifyContent: 'space-between',
++    paddingVertical: 12,
++    paddingHorizontal: 16,
+     borderRadius: 12,
+-    padding: 4,
+-    marginBottom: 20,
++    shadowColor: 'rgba(0, 0, 0, 0.1)',
++    shadowOffset: { width: 0, height: 2 },
++    shadowOpacity: 1,
++    shadowRadius: 4,
++    elevation: 2,
++  },
++  languageInfo: {
++    flexDirection: 'row',
++    alignItems: 'center',
++    flex: 1,
++  },
++  flag: {
++    fontSize: 24,
++    marginRight: 12,
++  },
++  textContainer: {
++    flex: 1,
+   },
+-  langButton: {
++  languageName: {
++    fontSize: 16,
++    fontWeight: '500',
++  },
++  languageSubtext: {
++    fontSize: 14,
++    marginTop: 2,
++  },
++  arrow: {
++    fontSize: 20,
++    fontWeight: '300',
++  },
++  modalOverlay: {
+     flex: 1,
+-    paddingVertical: 8,
+-    paddingHorizontal: 12,
+-    borderRadius: 8,
++    backgroundColor: 'rgba(0, 0, 0, 0.5)',
++    justifyContent: 'center',
++    alignItems: 'center',
++  },
++  modalContent: {
++    width: '90%',
++    maxHeight: '70%',
++    borderRadius: 16,
++    overflow: 'hidden',
++  },
++  modalHeader: {
++    flexDirection: 'row',
++    justifyContent: 'space-between',
+     alignItems: 'center',
++    padding: 20,
++    borderBottomWidth: 1,
++  },
++  modalTitle: {
++    fontSize: 18,
++    fontWeight: '600',
+   },
+-  activeLangButton: {
+-    backgroundColor: FiBrandColors.primary,
++  closeButton: {
++    padding: 4,
+   },
+-  langText: {
+-    ...FiTypography.bodySmall,
+-    color: FiBrandColors.textSecondary,
++  closeButtonText: {
++    fontSize: 18,
+     fontWeight: '600',
+   },
+-  activeLangText: {
+-    color: FiBrandColors.white,
++  languageList: {
++    maxHeight: 400,
++  },
++  languageOption: {
++    flexDirection: 'row',
++    alignItems: 'center',
++    paddingVertical: 16,
++    paddingHorizontal: 20,
++    borderBottomWidth: 0.5,
++  },
++  languageFlag: {
++    fontSize: 24,
++    marginRight: 16,
++  },
++  languageDetails: {
++    flex: 1,
++  },
++  languageOptionName: {
++    fontSize: 16,
++    fontWeight: '500',
++  },
++  languageOptionSubname: {
++    fontSize: 14,
++    marginTop: 2,
++  },
++  checkmark: {
++    fontSize: 18,
++    fontWeight: '600',
+   },
+ });
+ 
+diff --git a/src/components/common/SkeletonLoader.js b/src/components/common/SkeletonLoader.js
+index fc10bbe..7473659 100644
+--- a/src/components/common/SkeletonLoader.js
++++ b/src/components/common/SkeletonLoader.js
+@@ -1,6 +1,6 @@
+ import React, { useEffect, useRef } from 'react';
+ import { View, StyleSheet, Animated } from 'react-native';
+-import { FiColors } from '../../theme/colors';
++import { FiColors } from '../../theme/consolidatedFiColors';
+ 
+ const SkeletonLoader = ({ width = '100%', height = 20, borderRadius = 4, style = {} }) => {
+   const animatedValue = useRef(new Animated.Value(0)).current;
+diff --git a/src/components/common/ThemeToggle.js b/src/components/common/ThemeToggle.js
+new file mode 100644
+index 0000000..b8a2486
+--- /dev/null
++++ b/src/components/common/ThemeToggle.js
+@@ -0,0 +1,73 @@
++import React from 'react';
++import { TouchableOpacity, View, Text, StyleSheet, Animated } from 'react-native';
++import { useTheme } from '../../theme/ThemeContext';
++import { getThemeColors } from '../../theme/consolidatedFiColors';
++
++const ThemeToggle = ({ style }) => {
++  const { isDarkMode, toggleTheme } = useTheme();
++  const colors = getThemeColors(isDarkMode);
++
++  return (
++    <TouchableOpacity
++      style={[styles.container, { backgroundColor: colors.surface }, style]}
++      onPress={toggleTheme}
++      activeOpacity={0.7}
++    >
++      <View style={[styles.toggleContainer, { backgroundColor: colors.backgroundLight }]}>
++        <View style={[
++          styles.toggleSlider,
++          {
++            backgroundColor: colors.primary,
++            transform: [{ translateX: isDarkMode ? 0 : 24 }]
++          }
++        ]}>
++          <Text style={styles.toggleIcon}>
++            {isDarkMode ? '🌙' : '☀️'}
++          </Text>
++        </View>
++      </View>
++      <Text style={[styles.label, { color: colors.text }]}>
++        {isDarkMode ? 'Dark Mode' : 'Light Mode'}
++      </Text>
++    </TouchableOpacity>
++  );
++};
++
++const styles = StyleSheet.create({
++  container: {
++    flexDirection: 'row',
++    alignItems: 'center',
++    paddingVertical: 12,
++    paddingHorizontal: 16,
++    borderRadius: 12,
++    shadowColor: 'rgba(0, 0, 0, 0.1)',
++    shadowOffset: { width: 0, height: 2 },
++    shadowOpacity: 1,
++    shadowRadius: 4,
++    elevation: 2,
++  },
++  toggleContainer: {
++    width: 48,
++    height: 24,
++    borderRadius: 12,
++    padding: 2,
++    marginRight: 12,
++    justifyContent: 'center',
++  },
++  toggleSlider: {
++    width: 20,
++    height: 20,
++    borderRadius: 10,
++    justifyContent: 'center',
++    alignItems: 'center',
++  },
++  toggleIcon: {
++    fontSize: 12,
++  },
++  label: {
++    fontSize: 16,
++    fontWeight: '500',
++  },
++});
++
++export default ThemeToggle;
+diff --git a/src/components/common/ThemedCard.js b/src/components/common/ThemedCard.js
+new file mode 100644
+index 0000000..9eb92cc
+--- /dev/null
++++ b/src/components/common/ThemedCard.js
+@@ -0,0 +1,28 @@
++import React from 'react';
++import { View, Text, StyleSheet } from 'react-native';
++import { useThemedStyles } from '../../theme/useThemedStyles';
++
++const ThemedCard = ({ title, children, style }) => {
++  const { colors, fiStyles } = useThemedStyles();
++
++  return (
++    <View style={[fiStyles.card, { backgroundColor: colors.surface }, style]}>
++      {title && (
++        <Text style={[styles.title, { color: colors.text }]}>
++          {title}
++        </Text>
++      )}
++      {children}
++    </View>
++  );
++};
++
++const styles = StyleSheet.create({
++  title: {
++    fontSize: 18,
++    fontWeight: '600',
++    marginBottom: 12,
++  },
++});
++
++export default ThemedCard;
+diff --git a/src/components/fi-style/FiHomeScreen.js b/src/components/fi-style/FiHomeScreen.js
+index 14e7dcc..3b9d70d 100644
+--- a/src/components/fi-style/FiHomeScreen.js
++++ b/src/components/fi-style/FiHomeScreen.js
+@@ -1,5 +1,5 @@
+ import React, { useState } from 'react';
+-import { View, Text, StyleSheet, ScrollView, StatusBar } from 'react-native';
++import { View, Text, StyleSheet, ScrollView, StatusBar, Image, Animated } from 'react-native';
+ import { FadeInUp } from '../animations/AnimatedCard';
+ import { TouchableArea } from '../common/AccessibilityHelpers';
+ import FiInflationCard from './FiInflationCard';
+@@ -17,23 +17,75 @@ const FiColors = {
+ };
+ 
+ const FiHomeScreen = ({ navigation, inflationData }) => {
+-  const [selectedTab, setSelectedTab] = useState('inflation');
+-
+-  const FiHeader = () => (
+-    <View style={styles.header}>
++  const [scrollY] = useState(new Animated.Value(0));
++  const headerHeight = scrollY.interpolate({
++    inputRange: [0, 100],
++    outputRange: [105, 70],
++    extrapolate: 'clamp',
++  });
++  const avatarSize = scrollY.interpolate({
++    inputRange: [0, 100],
++    outputRange: [40, 30],
++    extrapolate: 'clamp',
++  });
++  const iconSize = scrollY.interpolate({
++    inputRange: [0, 100],
++    outputRange: [18, 14],
++    extrapolate: 'clamp',
++  });
++  const buttonSize = scrollY.interpolate({
++    inputRange: [0, 100],
++    outputRange: [40, 30],
++    extrapolate: 'clamp',
++  });
++  const headerPadding = scrollY.interpolate({
++    inputRange: [0, 100],
++    outputRange: [15, 20],
++    extrapolate: 'clamp',
++  });
++  // Sticky Header Component
++  const StickyHeader = () => (
++    <Animated.View style={[styles.stickyHeader, { height: headerHeight }]}>
+       <StatusBar barStyle="light-content" backgroundColor={FiColors.background} />
+       
+-      <View style={styles.headerTop}>
+-        <View style={styles.greeting}>
+-          <Text style={styles.greetingText}>Good morning</Text>
+-          <Text style={styles.userName}>Arjun</Text>
+-        </View>
++      <TouchableArea 
++        style={styles.profileButton}
++        onPress={() => navigation.navigate('Profile')}
++      >
++        <Animated.Image 
++          source={require('../../../assets/avatars/avatar-1.png')} 
++          style={[styles.profileAvatar, { width: avatarSize, height: avatarSize, borderRadius: Animated.divide(avatarSize, 2) }]}
++        />
++      </TouchableArea>
++      
++      <View style={styles.headerActions}>
++        <Animated.View style={[styles.headerActionButton, { width: buttonSize, height: buttonSize, borderRadius: Animated.divide(buttonSize, 2) }]}>
++          <TouchableArea style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
++            <Animated.Text style={[styles.headerActionIcon, { fontSize: iconSize }]}>🔔</Animated.Text>
++          </TouchableArea>
++        </Animated.View>
+         
+-        <TouchableArea style={styles.profileButton}>
+-          <View style={styles.profileAvatar}>
+-            <Text style={styles.profileInitial}>A</Text>
+-          </View>
+-        </TouchableArea>
++        <Animated.View style={[styles.headerActionButton, { width: buttonSize, height: buttonSize, borderRadius: Animated.divide(buttonSize, 2) }]}>
++          <TouchableArea style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
++            <Animated.Text style={[styles.headerActionIcon, { fontSize: iconSize }]}>📢</Animated.Text>
++          </TouchableArea>
++        </Animated.View>
++      </View>
++    </Animated.View>
++  );
++
++  const getGreeting = () => {
++    const hour = new Date().getHours();
++    if (hour < 12) return 'Good morning';
++    if (hour < 17) return 'Good afternoon';
++    return 'Good evening';
++  };
++
++  const WelcomeSection = () => (
++    <View style={styles.welcomeSection}>
++      <View style={styles.greeting}>
++        <Text style={styles.greetingText}>{getGreeting()}</Text>
++        <Text style={styles.userName}>Arjun</Text>
+       </View>
+ 
+       {/* Fi-style wealth display */}
+@@ -45,37 +97,6 @@ const FiHomeScreen = ({ navigation, inflationData }) => {
+     </View>
+   );
+ 
+-  const FiTabBar = () => (
+-    <View style={styles.tabBar}>
+-      <TouchableArea
+-        style={[styles.tab, selectedTab === 'inflation' && styles.activeTab]}
+-        onPress={() => setSelectedTab('inflation')}
+-      >
+-        <Text style={[styles.tabText, selectedTab === 'inflation' && styles.activeTabText]}>
+-          Inflation
+-        </Text>
+-      </TouchableArea>
+-      
+-      <TouchableArea
+-        style={[styles.tab, selectedTab === 'insights' && styles.activeTab]}
+-        onPress={() => setSelectedTab('insights')}
+-      >
+-        <Text style={[styles.tabText, selectedTab === 'insights' && styles.activeTabText]}>
+-          Insights
+-        </Text>
+-      </TouchableArea>
+-      
+-      <TouchableArea
+-        style={[styles.tab, selectedTab === 'goals' && styles.activeTab]}
+-        onPress={() => setSelectedTab('goals')}
+-      >
+-        <Text style={[styles.tabText, selectedTab === 'goals' && styles.activeTabText]}>
+-          Goals
+-        </Text>
+-      </TouchableArea>
+-    </View>
+-  );
+-
+   const FiQuickActions = () => (
+     <FadeInUp delay={200}>
+       <View style={styles.quickActions}>
+@@ -106,62 +127,161 @@ const FiHomeScreen = ({ navigation, inflationData }) => {
+     </FadeInUp>
+   );
+ 
+-  const FiTrustBadges = () => (
++  const FiInsightsPreview = () => (
++    <FadeInUp delay={300}>
++      <View style={styles.insightsPreview}>
++        <View style={styles.previewHeader}>
++          <Text style={styles.sectionTitle}>Latest Insights</Text>
++          <TouchableArea onPress={() => navigation.navigate('Insights')}>
++            <Text style={styles.viewAllText}>View All</Text>
++          </TouchableArea>
++        </View>
++        
++        <View style={styles.insightCard}>
++          <Text style={styles.insightIcon}>📈</Text>
++          <View style={styles.insightContent}>
++            <Text style={styles.insightTitle}>Inflation Impact</Text>
++            <Text style={styles.insightText}>Your monthly costs increased by ₹2,450</Text>
++          </View>
++        </View>
++        
++        <View style={styles.insightCard}>
++          <Text style={styles.insightIcon}>💡</Text>
++          <View style={styles.insightContent}>
++            <Text style={styles.insightTitle}>Smart Tip</Text>
++            <Text style={styles.insightText}>Switch to bulk buying to save ₹180/month</Text>
++          </View>
++        </View>
++      </View>
++    </FadeInUp>
++  );
++
++  const FiGoalsPreview = () => (
+     <FadeInUp delay={400}>
+-      <View style={styles.trustSection}>
+-        <Text style={styles.trustTitle}>Trusted & Secure</Text>
+-        <View style={styles.trustBadges}>
+-          <View style={styles.trustBadge}>
+-            <Text style={styles.trustText}>🏦 RBI</Text>
++      <View style={styles.goalsPreview}>
++        <View style={styles.previewHeader}>
++          <Text style={styles.sectionTitle}>Your Goals</Text>
++          <TouchableArea onPress={() => navigation.navigate('Goals')}>
++            <Text style={styles.viewAllText}>View All</Text>
++          </TouchableArea>
++        </View>
++        
++        <View style={styles.goalCard}>
++          <View style={styles.goalHeader}>
++            <Text style={styles.goalIcon}>🛡️</Text>
++            <View style={styles.goalInfo}>
++              <Text style={styles.goalTitle}>Emergency Fund</Text>
++              <Text style={styles.goalProgress}>25% complete</Text>
++            </View>
++          </View>
++          <View style={styles.goalProgressBar}>
++            <View style={[styles.goalProgressFill, { width: '25%' }]} />
+           </View>
+-          <View style={styles.trustBadge}>
+-            <Text style={styles.trustText}>📊 MOSPI</Text>
++        </View>
++        
++        <View style={styles.goalCard}>
++          <View style={styles.goalHeader}>
++            <Text style={styles.goalIcon}>🏠</Text>
++            <View style={styles.goalInfo}>
++              <Text style={styles.goalTitle}>House Down Payment</Text>
++              <Text style={styles.goalProgress}>23% complete</Text>
++            </View>
+           </View>
+-          <View style={styles.trustBadge}>
+-            <Text style={styles.trustText}>🔒 Secure</Text>
++          <View style={styles.goalProgressBar}>
++            <View style={[styles.goalProgressFill, { width: '23%' }]} />
+           </View>
+         </View>
+       </View>
+     </FadeInUp>
+   );
+ 
++  const FiTrustBadges = () => (
++    <FadeInUp delay={500}>
++      <View style={styles.trustSection}>
++        <Text style={styles.trustTitle}>Trusted & Secure</Text>
++        <ScrollView 
++          horizontal
++          showsHorizontalScrollIndicator={false}
++          style={styles.trustBadges}
++          contentContainerStyle={styles.trustBadgesContent}
++        >
++          <Image 
++            source={require('../../../assets/logos/Reserve_Bank_of_India_logo.svg.png')} 
++            style={styles.trustLogo}
++            resizeMode="contain"
++          />
++          <Image 
++            source={require('../../../assets/logos/Logo-MOSPI-01.58746789e2643aae82fb.png')} 
++            style={styles.trustLogo}
++            resizeMode="contain"
++          />
++          <Image 
++            source={require('../../../assets/logos/NPCI_logo.svg.png')} 
++            style={styles.trustLogo}
++            resizeMode="contain"
++          />
++          <Image 
++            source={require('../../../assets/logos/PCI-DSS-1.png')} 
++            style={styles.trustLogo}
++            resizeMode="contain"
++          />
++          <Image 
++            source={require('../../../assets/logos/sebi-new-logo-445.jpg')} 
++            style={styles.trustLogo}
++            resizeMode="contain"
++          />
++          <Image 
++            source={require('../../../assets/logos/Ministry-of-ELectronics-Information-Technology-MeiTY-logo.-Image-via-MEitY..png')} 
++            style={styles.trustLogo}
++            resizeMode="contain"
++          />
++          <Image 
++            source={require('../../../assets/logos/iso-27001-certified.jpg')} 
++            style={styles.trustLogo}
++            resizeMode="contain"
++          />
++        </ScrollView>
++      </View>
++    </FadeInUp>
++  );
++
+   return (
+     <View style={styles.container}>
+-      <FiHeader />
++      <StickyHeader />
+       
+-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+-        <FiTabBar />
+-        
+-        {selectedTab === 'inflation' && (
+-          <>
+-            <FiInflationCard inflationData={inflationData} />
+-            <FiMetricsCards 
+-              inflationData={inflationData}
+-              onCardPress={(cardId) => navigation.navigate('MetricDetail', { cardId })}
+-            />
+-            <FiQuickActions />
+-            <FiTrustBadges />
+-          </>
++      <Animated.ScrollView 
++        style={styles.content} 
++        showsVerticalScrollIndicator={false}
++        onScroll={Animated.event(
++          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
++          { useNativeDriver: false }
+         )}
++        scrollEventThrottle={16}
++      >
++        <WelcomeSection />
+         
+-        {selectedTab === 'insights' && (
+-          <FadeInUp delay={0}>
+-            <View style={styles.comingSoon}>
+-              <Text style={styles.comingSoonText}>📊 Advanced Insights</Text>
+-              <Text style={styles.comingSoonSubtext}>Coming Soon</Text>
+-            </View>
+-          </FadeInUp>
+-        )}
++        {/* Main Inflation Card */}
++        <FiInflationCard inflationData={inflationData} />
+         
+-        {selectedTab === 'goals' && (
+-          <FadeInUp delay={0}>
+-            <View style={styles.comingSoon}>
+-              <Text style={styles.comingSoonText}>🎯 Financial Goals</Text>
+-              <Text style={styles.comingSoonSubtext}>Coming Soon</Text>
+-            </View>
+-          </FadeInUp>
+-        )}
+-      </ScrollView>
++        {/* Metrics Cards */}
++        <FiMetricsCards 
++          inflationData={inflationData}
++          onCardPress={(cardId) => navigation.navigate('MetricDetail', { cardId })}
++        />
++        
++
++        
++        {/* Insights Preview */}
++        <FiInsightsPreview />
++        
++        {/* Goals Preview */}
++        <FiGoalsPreview />
++        
++        {/* Trust Badges */}
++        <FiTrustBadges />
++        
++        <View style={{ height: 100 }} />
++      </Animated.ScrollView>
+     </View>
+   );
+ };
+@@ -171,44 +291,71 @@ const styles = StyleSheet.create({
+     flex: 1,
+     backgroundColor: FiColors.background,
+   },
+-  header: {
++  stickyHeader: {
++    position: 'absolute',
++    top: 0,
++    left: 0,
++    right: 0,
+     backgroundColor: FiColors.background,
+     paddingTop: 50,
+     paddingHorizontal: 20,
+-    paddingBottom: 20,
+-  },
+-  headerTop: {
++    paddingBottom: 15,
+     flexDirection: 'row',
+     justifyContent: 'space-between',
+     alignItems: 'center',
+-    marginBottom: 24,
+-  },
+-  greeting: {},
+-  greetingText: {
+-    fontSize: 16,
+-    color: FiColors.textInverse + '80',
+-    marginBottom: 4,
+-  },
+-  userName: {
+-    fontSize: 24,
+-    fontWeight: '600',
+-    color: FiColors.textInverse,
++    zIndex: 1000,
++    shadowColor: '#000',
++    shadowOffset: { width: 0, height: 2 },
++    shadowOpacity: 0.1,
++    shadowRadius: 4,
++    elevation: 5,
+   },
+   profileButton: {
+-    padding: 4,
++    padding: 2,
+   },
+   profileAvatar: {
+     width: 40,
+     height: 40,
+     borderRadius: 20,
+-    backgroundColor: FiColors.primary,
++  },
++  headerActions: {
++    flexDirection: 'row',
++    gap: 12,
++  },
++  headerActionButton: {
++    width: 40,
++    height: 40,
++    borderRadius: 20,
++    backgroundColor: FiColors.textInverse + '10',
+     justifyContent: 'center',
+     alignItems: 'center',
+   },
+-  profileInitial: {
++  headerActionIcon: {
+     fontSize: 18,
++  },
++  content: {
++    flex: 1,
++    backgroundColor: FiColors.background,
++    paddingTop: 105,
++  },
++  welcomeSection: {
++    backgroundColor: FiColors.background,
++    paddingHorizontal: 20,
++    paddingTop: 20,
++    paddingBottom: 20,
++  },
++  greeting: {
++    marginBottom: 24,
++  },
++  greetingText: {
++    fontSize: 16,
++    color: FiColors.textInverse + '80',
++    marginBottom: 4,
++  },
++  userName: {
++    fontSize: 24,
+     fontWeight: '600',
+-    color: '#FFFFFF',
++    color: FiColors.textInverse,
+   },
+   wealthSection: {
+     alignItems: 'center',
+@@ -220,7 +367,7 @@ const styles = StyleSheet.create({
+   },
+   wealthValue: {
+     fontSize: 36,
+-    fontWeight: '300', // Fi's light weight
++    fontWeight: '300',
+     color: FiColors.textInverse,
+     marginBottom: 4,
+   },
+@@ -229,35 +376,6 @@ const styles = StyleSheet.create({
+     color: FiColors.primary,
+     fontWeight: '500',
+   },
+-  content: {
+-    flex: 1,
+-    backgroundColor: '#F5F5F5', // Light background for content
+-  },
+-  tabBar: {
+-    flexDirection: 'row',
+-    backgroundColor: FiColors.surface,
+-    marginHorizontal: 16,
+-    marginTop: 16,
+-    borderRadius: 12,
+-    padding: 4,
+-  },
+-  tab: {
+-    flex: 1,
+-    paddingVertical: 12,
+-    alignItems: 'center',
+-    borderRadius: 8,
+-  },
+-  activeTab: {
+-    backgroundColor: FiColors.primary,
+-  },
+-  tabText: {
+-    fontSize: 14,
+-    fontWeight: '500',
+-    color: FiColors.textSecondary,
+-  },
+-  activeTabText: {
+-    color: '#FFFFFF',
+-  },
+   quickActions: {
+     margin: 16,
+   },
+@@ -293,51 +411,124 @@ const styles = StyleSheet.create({
+     fontWeight: '500',
+     color: FiColors.text,
+   },
+-  trustSection: {
+-    backgroundColor: FiColors.surface,
++  insightsPreview: {
+     margin: 16,
+-    borderRadius: 16,
+-    padding: 20,
++  },
++  previewHeader: {
++    flexDirection: 'row',
++    justifyContent: 'space-between',
+     alignItems: 'center',
++    marginBottom: 16,
+   },
+-  trustTitle: {
+-    fontSize: 16,
++  viewAllText: {
++    fontSize: 14,
++    fontWeight: '600',
++    color: FiColors.primary,
++  },
++  insightCard: {
++    backgroundColor: FiColors.surface,
++    borderRadius: 12,
++    padding: 16,
++    marginBottom: 12,
++    flexDirection: 'row',
++    alignItems: 'center',
++    shadowColor: '#000',
++    shadowOffset: { width: 0, height: 1 },
++    shadowOpacity: 0.05,
++    shadowRadius: 4,
++    elevation: 2,
++  },
++  insightIcon: {
++    fontSize: 20,
++    marginRight: 12,
++  },
++  insightContent: {
++    flex: 1,
++  },
++  insightTitle: {
++    fontSize: 14,
+     fontWeight: '600',
+     color: FiColors.text,
++    marginBottom: 2,
++  },
++  insightText: {
++    fontSize: 13,
++    color: FiColors.textSecondary,
++  },
++  goalsPreview: {
++    margin: 16,
++  },
++  goalCard: {
++    backgroundColor: FiColors.surface,
++    borderRadius: 12,
++    padding: 16,
+     marginBottom: 12,
++    shadowColor: '#000',
++    shadowOffset: { width: 0, height: 1 },
++    shadowOpacity: 0.05,
++    shadowRadius: 4,
++    elevation: 2,
+   },
+-  trustBadges: {
++  goalHeader: {
+     flexDirection: 'row',
+-    gap: 12,
++    alignItems: 'center',
++    marginBottom: 12,
+   },
+-  trustBadge: {
+-    backgroundColor: FiColors.primary + '20',
+-    paddingHorizontal: 12,
+-    paddingVertical: 6,
+-    borderRadius: 16,
++  goalIcon: {
++    fontSize: 20,
++    marginRight: 12,
+   },
+-  trustText: {
+-    fontSize: 12,
+-    color: FiColors.primary,
++  goalInfo: {
++    flex: 1,
++  },
++  goalTitle: {
++    fontSize: 14,
+     fontWeight: '600',
++    color: FiColors.text,
++    marginBottom: 2,
++  },
++  goalProgress: {
++    fontSize: 13,
++    color: FiColors.textSecondary,
+   },
+-  comingSoon: {
++  goalProgressBar: {
++    height: 6,
++    backgroundColor: FiColors.border + '40',
++    borderRadius: 3,
++    overflow: 'hidden',
++  },
++  goalProgressFill: {
++    height: '100%',
++    backgroundColor: FiColors.primary,
++    borderRadius: 3,
++  },
++  trustSection: {
+     backgroundColor: FiColors.surface,
+     margin: 16,
+     borderRadius: 16,
+-    padding: 40,
++    padding: 20,
+     alignItems: 'center',
+   },
+-  comingSoonText: {
+-    fontSize: 20,
++  trustTitle: {
++    fontSize: 16,
+     fontWeight: '600',
+     color: FiColors.text,
+-    marginBottom: 8,
++    marginBottom: 12,
+   },
+-  comingSoonSubtext: {
+-    fontSize: 14,
+-    color: FiColors.textSecondary,
++  trustBadges: {
++    marginTop: 12,
++  },
++  trustBadgesContent: {
++    flexDirection: 'row',
++    alignItems: 'center',
++    paddingHorizontal: 16,
++    gap: 20,
++  },
++  trustLogo: {
++    width: 120,
++    height: 70,
+   },
++
+ });
+ 
+ export default FiHomeScreen;
+diff --git a/src/components/fi-style/FiInflationCard.js b/src/components/fi-style/FiInflationCard.js
+index 9443b6b..95f8ccc 100644
+--- a/src/components/fi-style/FiInflationCard.js
++++ b/src/components/fi-style/FiInflationCard.js
+@@ -1,5 +1,5 @@
+ import React from 'react';
+-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
++import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+ import { useNavigation } from '@react-navigation/native';
+ 
+ // Fi App Colors (from screenshots)
+@@ -20,22 +20,52 @@ const FiInflationCard = ({ inflationData = {} }) => {
+       <View style={styles.card}>
+         {/* Fi-style header */}
+         <View style={styles.header}>
+-          <Text style={styles.title}>Personal Inflation</Text>
+-          <View style={styles.locationBadge}>
+-            <Text style={styles.locationText}>Mumbai</Text>
++          <View style={styles.titleSection}>
++            <Text style={styles.title}>Personal Inflation</Text>
++            <Text style={styles.lastUpdated}>Updated 2 hours ago</Text>
++          </View>
++          <View style={styles.headerRight}>
++            <View style={styles.locationBadge}>
++              <Text style={styles.locationText}>📍 Mumbai</Text>
++            </View>
++            <TouchableOpacity style={styles.refreshButton} onPress={() => console.log('Refreshing data...')}>
++              <Text style={styles.refreshIcon}>↻</Text>
++            </TouchableOpacity>
+           </View>
+         </View>
+ 
+         {/* Large number display (Fi wealth style) */}
+         <View style={styles.rateDisplay}>
+-          <Text style={styles.mainRate}>{inflationData.personal || 0}%</Text>
+-          <Text style={styles.rateLabel}>vs Govt 6.5%</Text>
++          <View style={styles.rateWithTrend}>
++            <Text style={styles.mainRate}>{inflationData.personal || 0}%</Text>
++            <View style={styles.trendSection}>
++              <Text style={styles.trendIndicator}>↗ Trending up</Text>
++              <Text style={styles.trendSubtext}>vs last month</Text>
++            </View>
++          </View>
++          <View style={styles.contextBadge}>
++            <Text style={styles.contextText}>📈 Higher than your 6-month average (9.2%)</Text>
++          </View>
++          <View style={styles.govtRateSection}>
++            <Text style={styles.rateLabel}>vs Govt 6.5%</Text>
++            <Image 
++              source={require('../../../assets/logos/Logo-MOSPI-01.58746789e2643aae82fb.png')}
++              style={styles.mospiLogoSmall}
++              resizeMode="contain"
++            />
++            <Text style={styles.mospiHelperText}>Official govt inflation data source</Text>
++          </View>
+         </View>
+ 
+         {/* Fi-style impact section */}
+         <View style={styles.impactSection}>
+-          <Text style={styles.impactTitle}>Impact on ₹1L</Text>
+-          <Text style={styles.impactValue}>+₹11,800 needed</Text>
++          <View style={styles.impactHeader}>
++            <Text style={styles.impactEmoji}>💸</Text>
++            <Text style={styles.impactTitle}>Real Impact</Text>
++          </View>
++          <Text style={styles.impactDescription}>If you spent ₹1,00,000 last year</Text>
++          <Text style={styles.impactValue}>You need ₹11,800 extra this year</Text>
++          <Text style={styles.impactSubtext}>for the same lifestyle</Text>
+         </View>
+ 
+         {/* Fi-style action button */}
+@@ -53,8 +83,9 @@ const FiInflationCard = ({ inflationData = {} }) => {
+ 
+ const styles = StyleSheet.create({
+   container: {
+-    backgroundColor: FiColors.background,
+-    padding: 16,
++    backgroundColor: 'transparent',
++    paddingHorizontal: 16,
++    paddingVertical: 8,
+   },
+   card: {
+     backgroundColor: FiColors.surface,
+@@ -69,14 +100,40 @@ const styles = StyleSheet.create({
+   header: {
+     flexDirection: 'row',
+     justifyContent: 'space-between',
+-    alignItems: 'center',
++    alignItems: 'flex-start',
+     marginBottom: 20,
+   },
++  titleSection: {
++    flex: 1,
++  },
++  headerRight: {
++    flexDirection: 'row',
++    alignItems: 'center',
++    gap: 8,
++  },
++  refreshButton: {
++    width: 32,
++    height: 32,
++    borderRadius: 16,
++    backgroundColor: FiColors.primary + '20',
++    justifyContent: 'center',
++    alignItems: 'center',
++  },
++  refreshIcon: {
++    fontSize: 16,
++    color: FiColors.primary,
++    fontWeight: '600',
++  },
+   title: {
+     fontSize: 18,
+     fontWeight: '600',
+     color: FiColors.text,
+   },
++  lastUpdated: {
++    fontSize: 11,
++    color: FiColors.textLight,
++    marginTop: 2,
++  },
+   locationBadge: {
+     backgroundColor: FiColors.primary + '20',
+     paddingHorizontal: 8,
+@@ -92,16 +149,60 @@ const styles = StyleSheet.create({
+     alignItems: 'center',
+     marginBottom: 24,
+   },
++  rateWithTrend: {
++    alignItems: 'center',
++    marginBottom: 8,
++  },
++  trendSection: {
++    alignItems: 'center',
++    marginTop: 4,
++  },
++  trendIndicator: {
++    fontSize: 14,
++    color: FiColors.error,
++    fontWeight: '500',
++  },
++  trendSubtext: {
++    fontSize: 11,
++    color: FiColors.textLight,
++    marginTop: 2,
++  },
++  contextBadge: {
++    backgroundColor: '#FFF3E0',
++    paddingHorizontal: 12,
++    paddingVertical: 6,
++    borderRadius: 16,
++    marginBottom: 12,
++  },
++  contextText: {
++    fontSize: 12,
++    color: '#E65100',
++    fontWeight: '500',
++  },
+   mainRate: {
+     fontSize: 48,
+     fontWeight: '300', // Fi's light weight for numbers
+     color: FiColors.error,
+     marginBottom: 4,
+   },
++  govtRateSection: {
++    alignItems: 'center',
++    gap: 8,
++  },
+   rateLabel: {
+     fontSize: 14,
+     color: FiColors.textSecondary,
+   },
++  mospiLogoSmall: {
++    width: 140,
++    height: 70,
++  },
++  mospiHelperText: {
++    fontSize: 11,
++    color: FiColors.textLight,
++    textAlign: 'center',
++    fontStyle: 'italic',
++  },
+   impactSection: {
+     backgroundColor: '#FFF5F5',
+     borderRadius: 12,
+@@ -109,8 +210,22 @@ const styles = StyleSheet.create({
+     marginBottom: 20,
+     alignItems: 'center',
+   },
++  impactHeader: {
++    flexDirection: 'row',
++    alignItems: 'center',
++    gap: 8,
++    marginBottom: 8,
++  },
++  impactEmoji: {
++    fontSize: 20,
++  },
+   impactTitle: {
+-    fontSize: 14,
++    fontSize: 16,
++    color: FiColors.text,
++    fontWeight: '600',
++  },
++  impactDescription: {
++    fontSize: 13,
+     color: FiColors.textSecondary,
+     marginBottom: 4,
+   },
+@@ -118,6 +233,12 @@ const styles = StyleSheet.create({
+     fontSize: 18,
+     fontWeight: '600',
+     color: FiColors.error,
++    marginBottom: 2,
++  },
++  impactSubtext: {
++    fontSize: 12,
++    color: FiColors.textLight,
++    fontStyle: 'italic',
+   },
+   actionButton: {
+     backgroundColor: FiColors.primary,
+diff --git a/src/components/fi-style/FiMetricsCards.js b/src/components/fi-style/FiMetricsCards.js
+index 6f66e2c..db130cc 100644
+--- a/src/components/fi-style/FiMetricsCards.js
++++ b/src/components/fi-style/FiMetricsCards.js
+@@ -1,5 +1,7 @@
+ import React from 'react';
+ import { View, Text, StyleSheet, ScrollView } from 'react-native';
++// Using View with backgroundColor as fallback for gradients
++// import LinearGradient from 'react-native-linear-gradient';
+ import { AnimatedCard, FadeInUp } from '../animations/AnimatedCard';
+ import { TouchableArea } from '../common/AccessibilityHelpers';
+ 
+@@ -26,7 +28,8 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
+       subtitle: 'vs Govt 6.5%',
+       trend: 'up',
+       color: FiColors.error,
+-      icon: '📈'
++      icon: '📈',
++      gradient: ['#FFF5F5', '#FFFFFF']
+     },
+     {
+       id: 'salary_impact',
+@@ -35,7 +38,8 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
+       subtitle: 'extra needed/month',
+       trend: 'neutral',
+       color: FiColors.warning,
+-      icon: '💼'
++      icon: '💼',
++      gradient: ['#FFFBF0', '#FFFFFF']
+     },
+     {
+       id: 'investment_target',
+@@ -44,7 +48,8 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
+       subtitle: 'to beat inflation',
+       trend: 'up',
+       color: FiColors.success,
+-      icon: '🎯'
++      icon: '🎯',
++      gradient: ['#F0FFF4', '#FFFFFF']
+     },
+     {
+       id: 'city_rank',
+@@ -53,16 +58,19 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
+       subtitle: 'most expensive',
+       trend: 'neutral',
+       color: FiColors.primary,
+-      icon: '🏙️'
++      icon: '🏙️',
++      gradient: ['#F0FDFA', '#FFFFFF']
+     }
+   ];
+ 
+   const MetricCard = ({ metric, index }) => (
+     <FadeInUp delay={index * 100}>
+       <TouchableArea
+-        style={styles.metricCard}
+         onPress={() => onCardPress(metric.id)}
+       >
++        <View
++          style={[styles.metricCard, { backgroundColor: metric.gradient[0] }]}
++        >
+         <View style={styles.cardHeader}>
+           <Text style={styles.cardIcon}>{metric.icon}</Text>
+           <View style={[styles.trendIndicator, { backgroundColor: metric.color + '20' }]}>
+@@ -79,13 +87,16 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
+         </Text>
+         
+         <Text style={styles.cardSubtitle}>{metric.subtitle}</Text>
++        </View>
+       </TouchableArea>
+     </FadeInUp>
+   );
+ 
+   const WeeklyInsightCard = () => (
+     <FadeInUp delay={400}>
+-      <View style={styles.insightCard}>
++      <View
++        style={[styles.insightCard, { backgroundColor: '#F0F9FF' }]}
++      >
+         <View style={styles.insightHeader}>
+           <Text style={styles.insightTitle}>This Week's Insight</Text>
+           <Text style={styles.insightBadge}>New</Text>
+@@ -95,9 +106,12 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
+           Your food costs increased 2.3% this week, mainly due to vegetable price surge in Mumbai markets.
+         </Text>
+         
+-        <View style={styles.insightAction}>
++        <TouchableArea 
++          style={styles.insightAction}
++          onPress={() => onCardPress('weekly_insight')}
++        >
+           <Text style={styles.actionText}>View Details →</Text>
+-        </View>
++        </TouchableArea>
+       </View>
+     </FadeInUp>
+   );
+@@ -107,7 +121,9 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
+       {/* Metrics Grid */}
+       <View style={styles.metricsGrid}>
+         {metricsData.map((metric, index) => (
+-          <MetricCard key={metric.id} metric={metric} index={index} />
++          <View key={metric.id} style={styles.cardWrapper}>
++            <MetricCard metric={metric} index={index} />
++          </View>
+         ))}
+       </View>
+ 
+@@ -142,25 +158,31 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
+ 
+ const styles = StyleSheet.create({
+   container: {
+-    backgroundColor: FiColors.background,
+-    padding: 16,
++    backgroundColor: 'transparent',
++    paddingHorizontal: 16,
++    paddingVertical: 8,
+   },
+   metricsGrid: {
+     flexDirection: 'row',
+     flexWrap: 'wrap',
+-    gap: 12,
++    justifyContent: 'space-between',
+     marginBottom: 20,
+   },
++  cardWrapper: {
++    width: '48%',
++    marginBottom: 12,
++  },
+   metricCard: {
+-    backgroundColor: FiColors.surface,
+     borderRadius: 16,
+     padding: 16,
+-    width: '48%',
++    width: '100%',
++    minHeight: 130,
+     shadowColor: '#000',
+-    shadowOffset: { width: 0, height: 1 },
+-    shadowOpacity: 0.05,
+-    shadowRadius: 4,
+-    elevation: 2,
++    shadowOffset: { width: 0, height: 2 },
++    shadowOpacity: 0.1,
++    shadowRadius: 8,
++    elevation: 4,
++    justifyContent: 'space-between',
+   },
+   cardHeader: {
+     flexDirection: 'row',
+@@ -197,12 +219,17 @@ const styles = StyleSheet.create({
+     color: FiColors.textLight,
+   },
+   insightCard: {
+-    backgroundColor: FiColors.surface,
+     borderRadius: 16,
+     padding: 20,
++    marginHorizontal: 0,
+     marginBottom: 20,
+     borderLeftWidth: 4,
+     borderLeftColor: FiColors.primary,
++    shadowColor: '#000',
++    shadowOffset: { width: 0, height: 2 },
++    shadowOpacity: 0.1,
++    shadowRadius: 8,
++    elevation: 4,
+   },
+   insightHeader: {
+     flexDirection: 'row',
+@@ -242,6 +269,12 @@ const styles = StyleSheet.create({
+     backgroundColor: FiColors.surface,
+     borderRadius: 16,
+     padding: 20,
++    marginHorizontal: 0, // Remove horizontal margin since container handles it
++    shadowColor: '#000',
++    shadowOffset: { width: 0, height: 2 },
++    shadowOpacity: 0.1,
++    shadowRadius: 8,
++    elevation: 4,
+   },
+   progressTitle: {
+     fontSize: 18,
+diff --git a/src/localization/LanguageContext.js b/src/localization/LanguageContext.js
+new file mode 100644
+index 0000000..c788629
+--- /dev/null
++++ b/src/localization/LanguageContext.js
+@@ -0,0 +1,67 @@
++import React, { createContext, useContext, useState } from 'react';
++import { translations } from './translations';
++
++const LanguageContext = createContext();
++
++export const useLanguage = () => {
++  const context = useContext(LanguageContext);
++  if (!context) {
++    throw new Error('useLanguage must be used within a LanguageProvider');
++  }
++  return context;
++};
++
++export const SUPPORTED_LANGUAGES = [
++  { code: 'en', name: 'English', nativeName: 'English', flag: '🇺🇸' },
++  { code: 'hi', name: 'Hindi', nativeName: 'हिंदी', flag: '🇮🇳' },
++  { code: 'kn', name: 'Kannada', nativeName: 'ಕನ್ನಡ', flag: '🇮🇳' },
++];
++
++export const LanguageProvider = ({ children }) => {
++  const [currentLanguage, setCurrentLanguage] = useState('en');
++  const [isLoading, setIsLoading] = useState(false);
++
++  const changeLanguage = (languageCode) => {
++    if (translations[languageCode]) {
++      setCurrentLanguage(languageCode);
++    }
++  };
++
++  const t = (key, params = {}) => {
++    const keys = key.split('.');
++    let translation = translations[currentLanguage];
++    
++    for (const k of keys) {
++      if (translation && typeof translation === 'object') {
++        translation = translation[k];
++      } else {
++        // Fallback to English
++        translation = translations['en'];
++        for (const fallbackKey of keys) {
++          if (translation && typeof translation === 'object') {
++            translation = translation[fallbackKey];
++          } else {
++            return key;
++          }
++        }
++        break;
++      }
++    }
++
++    return translation || key;
++  };
++
++  const value = {
++    currentLanguage,
++    changeLanguage,
++    t,
++    isLoading,
++    supportedLanguages: SUPPORTED_LANGUAGES,
++  };
++
++  return (
++    <LanguageContext.Provider value={value}>
++      {children}
++    </LanguageContext.Provider>
++  );
++};
+diff --git a/src/localization/translations.js b/src/localization/translations.js
+new file mode 100644
+index 0000000..973b928
+--- /dev/null
++++ b/src/localization/translations.js
+@@ -0,0 +1,209 @@
++// Comprehensive translations for Fi-Zen app
++export const translations = {
++  en: {
++    // Navigation
++    nav: {
++      home: 'Home',
++      insights: 'Insights',
++      goals: 'Goals',
++      profile: 'Profile'
++    },
++    
++    // Common UI elements
++    common: {
++      save: 'Save',
++      cancel: 'Cancel',
++      continue: 'Continue',
++      back: 'Back',
++      next: 'Next',
++      done: 'Done',
++      loading: 'Loading...',
++      error: 'Error',
++      success: 'Success',
++      retry: 'Retry'
++    },
++
++    // Profile Screen
++    profile: {
++      title: 'Profile',
++      userName: 'Arjun Sharma',
++      memberSince: 'Member since March 2024',
++      journey: 'Your Fi Journey',
++      daysActive: 'Days Active',
++      moneySaved: 'Money Saved',
++      goalsAchieved: 'Goals Achieved',
++      
++      // Menu sections
++      personal: 'Personal',
++      personalInfo: 'Personal Information',
++      location: 'Location & Preferences',
++      income: 'Income & Expenses',
++      financialGoals: 'Financial Goals',
++      
++      appSettings: 'App Settings',
++      notifications: 'Notifications',
++      privacy: 'Privacy & Security',
++      dataAnalytics: 'Data & Analytics',
++      
++      appearance: 'Appearance',
++      language: 'Language',
++      
++      support: 'Support',
++      help: 'Help & Support',
++      feedback: 'Feedback',
++      rate: 'Rate Fi App',
++      terms: 'Terms & Privacy'
++    },
++
++    // Theme
++    theme: {
++      darkMode: 'Dark Mode',
++      lightMode: 'Light Mode'
++    },
++
++    // Language
++    language: {
++      current: 'Current Language',
++      select: 'Select Language',
++      change: 'Change Language'
++    }
++  },
++
++  hi: {
++    // Navigation
++    nav: {
++      home: 'होम',
++      insights: 'जानकारी',
++      goals: 'लक्ष्य',
++      profile: 'प्रोफाइल'
++    },
++    
++    // Common UI elements
++    common: {
++      save: 'सेव करें',
++      cancel: 'रद्द करें',
++      continue: 'जारी रखें',
++      back: 'वापस',
++      next: 'अगला',
++      done: 'हो गया',
++      loading: 'लोड हो रहा है...',
++      error: 'त्रुटि',
++      success: 'सफलता',
++      retry: 'फिर कोशिश करें'
++    },
++
++    // Profile Screen
++    profile: {
++      title: 'प्रोफाइल',
++      userName: 'अर्जुन शर्मा',
++      memberSince: 'मार्च 2024 से सदस्य',
++      journey: 'आपकी Fi यात्रा',
++      daysActive: 'सक्रिय दिन',
++      moneySaved: 'बचाया गया पैसा',
++      goalsAchieved: 'हासिल किए गए लक्ष्य',
++      
++      // Menu sections
++      personal: 'व्यक्तिगत',
++      personalInfo: 'व्यक्तिगत जानकारी',
++      location: 'स्थान और प्राथमिकताएं',
++      income: 'आय और व्यय',
++      financialGoals: 'वित्तीय लक्ष्य',
++      
++      appSettings: 'ऐप सेटिंग्स',
++      notifications: 'सूचनाएं',
++      privacy: 'गोपनीयता और सुरक्षा',
++      dataAnalytics: 'डेटा और विश्लेषण',
++      
++      appearance: 'दिखावट',
++      language: 'भाषा',
++      
++      support: 'सहायता',
++      help: 'सहायता और समर्थन',
++      feedback: 'फीडबैक',
++      rate: 'Fi ऐप को रेट करें',
++      terms: 'नियम और गोपनीयता'
++    },
++
++    // Theme
++    theme: {
++      darkMode: 'डार्क मोड',
++      lightMode: 'लाइट मोड'
++    },
++
++    // Language
++    language: {
++      current: 'वर्तमान भाषा',
++      select: 'भाषा चुनें',
++      change: 'भाषा बदलें'
++    }
++  },
++
++  kn: {
++    // Navigation
++    nav: {
++      home: 'ಮುಖ್ಯ',
++      insights: 'ಒಳನೋಟಗಳು',
++      goals: 'ಗುರಿಗಳು',
++      profile: 'ಪ್ರೊಫೈಲ್'
++    },
++    
++    // Common UI elements
++    common: {
++      save: 'ಉಳಿಸಿ',
++      cancel: 'ರದ್ದುಮಾಡಿ',
++      continue: 'ಮುಂದುವರಿಸಿ',
++      back: 'ಹಿಂದೆ',
++      next: 'ಮುಂದೆ',
++      done: 'ಮುಗಿದಿದೆ',
++      loading: 'ಲೋಡ್ ಆಗುತ್ತಿದೆ...',
++      error: 'ದೋಷ',
++      success: 'ಯಶಸ್ಸು',
++      retry: 'ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ'
++    },
++
++    // Profile Screen
++    profile: {
++      title: 'ಪ್ರೊಫೈಲ್',
++      userName: 'ಅರ್ಜುನ್ ಶರ್ಮಾ',
++      memberSince: 'ಮಾರ್ಚ್ 2024 ರಿಂದ ಸದಸ್ಯ',
++      journey: 'ನಿಮ್ಮ Fi ಪ್ರಯಾಣ',
++      daysActive: 'ಸಕ್ರಿಯ ದಿನಗಳು',
++      moneySaved: 'ಉಳಿಸಿದ ಹಣ',
++      goalsAchieved: 'ಸಾಧಿಸಿದ ಗುರಿಗಳು',
++      
++      // Menu sections
++      personal: 'ವೈಯಕ್ತಿಕ',
++      personalInfo: 'ವೈಯಕ್ತಿಕ ಮಾಹಿತಿ',
++      location: 'ಸ್ಥಳ ಮತ್ತು ಆದ್ಯತೆಗಳು',
++      income: 'ಆದಾಯ ಮತ್ತು ವೆಚ್ಚಗಳು',
++      financialGoals: 'ಆರ್ಥಿಕ ಗುರಿಗಳು',
++      
++      appSettings: 'ಅಪ್ಲಿಕೇಶನ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು',
++      notifications: 'ಅಧಿಸೂಚನೆಗಳು',
++      privacy: 'ಗೌಪ್ಯತೆ ಮತ್ತು ಭದ್ರತೆ',
++      dataAnalytics: 'ಡೇಟಾ ಮತ್ತು ವಿಶ್ಲೇಷಣೆ',
++      
++      appearance: 'ನೋಟ',
++      language: 'ಭಾಷೆ',
++      
++      support: 'ಬೆಂಬಲ',
++      help: 'ಸಹಾಯ ಮತ್ತು ಬೆಂಬಲ',
++      feedback: 'ಪ್ರತಿಕ್ರಿಯೆ',
++      rate: 'Fi ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು ರೇಟ್ ಮಾಡಿ',
++      terms: 'ನಿಯಮಗಳು ಮತ್ತು ಗೌಪ್ಯತೆ'
++    },
++
++    // Theme
++    theme: {
++      darkMode: 'ಡಾರ್ಕ್ ಮೋಡ್',
++      lightMode: 'ಲೈಟ್ ಮೋಡ್'
++    },
++
++    // Language
++    language: {
++      current: 'ಪ್ರಸ್ತುತ ಭಾಷೆ',
++      select: 'ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ',
++      change: 'ಭಾಷೆ ಬದಲಾಯಿಸಿ'
++    }
++  }
++};
+diff --git a/src/navigation/AppNavigator.js b/src/navigation/AppNavigator.js
+index 251a2b7..b85c772 100644
+--- a/src/navigation/AppNavigator.js
++++ b/src/navigation/AppNavigator.js
+@@ -1,51 +1,100 @@
+ import React from 'react';
+ import { NavigationContainer } from '@react-navigation/native';
++import { SafeAreaProvider } from 'react-native-safe-area-context';
+ import { createNativeStackNavigator } from '@react-navigation/native-stack';
+ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+-import { Text } from 'react-native';
+-import { useNavigation } from '@react-navigation/native';
+-import { FiColors } from '../theme/consolidatedFiColors';
++import { View, Text, StyleSheet } from 'react-native';
++import { useTheme } from '../theme/ThemeContext';
++import { getThemeColors } from '../theme/consolidatedFiColors';
++import fonts from '../theme/fonts';
+ import FiHomeScreenWrapper from '../components/fi-style/FiHomeScreenWrapper';
+ import InflationScreen from '../screens/InflationScreen';
+ import InflationSetupScreen from '../screens/InflationSetupScreen';
+ import DetailedBreakdownScreen from '../components/results/DetailedBreakdownScreen';
++import InsightsScreen from '../screens/InsightsScreen';
++import GoalsScreen from '../screens/GoalsScreen';
++import ProfileScreen from '../screens/ProfileScreen';
++import MetricDetailScreen from '../screens/MetricDetailScreen';
+ 
+ const Tab = createBottomTabNavigator();
+ const Stack = createNativeStackNavigator();
+ 
++// Custom Tab Icon Component
++const FiTabIcon = ({ emoji, focused, label, colors }) => (
++  <View style={styles.tabIconContainer}>
++    <View style={[
++      styles.tabIconWrapper,
++      focused && { backgroundColor: colors.primary + '20' }
++    ]}>
++      <Text style={[
++        styles.tabEmoji,
++        focused && styles.tabEmojiActive
++      ]}>
++        {emoji}
++      </Text>
++    </View>
++    <Text style={[
++      styles.tabLabel,
++      { color: colors.textSecondary },
++      focused && { color: colors.primary, fontWeight: '600' }
++    ]}>
++      {label}
++    </Text>
++  </View>
++);
++
+ const TabNavigator = ({ navigation }) => {
++  const { isDarkMode } = useTheme();
++  const colors = getThemeColors(isDarkMode);
++
+   return (
+     <Tab.Navigator
+       screenOptions={{
+         headerShown: false,
+         tabBarStyle: {
+-          backgroundColor: FiColors.surface,
+-          borderTopColor: FiColors.secondary + '20',
+-          height: 70,
+-          paddingBottom: 10,
+-          paddingTop: 10,
+-        },
+-        tabBarActiveTintColor: FiColors.primary,
+-        tabBarInactiveTintColor: FiColors.secondary,
+-        tabBarLabelStyle: {
+-          fontSize: 12,
+-          fontWeight: '500',
++          backgroundColor: colors.background,
++          borderTopColor: colors.border,
++          borderTopWidth: 0.5,
++          height: 80,
++          paddingBottom: 15,
++          paddingTop: 12,
+         },
++        tabBarShowLabel: false,
+       }}>
+       <Tab.Screen 
+         name="Home" 
+         component={FiHomeScreenWrapper}
+         options={{
+-          tabBarLabel: 'Home',
+-          tabBarIcon: () => <Text style={{ fontSize: 20 }}>🏠</Text>,
++          tabBarIcon: ({ focused }) => (
++            <FiTabIcon emoji="🏠" focused={focused} label="Home" colors={colors} />
++          ),
++        }}
++      />
++      <Tab.Screen 
++        name="Insights" 
++        component={InsightsScreen}
++        options={{
++          tabBarIcon: ({ focused }) => (
++            <FiTabIcon emoji="📊" focused={focused} label="Insights" colors={colors} />
++          ),
+         }}
+       />
+       <Tab.Screen 
+-        name="Inflation" 
+-        component={InflationScreen}
++        name="Goals" 
++        component={GoalsScreen}
+         options={{
+-          tabBarLabel: 'Inflation',
+-          tabBarIcon: () => <Text style={{ fontSize: 20 }}>📈</Text>,
++          tabBarIcon: ({ focused }) => (
++            <FiTabIcon emoji="🎯" focused={focused} label="Goals" colors={colors} />
++          ),
++        }}
++      />
++      <Tab.Screen 
++        name="Profile" 
++        component={ProfileScreen}
++        options={{
++          tabBarIcon: ({ focused }) => (
++            <FiTabIcon emoji="👤" focused={focused} label="Profile" colors={colors} />
++          ),
+         }}
+       />
+     </Tab.Navigator>
+@@ -53,13 +102,37 @@ const TabNavigator = ({ navigation }) => {
+ };
+ 
+ const AppNavigator = () => {
++  const { isDarkMode } = useTheme();
++  const colors = getThemeColors(isDarkMode);
++
+   return (
+-    <NavigationContainer>
++    <SafeAreaProvider>
++      <NavigationContainer
++      theme={{
++        dark: isDarkMode,
++        colors: {
++          primary: colors.primary,
++          background: colors.background,
++          card: colors.surface,
++          text: colors.text,
++          border: colors.border,
++          notification: colors.primary,
++        },
++        fonts: fonts,
++      }}
++    >
+       <Stack.Navigator screenOptions={{ headerShown: false }}>
+         <Stack.Screen name="Main">
+           {(props) => <TabNavigator {...props} />}
+         </Stack.Screen>
+         <Stack.Screen name="InflationSetup" component={InflationSetupScreen} />
++        <Stack.Screen 
++          name="MetricDetail" 
++          component={MetricDetailScreen}
++          options={{
++            headerShown: false,
++          }}
++        />
+         <Stack.Screen 
+           name="DetailedBreakdownScreen" 
+           component={DetailedBreakdownScreen}
+@@ -69,8 +142,39 @@ const AppNavigator = () => {
+           }}
+         />
+       </Stack.Navigator>
+-    </NavigationContainer>
++      </NavigationContainer>
++    </SafeAreaProvider>
+   );
+ };
+ 
++const styles = StyleSheet.create({
++  tabIconContainer: {
++    alignItems: 'center',
++    justifyContent: 'center',
++    minHeight: 50,
++    width: 70,
++  },
++  tabIconWrapper: {
++    width: 36,
++    height: 36,
++    borderRadius: 18,
++    justifyContent: 'center',
++    alignItems: 'center',
++    backgroundColor: 'transparent',
++    marginBottom: 4,
++  },
++  tabEmoji: {
++    fontSize: 18,
++  },
++  tabEmojiActive: {
++    fontSize: 18,
++  },
++  tabLabel: {
++    fontSize: 9,
++    fontWeight: '500',
++    textAlign: 'center',
++    numberOfLines: 1,
++  },
++});
++
+ export default AppNavigator;
+\ No newline at end of file
+diff --git a/src/navigation/FiStyleNavigator.js b/src/navigation/FiStyleNavigator.js
+index 96b005a..b63b453 100644
+--- a/src/navigation/FiStyleNavigator.js
++++ b/src/navigation/FiStyleNavigator.js
+@@ -12,6 +12,7 @@ import FiMetricsCards from '../components/fi-style/FiMetricsCards';
+ import StreamlinedWelcomeScreen from '../components/onboarding/StreamlinedWelcomeScreen';
+ import RevenueFocusedResultsScreen from '../components/results/RevenueFocusedResultsScreen';
+ import ProfessionalDashboard from '../components/professional/ProfessionalDashboard';
++import MetricDetailScreen from '../screens/MetricDetailScreen';
+ 
+ // Fi App Colors
+ const FiColors = {
+@@ -110,6 +111,14 @@ const InflationStack = () => {
+           headerTintColor: FiColors.text,
+         }}
+       />
++      
++      <Stack.Screen 
++        name="MetricDetail" 
++        component={MetricDetailScreen}
++        options={{ 
++          headerShown: false,
++        }}
++      />
+     </Stack.Navigator>
+   );
+ };
+@@ -123,9 +132,9 @@ const FiStyleTabNavigator = () => {
+           backgroundColor: FiColors.background,
+           borderTopColor: FiColors.border + '30',
+           borderTopWidth: 0.5,
+-          height: 85,
+-          paddingBottom: 20,
+-          paddingTop: 10,
++          height: 80,
++          paddingBottom: 15,
++          paddingTop: 12,
+         },
+         tabBarShowLabel: false,
+       }}
+@@ -193,6 +202,7 @@ const styles = StyleSheet.create({
+     alignItems: 'center',
+     justifyContent: 'center',
+     minHeight: 50,
++    width: 70,
+   },
+   tabIconWrapper: {
+     width: 36,
+@@ -210,12 +220,14 @@ const styles = StyleSheet.create({
+     fontSize: 18,
+   },
+   tabEmojiActive: {
+-    fontSize: 20,
++    fontSize: 18,
+   },
+   tabLabel: {
+-    fontSize: 11,
++    fontSize: 9,
+     fontWeight: '500',
+     color: FiColors.textInverse + '60',
++    textAlign: 'center',
++    numberOfLines: 1,
+   },
+   tabLabelActive: {
+     color: FiColors.primary,
+diff --git a/src/screens/GoalsScreen.js b/src/screens/GoalsScreen.js
+new file mode 100644
+index 0000000..74a69f6
+--- /dev/null
++++ b/src/screens/GoalsScreen.js
+@@ -0,0 +1,482 @@
++import React, { useState } from 'react';
++import { View, Text, StyleSheet, ScrollView, StatusBar } from 'react-native';
++import { FadeInUp } from '../components/animations/AnimatedCard';
++import { TouchableArea } from '../components/common/AccessibilityHelpers';
++
++const FiColors = {
++  background: '#1A1A1A',
++  surface: '#FFFFFF',
++  primary: '#00D4AA',
++  text: '#1A1A1A',
++  textSecondary: '#666666',
++  textInverse: '#FFFFFF',
++  border: '#E0E0E0',
++};
++
++const GoalsScreen = ({ navigation }) => {
++  const [activeGoals, setActiveGoals] = useState([
++    {
++      id: 1,
++      title: 'Emergency Fund',
++      target: 500000,
++      current: 125000,
++      icon: '🛡️',
++      category: 'Safety',
++      deadline: '6 months',
++      monthlyTarget: 62500,
++    },
++    {
++      id: 2,
++      title: 'House Down Payment',
++      target: 2000000,
++      current: 450000,
++      icon: '🏠',
++      category: 'Investment',
++      deadline: '2 years',
++      monthlyTarget: 64583,
++    },
++    {
++      id: 3,
++      title: 'Vacation Fund',
++      target: 150000,
++      current: 35000,
++      icon: '✈️',
++      category: 'Lifestyle',
++      deadline: '8 months',
++      monthlyTarget: 14375,
++    },
++  ]);
++
++  const GoalCard = ({ goal, bgColor }) => {
++    const progress = (goal.current / goal.target) * 100;
++    const remaining = goal.target - goal.current;
++    
++    return (
++      <FadeInUp delay={100}>
++        <TouchableArea style={[styles.goalCard, { backgroundColor: bgColor }]}>
++          <View style={styles.goalHeader}>
++            <View style={styles.goalTitleSection}>
++              <Text style={styles.goalIcon}>{goal.icon}</Text>
++              <View>
++                <Text style={styles.goalTitle}>{goal.title}</Text>
++                <Text style={styles.goalCategory}>{goal.category} • {goal.deadline}</Text>
++              </View>
++            </View>
++            <Text style={styles.goalProgress}>{progress.toFixed(0)}%</Text>
++          </View>
++          
++          <View style={styles.goalAmounts}>
++            <Text style={styles.goalCurrent}>₹{goal.current.toLocaleString()}</Text>
++            <Text style={styles.goalTarget}>of ₹{goal.target.toLocaleString()}</Text>
++          </View>
++          
++          <View style={styles.progressBarContainer}>
++            <View style={styles.progressBarBackground}>
++              <View 
++                style={[styles.progressBarFill, { width: `${Math.min(progress, 100)}%` }]}
++              />
++            </View>
++          </View>
++          
++          <View style={styles.goalFooter}>
++            <Text style={styles.remainingAmount}>₹{remaining.toLocaleString()} remaining</Text>
++            <Text style={styles.monthlyTarget}>₹{goal.monthlyTarget.toLocaleString()}/month</Text>
++          </View>
++        </TouchableArea>
++      </FadeInUp>
++    );
++  };
++
++  const InflationImpactCard = () => (
++    <FadeInUp delay={200}>
++      <View style={styles.impactCard}>
++        <View style={styles.impactHeader}>
++          <Text style={styles.impactIcon}>⚠️</Text>
++          <View>
++            <Text style={styles.impactTitle}>Inflation Impact on Goals</Text>
++            <Text style={styles.impactSubtitle}>How inflation affects your targets</Text>
++          </View>
++        </View>
++        
++        <View style={styles.impactContent}>
++          <View style={styles.impactItem}>
++            <Text style={styles.impactLabel}>Additional amount needed</Text>
++            <Text style={styles.impactValue}>₹1,24,500</Text>
++          </View>
++          <View style={styles.impactItem}>
++            <Text style={styles.impactLabel}>Extended timeline</Text>
++            <Text style={styles.impactValue}>+3.2 months</Text>
++          </View>
++        </View>
++        
++        <TouchableArea style={styles.adjustButton}>
++          <Text style={styles.adjustButtonText}>Adjust Goals for Inflation</Text>
++        </TouchableArea>
++      </View>
++    </FadeInUp>
++  );
++
++  const QuickActions = () => (
++    <FadeInUp delay={300}>
++      <View style={styles.quickActionsSection}>
++        <Text style={styles.sectionTitle}>Quick Actions</Text>
++        
++        <View style={styles.actionsGrid}>
++          <TouchableArea style={styles.actionCard}>
++            <Text style={styles.actionIcon}>➕</Text>
++            <Text style={styles.actionText}>Add Goal</Text>
++          </TouchableArea>
++          
++          <TouchableArea style={styles.actionCard}>
++            <Text style={styles.actionIcon}>📊</Text>
++            <Text style={styles.actionText}>Track Progress</Text>
++          </TouchableArea>
++          
++          <TouchableArea style={styles.actionCard}>
++            <Text style={styles.actionIcon}>💡</Text>
++            <Text style={styles.actionText}>Get Tips</Text>
++          </TouchableArea>
++          
++          <TouchableArea style={styles.actionCard}>
++            <Text style={styles.actionIcon}>🔄</Text>
++            <Text style={styles.actionText}>Auto-Invest</Text>
++          </TouchableArea>
++        </View>
++      </View>
++    </FadeInUp>
++  );
++
++  return (
++    <View style={styles.container}>
++      <StatusBar barStyle="light-content" backgroundColor={FiColors.background} />
++      
++      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
++        {/* Header */}
++        <View style={styles.header}>
++          <Text style={styles.headerTitle}>Financial Goals</Text>
++          <Text style={styles.headerSubtitle}>Track your progress & stay motivated</Text>
++        </View>
++        {/* Goal Summary */}
++        <View style={styles.infoSection}>
++          <Text style={styles.infoTitle}>Goal Summary</Text>
++          <View style={styles.infoItem}>
++            <Text style={styles.infoLabel}>Vacation Fund</Text>
++            <Text style={styles.infoValue}>₹35,000 of ₹1.5L (23%)</Text>
++          </View>
++          <View style={styles.infoItem}>
++            <Text style={styles.infoLabel}>Total Progress</Text>
++            <Text style={styles.infoValue}>30% across all goals</Text>
++          </View>
++        </View>
++
++        {/* Goals Overview */}
++        <View style={styles.overviewCard}>
++          <Text style={styles.overviewTitle}>Goals Overview</Text>
++          <View style={styles.overviewStats}>
++            <View style={styles.overviewStat}>
++              <Text style={styles.overviewValue}>{activeGoals.length}</Text>
++              <Text style={styles.overviewLabel}>Active Goals</Text>
++            </View>
++            <View style={styles.overviewStat}>
++              <Text style={styles.overviewValue}>₹6.1L</Text>
++              <Text style={styles.overviewLabel}>Saved</Text>
++            </View>
++            <View style={styles.overviewStat}>
++              <Text style={styles.overviewValue}>₹20.4L</Text>
++              <Text style={styles.overviewLabel}>Target</Text>
++            </View>
++          </View>
++        </View>
++
++        {/* Active Goals */}
++        <View style={styles.section}>
++          <Text style={styles.sectionTitle}>Your Goals</Text>
++          {activeGoals.slice(0, 2).map((goal, index) => {
++            const colors = ['#F0FFF4', '#FFF5F5'];
++            return (
++              <GoalCard key={goal.id} goal={goal} bgColor={colors[index % colors.length]} />
++            );
++          })}
++        </View>
++
++        {/* Inflation Impact */}
++        <View style={styles.section}>
++          <InflationImpactCard />
++        </View>
++
++        {/* Quick Actions */}
++        <QuickActions />
++      </ScrollView>
++    </View>
++  );
++};
++
++const styles = StyleSheet.create({
++  container: {
++    flex: 1,
++    backgroundColor: FiColors.background,
++  },
++  content: {
++    flex: 1,
++  },
++  header: {
++    backgroundColor: FiColors.background,
++    paddingTop: 50,
++    paddingHorizontal: 20,
++    paddingBottom: 20,
++  },
++  headerTitle: {
++    fontSize: 28,
++    fontWeight: '600',
++    color: FiColors.textInverse,
++    marginBottom: 4,
++  },
++  headerSubtitle: {
++    fontSize: 16,
++    color: FiColors.textInverse + '80',
++  },
++  content: {
++    flex: 1,
++  },
++  overviewCard: {
++    backgroundColor: '#F0F9FF',
++    margin: 16,
++    borderRadius: 16,
++    padding: 20,
++    shadowColor: '#000',
++    shadowOffset: { width: 0, height: 2 },
++    shadowOpacity: 0.1,
++    shadowRadius: 8,
++    elevation: 4,
++  },
++  overviewTitle: {
++    fontSize: 18,
++    fontWeight: '600',
++    color: FiColors.text,
++    marginBottom: 16,
++  },
++  overviewStats: {
++    flexDirection: 'row',
++    justifyContent: 'space-around',
++  },
++  overviewStat: {
++    alignItems: 'center',
++  },
++  overviewValue: {
++    fontSize: 20,
++    fontWeight: '700',
++    color: FiColors.primary,
++    marginBottom: 4,
++  },
++  overviewLabel: {
++    fontSize: 14,
++    color: FiColors.textSecondary,
++  },
++  section: {
++    margin: 16,
++  },
++  sectionTitle: {
++    fontSize: 20,
++    fontWeight: '600',
++    color: FiColors.text,
++    marginBottom: 16,
++  },
++  goalCard: {
++    borderRadius: 16,
++    padding: 20,
++    marginBottom: 8,
++    shadowColor: '#000',
++    shadowOffset: { width: 0, height: 2 },
++    shadowOpacity: 0.1,
++    shadowRadius: 8,
++    elevation: 4,
++  },
++  goalHeader: {
++    flexDirection: 'row',
++    justifyContent: 'space-between',
++    alignItems: 'center',
++    marginBottom: 12,
++  },
++  goalTitleSection: {
++    flexDirection: 'row',
++    alignItems: 'center',
++    flex: 1,
++  },
++  goalIcon: {
++    fontSize: 24,
++    marginRight: 12,
++  },
++  goalTitle: {
++    fontSize: 18,
++    fontWeight: '600',
++    color: FiColors.text,
++    marginBottom: 2,
++  },
++  goalCategory: {
++    fontSize: 14,
++    color: FiColors.textSecondary,
++  },
++  goalProgress: {
++    fontSize: 18,
++    fontWeight: '700',
++    color: FiColors.primary,
++  },
++  goalAmounts: {
++    flexDirection: 'row',
++    alignItems: 'baseline',
++    marginBottom: 12,
++  },
++  goalCurrent: {
++    fontSize: 24,
++    fontWeight: '700',
++    color: FiColors.text,
++    marginRight: 8,
++  },
++  goalTarget: {
++    fontSize: 16,
++    color: FiColors.textSecondary,
++  },
++  progressBarContainer: {
++    marginBottom: 12,
++  },
++  progressBarBackground: {
++    height: 8,
++    backgroundColor: FiColors.border + '40',
++    borderRadius: 4,
++    overflow: 'hidden',
++  },
++  progressBarFill: {
++    height: '100%',
++    backgroundColor: FiColors.primary,
++    borderRadius: 4,
++  },
++  goalFooter: {
++    flexDirection: 'row',
++    justifyContent: 'space-between',
++    alignItems: 'center',
++  },
++  remainingAmount: {
++    fontSize: 14,
++    color: FiColors.textSecondary,
++  },
++  monthlyTarget: {
++    fontSize: 14,
++    fontWeight: '600',
++    color: FiColors.primary,
++  },
++  impactCard: {
++    backgroundColor: '#FFF3E0',
++    borderRadius: 16,
++    padding: 20,
++    borderWidth: 1,
++    borderColor: '#FFB74D',
++  },
++  impactHeader: {
++    flexDirection: 'row',
++    alignItems: 'center',
++    marginBottom: 16,
++  },
++  impactIcon: {
++    fontSize: 24,
++    marginRight: 12,
++  },
++  impactTitle: {
++    fontSize: 16,
++    fontWeight: '600',
++    color: FiColors.text,
++    marginBottom: 2,
++  },
++  impactSubtitle: {
++    fontSize: 14,
++    color: FiColors.textSecondary,
++  },
++  impactContent: {
++    marginBottom: 16,
++  },
++  impactItem: {
++    flexDirection: 'row',
++    justifyContent: 'space-between',
++    alignItems: 'center',
++    paddingVertical: 8,
++  },
++  impactLabel: {
++    fontSize: 14,
++    color: FiColors.textSecondary,
++  },
++  impactValue: {
++    fontSize: 16,
++    fontWeight: '600',
++    color: '#F57C00',
++  },
++  adjustButton: {
++    backgroundColor: '#FF9800',
++    borderRadius: 12,
++    paddingVertical: 12,
++    alignItems: 'center',
++  },
++  adjustButtonText: {
++    fontSize: 16,
++    fontWeight: '600',
++    color: '#FFFFFF',
++  },
++  quickActionsSection: {
++    margin: 16,
++  },
++  actionsGrid: {
++    flexDirection: 'row',
++    flexWrap: 'wrap',
++    gap: 12,
++  },
++  actionCard: {
++    backgroundColor: '#FFFBF0',
++    borderRadius: 12,
++    padding: 16,
++    width: '48%',
++    alignItems: 'center',
++    shadowColor: '#000',
++    shadowOffset: { width: 0, height: 1 },
++    shadowOpacity: 0.05,
++    shadowRadius: 4,
++    elevation: 2,
++  },
++  actionIcon: {
++    fontSize: 24,
++    marginBottom: 8,
++  },
++  actionText: {
++    fontSize: 14,
++    fontWeight: '500',
++    color: FiColors.text,
++  },
++  infoSection: {
++    backgroundColor: FiColors.background,
++    paddingHorizontal: 20,
++    paddingVertical: 16,
++    marginHorizontal: 16,
++    borderRadius: 12,
++    marginBottom: 16,
++  },
++  infoTitle: {
++    fontSize: 16,
++    fontWeight: '600',
++    color: FiColors.textInverse,
++    marginBottom: 12,
++  },
++  infoItem: {
++    flexDirection: 'row',
++    justifyContent: 'space-between',
++    alignItems: 'center',
++    paddingVertical: 6,
++  },
++  infoLabel: {
++    fontSize: 14,
++    color: FiColors.textInverse + '80',
++  },
++  infoValue: {
++    fontSize: 14,
++    fontWeight: '600',
++    color: FiColors.textInverse,
++  },
++});
++
++export default GoalsScreen;
+diff --git a/src/screens/HomeScreen.js b/src/screens/HomeScreen.js
+index 17af1ba..4a4946f 100644
+--- a/src/screens/HomeScreen.js
++++ b/src/screens/HomeScreen.js
+@@ -9,7 +9,7 @@ import {
+   ScrollView,
+   Image,
+ } from 'react-native';
+-import { FiColors } from '../theme/colors';
++import { FiColors } from '../theme/consolidatedFiColors';
+ import BalanceCard from '../components/BalanceCard';
+ import PlantRewards from '../components/PlantRewards';
+ import QuickActions from '../components/QuickActions';
+diff --git a/src/screens/InsightsScreen.js b/src/screens/InsightsScreen.js
+new file mode 100644
+index 0000000..033d97f
+--- /dev/null
++++ b/src/screens/InsightsScreen.js
+@@ -0,0 +1,352 @@
++import React from 'react';
++import { View, Text, StyleSheet, ScrollView, StatusBar } from 'react-native';
++import { FadeInUp } from '../components/animations/AnimatedCard';
++import { TouchableArea } from '../components/common/AccessibilityHelpers';
++
++const FiColors = {
++  background: '#1A1A1A',
++  surface: '#FFFFFF',
++  primary: '#00D4AA',
++  text: '#1A1A1A',
++  textSecondary: '#666666',
++  textInverse: '#FFFFFF',
++  border: '#E0E0E0',
++};
++
++const InsightsScreen = ({ navigation }) => {
++  const InsightCard = ({ title, value, trend, icon, description }) => (
++    <FadeInUp delay={100}>
++      <TouchableArea>
++        <View style={styles.cardHeader}>
++          <Text style={styles.cardIcon}>{icon}</Text>
++          <View style={styles.cardTitleContainer}>
++            <Text style={styles.cardTitle}>{title}</Text>
++            <Text style={styles.cardDescription}>{description}</Text>
++          </View>
++        </View>
++        <View style={styles.cardContent}>
++          <Text style={styles.cardValue}>{value}</Text>
++          <Text style={[styles.cardTrend, trend > 0 ? styles.trendUp : styles.trendDown]}>
++            {trend > 0 ? '↗' : '↘'} {Math.abs(trend)}%
++          </Text>
++        </View>
++      </TouchableArea>
++    </FadeInUp>
++  );
++
++  const SpendingCategory = ({ category, amount, percentage, icon }) => (
++    <View style={styles.categoryItem}>
++      <View style={styles.categoryLeft}>
++        <Text style={styles.categoryIcon}>{icon}</Text>
++        <Text style={styles.categoryName}>{category}</Text>
++      </View>
++      <View style={styles.categoryRight}>
++        <Text style={styles.categoryAmount}>₹{amount}</Text>
++        <Text style={styles.categoryPercentage}>{percentage}%</Text>
++      </View>
++    </View>
++  );
++
++  return (
++    <View style={styles.container}>
++      <StatusBar barStyle="light-content" backgroundColor={FiColors.background} />
++      
++      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
++        {/* Header */}
++        <View style={styles.header}>
++          <Text style={styles.headerTitle}>Financial Insights</Text>
++          <Text style={styles.headerSubtitle}>Your spending patterns & trends</Text>
++        </View>
++        {/* Market Overview */}
++        <View style={styles.infoSection}>
++          <Text style={styles.infoTitle}>Market Overview</Text>
++          <View style={styles.infoItem}>
++            <Text style={styles.infoLabel}>Purchasing Power</Text>
++            <Text style={styles.infoValue}>87.3% ↘ -2.1%</Text>
++          </View>
++          <View style={styles.infoItem}>
++            <Text style={styles.infoLabel}>Cost of Living Index</Text>
++            <Text style={styles.infoValue}>142.8 ↗ +8.7%</Text>
++          </View>
++        </View>
++
++        {/* Key Metrics */}
++        <View style={styles.section}>
++          <Text style={styles.sectionTitle}>Key Metrics</Text>
++          
++          <View style={[styles.insightCard, { backgroundColor: '#FFF5F5' }]}>
++            <InsightCard
++              title="Monthly Inflation Impact"
++              value="₹2,450"
++              trend={12.5}
++              icon="📈"
++              description="Additional cost due to inflation"
++            />
++          </View>
++        </View>
++
++        {/* Spending Breakdown */}
++        <View style={styles.section}>
++          <Text style={styles.sectionTitle}>Inflation Impact by Category</Text>
++          
++          <View style={styles.spendingCard}>
++            <SpendingCategory
++              category="Food & Dining"
++              amount="1,250"
++              percentage="35"
++              icon="🍽️"
++            />
++            <SpendingCategory
++              category="Transportation"
++              amount="890"
++              percentage="25"
++              icon="🚗"
++            />
++            <SpendingCategory
++              category="Housing"
++              amount="650"
++              percentage="18"
++              icon="🏠"
++            />
++            <SpendingCategory
++              category="Healthcare"
++              amount="420"
++              percentage="12"
++              icon="🏥"
++            />
++            <SpendingCategory
++              category="Others"
++              amount="240"
++              percentage="10"
++              icon="📦"
++            />
++          </View>
++        </View>
++
++        {/* Recommendations */}
++        <View style={styles.section}>
++          <Text style={styles.sectionTitle}>Smart Recommendations</Text>
++          
++          <FadeInUp delay={300}>
++            <View style={styles.recommendationCard}>
++              <Text style={styles.recommendationIcon}>💡</Text>
++              <View style={styles.recommendationContent}>
++                <Text style={styles.recommendationTitle}>Switch to bulk buying</Text>
++                <Text style={styles.recommendationText}>
++                  Save ₹180/month on groceries by buying in bulk
++                </Text>
++              </View>
++            </View>
++          </FadeInUp>
++          
++          <FadeInUp delay={400}>
++            <View style={styles.recommendationCard}>
++              <Text style={styles.recommendationIcon}>🚌</Text>
++              <View style={styles.recommendationContent}>
++                <Text style={styles.recommendationTitle}>Use public transport</Text>
++                <Text style={styles.recommendationText}>
++                  Reduce fuel costs by ₹320/month with metro passes
++                </Text>
++              </View>
++            </View>
++          </FadeInUp>
++        </View>
++      </ScrollView>
++    </View>
++  );
++};
++
++const styles = StyleSheet.create({
++  container: {
++    flex: 1,
++    backgroundColor: FiColors.background,
++  },
++  content: {
++    flex: 1,
++  },
++  header: {
++    backgroundColor: FiColors.background,
++    paddingTop: 50,
++    paddingHorizontal: 20,
++    paddingBottom: 20,
++  },
++  headerTitle: {
++    fontSize: 28,
++    fontWeight: '600',
++    color: FiColors.textInverse,
++    marginBottom: 4,
++  },
++  headerSubtitle: {
++    fontSize: 16,
++    color: FiColors.textInverse + '80',
++  },
++  content: {
++    flex: 1,
++  },
++  section: {
++    margin: 16,
++  },
++  sectionTitle: {
++    fontSize: 20,
++    fontWeight: '600',
++    color: FiColors.text,
++    marginBottom: 16,
++  },
++  insightCard: {
++    borderRadius: 16,
++    padding: 20,
++    marginBottom: 12,
++    shadowColor: '#000',
++    shadowOffset: { width: 0, height: 2 },
++    shadowOpacity: 0.1,
++    shadowRadius: 8,
++    elevation: 4,
++  },
++  cardHeader: {
++    flexDirection: 'row',
++    alignItems: 'center',
++    marginBottom: 16,
++  },
++  cardIcon: {
++    fontSize: 24,
++    marginRight: 12,
++  },
++  cardTitleContainer: {
++    flex: 1,
++  },
++  cardTitle: {
++    fontSize: 16,
++    fontWeight: '600',
++    color: FiColors.text,
++    marginBottom: 2,
++  },
++  cardDescription: {
++    fontSize: 14,
++    color: FiColors.textSecondary,
++  },
++  cardContent: {
++    flexDirection: 'row',
++    justifyContent: 'space-between',
++    alignItems: 'center',
++  },
++  cardValue: {
++    fontSize: 24,
++    fontWeight: '700',
++    color: FiColors.text,
++  },
++  cardTrend: {
++    fontSize: 16,
++    fontWeight: '600',
++  },
++  trendUp: {
++    color: '#FF6B6B',
++  },
++  trendDown: {
++    color: FiColors.primary,
++  },
++  spendingCard: {
++    backgroundColor: '#FFFBF0',
++    borderRadius: 16,
++    padding: 20,
++    shadowColor: '#000',
++    shadowOffset: { width: 0, height: 2 },
++    shadowOpacity: 0.1,
++    shadowRadius: 8,
++    elevation: 4,
++  },
++  categoryItem: {
++    flexDirection: 'row',
++    justifyContent: 'space-between',
++    alignItems: 'center',
++    paddingVertical: 12,
++    borderBottomWidth: 1,
++    borderBottomColor: FiColors.border + '30',
++  },
++  categoryLeft: {
++    flexDirection: 'row',
++    alignItems: 'center',
++    flex: 1,
++  },
++  categoryIcon: {
++    fontSize: 20,
++    marginRight: 12,
++  },
++  categoryName: {
++    fontSize: 16,
++    fontWeight: '500',
++    color: FiColors.text,
++  },
++  categoryRight: {
++    alignItems: 'flex-end',
++  },
++  categoryAmount: {
++    fontSize: 16,
++    fontWeight: '600',
++    color: FiColors.text,
++  },
++  categoryPercentage: {
++    fontSize: 14,
++    color: FiColors.textSecondary,
++  },
++  recommendationCard: {
++    backgroundColor: '#F0FDFA',
++    borderRadius: 16,
++    padding: 20,
++    marginBottom: 12,
++    flexDirection: 'row',
++    alignItems: 'center',
++    shadowColor: '#000',
++    shadowOffset: { width: 0, height: 2 },
++    shadowOpacity: 0.1,
++    shadowRadius: 8,
++    elevation: 4,
++  },
++  recommendationIcon: {
++    fontSize: 24,
++    marginRight: 16,
++  },
++  recommendationContent: {
++    flex: 1,
++  },
++  recommendationTitle: {
++    fontSize: 16,
++    fontWeight: '600',
++    color: FiColors.text,
++    marginBottom: 4,
++  },
++  recommendationText: {
++    fontSize: 14,
++    color: FiColors.textSecondary,
++    lineHeight: 20,
++  },
++  infoSection: {
++    backgroundColor: FiColors.background,
++    paddingHorizontal: 20,
++    paddingVertical: 16,
++    marginHorizontal: 16,
++    borderRadius: 12,
++  },
++  infoTitle: {
++    fontSize: 16,
++    fontWeight: '600',
++    color: FiColors.textInverse,
++    marginBottom: 12,
++  },
++  infoItem: {
++    flexDirection: 'row',
++    justifyContent: 'space-between',
++    alignItems: 'center',
++    paddingVertical: 6,
++  },
++  infoLabel: {
++    fontSize: 14,
++    color: FiColors.textInverse + '80',
++  },
++  infoValue: {
++    fontSize: 14,
++    fontWeight: '600',
++    color: FiColors.textInverse,
++  },
++});
++
++export default InsightsScreen;
+diff --git a/src/screens/MetricDetailScreen.js b/src/screens/MetricDetailScreen.js
+new file mode 100644
+index 0000000..b5b0574
+--- /dev/null
++++ b/src/screens/MetricDetailScreen.js
+@@ -0,0 +1,282 @@
++import React from 'react';
++import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
++
++const FiColors = {
++  background: '#1A1A1A',
++  surface: '#FFFFFF',
++  primary: '#00D4AA',
++  text: '#1A1A1A',
++  textSecondary: '#666666',
++  textInverse: '#FFFFFF',
++  success: '#00D4AA',
++  warning: '#FFB800',
++  error: '#FF6B6B',
++};
++
++const MetricDetailScreen = ({ route, navigation }) => {
++  const { cardId } = route.params;
++
++  const getMetricDetails = (id) => {
++    const metrics = {
++      inflation_rate: {
++        title: 'Your Inflation Rate',
++        value: '8.2%',
++        description: 'Your personal inflation rate is higher than the government rate of 6.5%',
++        details: [
++          { label: 'Food & Beverages', value: '9.1%', impact: 'High' },
++          { label: 'Housing', value: '7.8%', impact: 'Medium' },
++          { label: 'Transportation', value: '8.5%', impact: 'High' },
++          { label: 'Healthcare', value: '6.2%', impact: 'Low' },
++        ],
++        color: FiColors.error,
++        icon: '📈'
++      },
++      salary_impact: {
++        title: 'Salary Impact',
++        value: '₹11,800',
++        description: 'Additional monthly income needed to maintain your current lifestyle',
++        details: [
++          { label: 'Current Monthly Expenses', value: '₹45,000' },
++          { label: 'Inflation Adjusted', value: '₹56,800' },
++          { label: 'Additional Required', value: '₹11,800' },
++          { label: 'Annual Impact', value: '₹1,41,600' },
++        ],
++        color: FiColors.warning,
++        icon: '💼'
++      },
++      investment_target: {
++        title: 'Investment Target',
++        value: '16.8%',
++        description: 'Minimum returns needed to beat your personal inflation rate',
++        details: [
++          { label: 'Your Inflation Rate', value: '8.2%' },
++          { label: 'Tax Impact (30%)', value: '2.5%' },
++          { label: 'Real Return Buffer', value: '6.1%' },
++          { label: 'Target Return', value: '16.8%' },
++        ],
++        color: FiColors.success,
++        icon: '🎯'
++      },
++      city_rank: {
++        title: 'City Ranking',
++        value: '#2',
++        description: 'Your city ranks as the 2nd most expensive for your lifestyle',
++        details: [
++          { label: 'Mumbai', value: '#1', impact: 'Most Expensive' },
++          { label: 'Your City', value: '#2', impact: 'Very Expensive' },
++          { label: 'Bangalore', value: '#3', impact: 'Expensive' },
++          { label: 'Delhi', value: '#4', impact: 'Moderate' },
++        ],
++        color: FiColors.primary,
++        icon: '🏙️'
++      },
++      weekly_insight: {
++        title: 'Weekly Insight',
++        value: '+2.3%',
++        description: 'Your food costs increased this week due to vegetable price surge in Mumbai markets',
++        details: [
++          { label: 'Vegetables', value: '+4.2%', impact: 'High' },
++          { label: 'Fruits', value: '+1.8%', impact: 'Medium' },
++          { label: 'Dairy', value: '+0.5%', impact: 'Low' },
++          { label: 'Grains', value: '-0.2%', impact: 'Low' },
++        ],
++        color: FiColors.warning,
++        icon: '📊'
++      }
++    };
++    return metrics[id] || metrics.inflation_rate;
++  };
++
++  const metric = getMetricDetails(cardId);
++
++  return (
++    <View style={styles.container}>
++      <View style={styles.header}>
++        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
++          <Text style={styles.backIcon}>←</Text>
++        </TouchableOpacity>
++        <Text style={styles.headerTitle}>{metric.title}</Text>
++        <View style={styles.placeholder} />
++      </View>
++
++      <ScrollView style={styles.content}>
++        <View style={styles.metricCard}>
++          <Text style={styles.metricIcon}>{metric.icon}</Text>
++          <Text style={[styles.metricValue, { color: metric.color }]}>{metric.value}</Text>
++          <Text style={styles.metricDescription}>{metric.description}</Text>
++        </View>
++
++        <View style={styles.detailsSection}>
++          <Text style={styles.sectionTitle}>Breakdown</Text>
++          {metric.details.map((detail, index) => (
++            <View key={index} style={styles.detailItem}>
++              <Text style={styles.detailLabel}>{detail.label}</Text>
++              <Text style={styles.detailValue}>{detail.value}</Text>
++              {detail.impact && (
++                <Text style={[styles.detailImpact, { 
++                  color: detail.impact === 'High' ? FiColors.error : 
++                        detail.impact === 'Medium' ? FiColors.warning : FiColors.success 
++                }]}>
++                  {detail.impact}
++                </Text>
++              )}
++            </View>
++          ))}
++        </View>
++
++        <View style={styles.actionSection}>
++          <TouchableOpacity style={styles.primaryButton}>
++            <Text style={styles.primaryButtonText}>View Recommendations</Text>
++          </TouchableOpacity>
++          
++          <TouchableOpacity style={styles.secondaryButton}>
++            <Text style={styles.secondaryButtonText}>Share Insights</Text>
++          </TouchableOpacity>
++        </View>
++      </ScrollView>
++    </View>
++  );
++};
++
++const styles = StyleSheet.create({
++  container: {
++    flex: 1,
++    backgroundColor: '#F5F5F5',
++  },
++  header: {
++    backgroundColor: FiColors.surface,
++    paddingTop: 50,
++    paddingHorizontal: 20,
++    paddingBottom: 15,
++    flexDirection: 'row',
++    alignItems: 'center',
++    justifyContent: 'space-between',
++    shadowColor: '#000',
++    shadowOffset: { width: 0, height: 2 },
++    shadowOpacity: 0.1,
++    shadowRadius: 4,
++    elevation: 5,
++  },
++  backButton: {
++    width: 40,
++    height: 40,
++    justifyContent: 'center',
++    alignItems: 'center',
++  },
++  backIcon: {
++    fontSize: 24,
++    color: FiColors.text,
++  },
++  headerTitle: {
++    fontSize: 18,
++    fontWeight: '600',
++    color: FiColors.text,
++  },
++  placeholder: {
++    width: 40,
++  },
++  content: {
++    flex: 1,
++    padding: 16,
++  },
++  metricCard: {
++    backgroundColor: FiColors.surface,
++    borderRadius: 16,
++    padding: 24,
++    alignItems: 'center',
++    marginBottom: 20,
++    shadowColor: '#000',
++    shadowOffset: { width: 0, height: 2 },
++    shadowOpacity: 0.1,
++    shadowRadius: 8,
++    elevation: 4,
++  },
++  metricIcon: {
++    fontSize: 48,
++    marginBottom: 16,
++  },
++  metricValue: {
++    fontSize: 36,
++    fontWeight: '300',
++    marginBottom: 12,
++  },
++  metricDescription: {
++    fontSize: 16,
++    color: FiColors.textSecondary,
++    textAlign: 'center',
++    lineHeight: 22,
++  },
++  detailsSection: {
++    backgroundColor: FiColors.surface,
++    borderRadius: 16,
++    padding: 20,
++    marginBottom: 20,
++    shadowColor: '#000',
++    shadowOffset: { width: 0, height: 2 },
++    shadowOpacity: 0.1,
++    shadowRadius: 8,
++    elevation: 4,
++  },
++  sectionTitle: {
++    fontSize: 18,
++    fontWeight: '600',
++    color: FiColors.text,
++    marginBottom: 16,
++  },
++  detailItem: {
++    flexDirection: 'row',
++    justifyContent: 'space-between',
++    alignItems: 'center',
++    paddingVertical: 12,
++    borderBottomWidth: 1,
++    borderBottomColor: '#F0F0F0',
++  },
++  detailLabel: {
++    fontSize: 14,
++    color: FiColors.textSecondary,
++    flex: 1,
++  },
++  detailValue: {
++    fontSize: 14,
++    fontWeight: '600',
++    color: FiColors.text,
++    marginRight: 8,
++  },
++  detailImpact: {
++    fontSize: 12,
++    fontWeight: '600',
++    paddingHorizontal: 8,
++    paddingVertical: 4,
++    borderRadius: 8,
++    backgroundColor: 'rgba(0,0,0,0.05)',
++  },
++  actionSection: {
++    gap: 12,
++  },
++  primaryButton: {
++    backgroundColor: FiColors.primary,
++    borderRadius: 12,
++    padding: 16,
++    alignItems: 'center',
++  },
++  primaryButtonText: {
++    fontSize: 16,
++    fontWeight: '600',
++    color: '#FFFFFF',
++  },
++  secondaryButton: {
++    backgroundColor: 'transparent',
++    borderWidth: 1,
++    borderColor: FiColors.primary,
++    borderRadius: 12,
++    padding: 16,
++    alignItems: 'center',
++  },
++  secondaryButtonText: {
++    fontSize: 16,
++    fontWeight: '600',
++    color: FiColors.primary,
++  },
++});
++
++export default MetricDetailScreen;
+\ No newline at end of file
+diff --git a/src/screens/ProfileScreen.js b/src/screens/ProfileScreen.js
+new file mode 100644
+index 0000000..42ca419
+--- /dev/null
++++ b/src/screens/ProfileScreen.js
+@@ -0,0 +1,300 @@
++import React from 'react';
++import { View, Text, StyleSheet, ScrollView, StatusBar, Image } from 'react-native';
++import { FadeInUp } from '../components/animations/AnimatedCard';
++import { TouchableArea } from '../components/common/AccessibilityHelpers';
++import { useTheme } from '../theme/ThemeContext';
++import { useLanguage } from '../localization/LanguageContext';
++import { getThemeColors } from '../theme/consolidatedFiColors';
++import ThemeToggle from '../components/common/ThemeToggle';
++import LanguageSelector from '../components/common/LanguageSelector';
++
++const ProfileScreen = ({ navigation }) => {
++  const { isDarkMode } = useTheme();
++  const { t } = useLanguage();
++  const colors = getThemeColors(isDarkMode);
++
++  const ProfileHeader = () => (
++    <FadeInUp delay={0}>
++      <View style={[styles.profileHeader, { backgroundColor: colors.surface }]}>
++        <View style={styles.avatarContainer}>
++          <Image 
++            source={require('../../assets/avatars/avatar-1.png')} 
++            style={styles.avatar}
++          />
++          <TouchableArea style={[styles.editAvatarButton, { backgroundColor: colors.primary }]}>
++            <Text style={styles.editIcon}>✏️</Text>
++          </TouchableArea>
++        </View>
++        
++        <Text style={[styles.userName, { color: colors.text }]}>{t('profile.userName')}</Text>
++        <Text style={[styles.userEmail, { color: colors.textSecondary }]}>arjun.sharma@email.com</Text>
++        <Text style={[styles.memberSince, { color: colors.textTertiary }]}>{t('profile.memberSince')}</Text>
++      </View>
++    </FadeInUp>
++  );
++
++  const StatsCard = () => (
++    <FadeInUp delay={100}>
++      <View style={[styles.statsCard, { backgroundColor: colors.surface }]}>
++        <Text style={[styles.statsTitle, { color: colors.text }]}>{t('profile.journey')}</Text>
++        <View style={styles.statsGrid}>
++          <View style={styles.statItem}>
++            <Text style={[styles.statValue, { color: colors.primary }]}>47</Text>
++            <Text style={[styles.statLabel, { color: colors.textSecondary }]}>{t('profile.daysActive')}</Text>
++          </View>
++          <View style={styles.statItem}>
++            <Text style={[styles.statValue, { color: colors.primary }]}>₹2.4L</Text>
++            <Text style={[styles.statLabel, { color: colors.textSecondary }]}>{t('profile.moneySaved')}</Text>
++          </View>
++          <View style={styles.statItem}>
++            <Text style={[styles.statValue, { color: colors.primary }]}>12</Text>
++            <Text style={[styles.statLabel, { color: colors.textSecondary }]}>{t('profile.goalsAchieved')}</Text>
++          </View>
++        </View>
++      </View>
++    </FadeInUp>
++  );
++
++  const MenuSection = ({ title, items, delay = 200 }) => (
++    <FadeInUp delay={delay}>
++      <View style={[styles.menuSection, { backgroundColor: colors.surface }]}>
++        <Text style={[styles.menuSectionTitle, { color: colors.text }]}>{title}</Text>
++        {items.map((item, index) => (
++          <TouchableArea key={index} style={styles.menuItem}>
++            <View style={styles.menuItemLeft}>
++              <Text style={styles.menuIcon}>{item.icon}</Text>
++              <Text style={[styles.menuText, { color: colors.text }]}>{item.title}</Text>
++            </View>
++            <Text style={[styles.menuArrow, { color: colors.textSecondary }]}>›</Text>
++          </TouchableArea>
++        ))}
++      </View>
++    </FadeInUp>
++  );
++
++  const personalItems = [
++    { icon: '👤', title: t('profile.personalInfo') },
++    { icon: '🏠', title: t('profile.location') },
++    { icon: '💰', title: t('profile.income') },
++    { icon: '🎯', title: t('profile.financialGoals') },
++  ];
++
++  const appItems = [
++    { icon: '🔔', title: t('profile.notifications') },
++    { icon: '🔒', title: t('profile.privacy') },
++    { icon: '📊', title: t('profile.dataAnalytics') },
++  ];
++
++  const supportItems = [
++    { icon: '❓', title: t('profile.help') },
++    { icon: '📝', title: t('profile.feedback') },
++    { icon: '⭐', title: t('profile.rate') },
++    { icon: '📄', title: t('profile.terms') },
++  ];
++
++  return (
++    <View style={[styles.container, { backgroundColor: colors.background }]}>
++      <StatusBar 
++        barStyle={isDarkMode ? "light-content" : "dark-content"} 
++        backgroundColor={colors.background} 
++      />
++      
++      <ScrollView 
++        style={styles.scrollView}
++        showsVerticalScrollIndicator={false}
++        contentContainerStyle={styles.scrollContent}
++      >
++        <ProfileHeader />
++        <StatsCard />
++        
++        {/* Theme Toggle Section */}
++        <FadeInUp delay={150}>
++          <View style={[styles.themeSection, { backgroundColor: colors.surface }]}>
++            <Text style={[styles.menuSectionTitle, { color: colors.text }]}>{t('profile.appearance')}</Text>
++            <ThemeToggle style={styles.themeToggle} />
++          </View>
++        </FadeInUp>
++        
++        {/* Language Selector Section */}
++        <FadeInUp delay={175}>
++          <View style={[styles.languageSection, { backgroundColor: colors.surface }]}>
++            <Text style={[styles.menuSectionTitle, { color: colors.text }]}>{t('profile.language')}</Text>
++            <LanguageSelector style={styles.languageSelector} />
++          </View>
++        </FadeInUp>
++        
++        <MenuSection title={t('profile.personal')} items={personalItems} delay={200} />
++        <MenuSection title={t('profile.appSettings')} items={appItems} delay={250} />
++        <MenuSection title={t('profile.support')} items={supportItems} delay={300} />
++        
++        <View style={styles.bottomSpacing} />
++      </ScrollView>
++    </View>
++  );
++};
++const styles = StyleSheet.create({
++  container: {
++    flex: 1,
++  },
++  scrollView: {
++    flex: 1,
++  },
++  scrollContent: {
++    paddingBottom: 100,
++  },
++  profileHeader: {
++    margin: 16,
++    borderRadius: 16,
++    padding: 24,
++    alignItems: 'center',
++    shadowColor: '#000',
++    shadowOffset: { width: 0, height: 2 },
++    shadowOpacity: 0.1,
++    shadowRadius: 8,
++    elevation: 4,
++  },
++  avatarContainer: {
++    position: 'relative',
++    marginBottom: 16,
++  },
++  avatar: {
++    width: 80,
++    height: 80,
++    borderRadius: 40,
++  },
++  editAvatarButton: {
++    position: 'absolute',
++    bottom: -4,
++    right: -4,
++    width: 32,
++    height: 32,
++    borderRadius: 16,
++    justifyContent: 'center',
++    alignItems: 'center',
++    shadowColor: '#000',
++    shadowOffset: { width: 0, height: 2 },
++    shadowOpacity: 0.1,
++    shadowRadius: 4,
++    elevation: 2,
++  },
++  editIcon: {
++    fontSize: 16,
++  },
++  userName: {
++    fontSize: 24,
++    fontWeight: '600',
++    marginBottom: 4,
++  },
++  userEmail: {
++    fontSize: 16,
++    marginBottom: 8,
++  },
++  memberSince: {
++    fontSize: 14,
++  },
++  statsCard: {
++    margin: 16,
++    borderRadius: 16,
++    padding: 20,
++    shadowColor: '#000',
++    shadowOffset: { width: 0, height: 2 },
++    shadowOpacity: 0.1,
++    shadowRadius: 8,
++    elevation: 4,
++  },
++  statsTitle: {
++    fontSize: 18,
++    fontWeight: '600',
++    marginBottom: 16,
++    textAlign: 'center',
++  },
++  statsGrid: {
++    flexDirection: 'row',
++    justifyContent: 'space-around',
++  },
++  statItem: {
++    alignItems: 'center',
++  },
++  statValue: {
++    fontSize: 20,
++    fontWeight: '700',
++    marginBottom: 4,
++  },
++  statLabel: {
++    fontSize: 14,
++    textAlign: 'center',
++  },
++  themeSection: {
++    borderRadius: 16,
++    margin: 16,
++    padding: 20,
++    shadowColor: '#000',
++    shadowOffset: { width: 0, height: 2 },
++    shadowOpacity: 0.1,
++    shadowRadius: 8,
++    elevation: 4,
++  },
++  themeToggle: {
++    marginTop: 12,
++  },
++  languageSection: {
++    borderRadius: 16,
++    margin: 16,
++    padding: 20,
++    shadowColor: '#000',
++    shadowOffset: { width: 0, height: 2 },
++    shadowOpacity: 0.1,
++    shadowRadius: 8,
++    elevation: 4,
++  },
++  languageSelector: {
++    marginTop: 12,
++  },
++  menuSection: {
++    borderRadius: 16,
++    margin: 16,
++    overflow: 'hidden',
++    shadowColor: '#000',
++    shadowOffset: { width: 0, height: 2 },
++    shadowOpacity: 0.1,
++    shadowRadius: 8,
++    elevation: 4,
++  },
++  menuSectionTitle: {
++    fontSize: 16,
++    fontWeight: '600',
++    padding: 20,
++    paddingBottom: 12,
++  },
++  menuItem: {
++    flexDirection: 'row',
++    justifyContent: 'space-between',
++    alignItems: 'center',
++    paddingHorizontal: 20,
++    paddingVertical: 16,
++    borderTopWidth: 0.5,
++    borderTopColor: 'rgba(0, 0, 0, 0.1)',
++  },
++  menuItemLeft: {
++    flexDirection: 'row',
++    alignItems: 'center',
++    flex: 1,
++  },
++  menuIcon: {
++    fontSize: 20,
++    marginRight: 16,
++  },
++  menuText: {
++    fontSize: 16,
++    fontWeight: '500',
++  },
++  menuArrow: {
++    fontSize: 20,
++    fontWeight: '300',
++  },
++  bottomSpacing: {
++    height: 20,
++  },
++});
++
++export default ProfileScreen;
+diff --git a/src/theme/ThemeContext.js b/src/theme/ThemeContext.js
+new file mode 100644
+index 0000000..966a4e8
+--- /dev/null
++++ b/src/theme/ThemeContext.js
+@@ -0,0 +1,32 @@
++import React, { createContext, useContext, useState } from 'react';
++
++const ThemeContext = createContext();
++
++export const useTheme = () => {
++  const context = useContext(ThemeContext);
++  if (!context) {
++    throw new Error('useTheme must be used within a ThemeProvider');
++  }
++  return context;
++};
++
++export const ThemeProvider = ({ children }) => {
++  const [isDarkMode, setIsDarkMode] = useState(true);
++  const [isLoading, setIsLoading] = useState(false);
++
++  const toggleTheme = () => {
++    setIsDarkMode(!isDarkMode);
++  };
++
++  const value = {
++    isDarkMode,
++    toggleTheme,
++    isLoading,
++  };
++
++  return (
++    <ThemeContext.Provider value={value}>
++      {children}
++    </ThemeContext.Provider>
++  );
++};
+diff --git a/src/theme/consolidatedFiColors.js b/src/theme/consolidatedFiColors.js
+index 9d59748..480ed8e 100644
+--- a/src/theme/consolidatedFiColors.js
++++ b/src/theme/consolidatedFiColors.js
+@@ -1,28 +1,82 @@
+ // Consolidated Fi Colors (Based on Actual Fi App Screenshots)
+-// Single source of truth for all Fi-Zen components
++// Single source of truth for all Fi-Zen components with Dark/Light mode support
+ 
+-export const FiColors = {
++// Dark Theme Colors (Fi's signature dark mode)
++export const DarkTheme = {
+   // Fi App Primary Colors (from screenshots)
+   background: '#1A1A1A',        // Fi's dark background
++  surface: '#2A2A2A',           // Dark cards
++  surfaceSecondary: '#333333',  // Darker gray surface
++  
++  // Fi Brand Colors (consistent across themes)
++  primary: '#00D4AA',           // Fi's signature teal
++  primaryLight: '#33E0BB',      // Lighter teal
++  primaryDark: '#00B894',       // Darker teal
++  
++  // Text Colors for Dark Mode
++  text: '#FFFFFF',              // White text on dark surfaces
++  textSecondary: '#CCCCCC',     // Light gray text
++  textTertiary: '#999999',      // Medium gray text
++  textInverse: '#1A1A1A',       // Dark text on light elements
++  textInverseSecondary: '#666666', // Medium gray on light elements
++  
++  // Status Colors (Fi Style)
++  success: '#00D4AA',           // Use Fi teal for success
++  warning: '#FFB800',           // Warm yellow
++  error: '#FF6B6B',             // Soft red
++  info: '#4A90E2',              // Blue
++  
++  // Inflation-Specific Colors
++  inflationLow: '#00D4AA',      // Fi teal for good rates
++  inflationModerate: '#FFB800', // Yellow for moderate
++  inflationHigh: '#FF8A65',     // Orange for concerning
++  inflationVeryHigh: '#FF6B6B', // Red for very high
++  
++  // UI Elements
++  border: '#404040',            // Dark border
++  borderLight: '#333333',       // Darker border
++  shadow: 'rgba(0, 0, 0, 0.3)', // Stronger shadow for dark mode
++  secondary: '#666666',         // Secondary color
++  white: '#FFFFFF',             // White color
++  
++  // Attention surfaces
++  surfaceAttentionYellow: '#FFFBF0',   // Light pastel yellow
++  surfaceAttentionTeal: '#F0FDFA',     // Light pastel teal
++  surfaceAttentionRed: '#FFF5F5',      // Light pastel red
++  
++  // Backgrounds for different contexts
++  backgroundLight: '#2A2A2A',   // Dark background for content areas
++  backgroundCard: '#2A2A2A',    // Dark card backgrounds
++  backgroundAccent: '#00D4AA20', // Teal with 20% opacity
++  backgroundCardYellow: '#FFFBF0', // Light pastel yellow cards
++  backgroundCardTeal: '#F0FDFA',   // Light pastel teal cards
++  backgroundCardRed: '#FFF5F5',    // Light pastel red cards
++  backgroundHeader: '#00D4AA',     // Signature teal for headers
++};
++
++// Light Theme Colors
++export const LightTheme = {
++  // Light mode backgrounds
++  background: '#FFFFFF',        // White background
+   surface: '#FFFFFF',           // White cards
+   surfaceSecondary: '#F8F9FA',  // Light gray surface
+   
+-  // Fi Brand Colors
+-  primary: '#00D4AA',           // Fi's signature teal (from screenshots)
++  // Fi Brand Colors (consistent across themes)
++  primary: '#00D4AA',           // Fi's signature teal
+   primaryLight: '#33E0BB',      // Lighter teal
+   primaryDark: '#00B894',       // Darker teal
+   
+-  // Text Colors
++  // Text Colors for Light Mode
+   text: '#1A1A1A',             // Dark text on light surfaces
+   textSecondary: '#666666',     // Medium gray text
+   textTertiary: '#999999',      // Light gray text
+-  textInverse: '#FFFFFF',       // White text on dark background
+-  textInverseSecondary: '#CCCCCC', // Light gray on dark background
++  textInverse: '#FFFFFF',       // White text on dark elements
++  textInverseSecondary: '#CCCCCC', // Light gray on dark elements
+   
+   // Status Colors (Fi Style)
+   success: '#00D4AA',           // Use Fi teal for success
+   warning: '#FFB800',           // Warm yellow
+-  error: '#FF6B6B',             // Soft red (not harsh)
++  error: '#FF6B6B',             // Soft red
+   info: '#4A90E2',              // Blue
+   
+   // Inflation-Specific Colors
+@@ -35,19 +89,38 @@ export const FiColors = {
+   border: '#E0E0E0',            // Light border
+   borderLight: '#F0F0F0',       // Very light border
+   shadow: 'rgba(0, 0, 0, 0.1)', // Subtle shadow
++  secondary: '#666666',         // Secondary color
++  white: '#FFFFFF',             // White color
++  
++  // Attention surfaces
++  surfaceAttentionYellow: '#FFFBF0',   // Light pastel yellow
++  surfaceAttentionTeal: '#F0FDFA',     // Light pastel teal
++  surfaceAttentionRed: '#FFF5F5',      // Light pastel red
+   
+   // Backgrounds for different contexts
+   backgroundLight: '#F5F5F5',   // Light background for content areas
+   backgroundCard: '#FFFFFF',    // Card backgrounds
+   backgroundAccent: '#00D4AA20', // Teal with 20% opacity
++  backgroundCardYellow: '#FFFBF0', // Light pastel yellow cards
++  backgroundCardTeal: '#F0FDFA',   // Light pastel teal cards
++  backgroundCardRed: '#FFF5F5',    // Light pastel red cards
++  backgroundHeader: '#00D4AA',     // Signature teal for headers
+ };
+ 
++// Function to get current theme colors
++export const getThemeColors = (isDarkMode) => {
++  return isDarkMode ? DarkTheme : LightTheme;
++};
++
++// Legacy export for backward compatibility
++export const FiColors = DarkTheme;
++
+ // Fi Typography Scale (Based on Screenshots)
+ export const FiTypography = {
+   // Large wealth/number display (Fi style)
+   wealth: {
+     fontSize: 36,
+-    fontWeight: '300', // Fi's characteristic light weight
++    fontWeight: 'normal',
+     lineHeight: 44,
+   },
+   
+@@ -104,14 +177,14 @@ export const FiTypography = {
+   },
+ };
+ 
+-// Fi Component Styles (Reusable)
+-export const FiStyles = {
++// Fi Component Styles (Theme-aware)
++export const getFiStyles = (colors) => ({
+   // Standard Fi card
+   card: {
+-    backgroundColor: FiColors.surface,
++    backgroundColor: colors.surface,
+     borderRadius: 16,
+     padding: 20,
+-    shadowColor: FiColors.shadow,
++    shadowColor: colors.shadow,
+     shadowOffset: { width: 0, height: 2 },
+     shadowOpacity: 1,
+     shadowRadius: 8,
+@@ -120,7 +193,7 @@ export const FiStyles = {
+   
+   // Fi button primary
+   buttonPrimary: {
+-    backgroundColor: FiColors.primary,
++    backgroundColor: colors.primary,
+     borderRadius: 12,
+     paddingVertical: 14,
+     paddingHorizontal: 20,
+@@ -129,24 +202,62 @@ export const FiStyles = {
+   
+   // Fi button secondary
+   buttonSecondary: {
+-    backgroundColor: FiColors.primaryLight + '20',
++    backgroundColor: colors.primary + '20',
+     borderRadius: 12,
+     paddingVertical: 14,
+     paddingHorizontal: 20,
+     alignItems: 'center',
+     borderWidth: 1,
+-    borderColor: FiColors.primary,
++    borderColor: colors.primary,
+   },
+   
+   // Fi input field
+   input: {
+     borderWidth: 1,
+-    borderColor: FiColors.border,
++    borderColor: colors.border,
+     borderRadius: 8,
+     padding: 12,
+-    backgroundColor: FiColors.surface,
++    backgroundColor: colors.surface,
+     fontSize: 16,
++    color: colors.text,
+   },
+-};
++  
++  // Attention card styles
++  cardAttentionYellow: {
++    backgroundColor: colors.backgroundCardYellow || colors.surface,
++    borderRadius: 16,
++    padding: 20,
++    shadowColor: colors.shadow,
++    shadowOffset: { width: 0, height: 2 },
++    shadowOpacity: 1,
++    shadowRadius: 8,
++    elevation: 4,
++  },
++  
++  cardAttentionTeal: {
++    backgroundColor: colors.backgroundCardTeal || colors.surface,
++    borderRadius: 16,
++    padding: 20,
++    shadowColor: colors.shadow,
++    shadowOffset: { width: 0, height: 2 },
++    shadowOpacity: 1,
++    shadowRadius: 8,
++    elevation: 4,
++  },
++  
++  cardAttentionRed: {
++    backgroundColor: colors.backgroundCardRed || colors.surface,
++    borderRadius: 16,
++    padding: 20,
++    shadowColor: colors.shadow,
++    shadowOffset: { width: 0, height: 2 },
++    shadowOpacity: 1,
++    shadowRadius: 8,
++    elevation: 4,
++  },
++});
++
++// Legacy export for backward compatibility
++export const FiStyles = getFiStyles(DarkTheme);
+ 
+-export default FiColors;
++export default { DarkTheme, LightTheme, getThemeColors, FiTypography, getFiStyles };
+diff --git a/src/theme/fonts.js b/src/theme/fonts.js
+new file mode 100644
+index 0000000..a6b3d75
+--- /dev/null
++++ b/src/theme/fonts.js
+@@ -0,0 +1,9 @@
++export const fonts = {
++  regular: 'System',
++  medium: 'System',
++  light: 'System',
++  thin: 'System',
++  bold: 'System',
++};
++
++export default fonts;
+\ No newline at end of file
+diff --git a/src/theme/useThemedStyles.js b/src/theme/useThemedStyles.js
+new file mode 100644
+index 0000000..f4800e9
+--- /dev/null
++++ b/src/theme/useThemedStyles.js
+@@ -0,0 +1,17 @@
++import { useTheme } from './ThemeContext';
++import { getThemeColors, getFiStyles } from './consolidatedFiColors';
++
++// Custom hook to get themed colors and styles
++export const useThemedStyles = () => {
++  const { isDarkMode } = useTheme();
++  const colors = getThemeColors(isDarkMode);
++  const fiStyles = getFiStyles(colors);
++
++  return {
++    colors,
++    fiStyles,
++    isDarkMode,
++  };
++};
++
++export default useThemedStyles;
