@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -15,6 +15,8 @@ import InsightsScreen from '../screens/InsightsScreen';
 import GoalsScreen from '../screens/GoalsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import MetricDetailScreen from '../screens/MetricDetailScreen';
+import LoginScreen from '../screens/LoginScreen';
+import UserProfileService from '../services/UserProfileService';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -104,6 +106,17 @@ const TabNavigator = ({ navigation }) => {
 const AppNavigator = () => {
   const { isDarkMode } = useTheme();
   const colors = getThemeColors(isDarkMode);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Check if user is already logged in
+    const checkLoginStatus = () => {
+      const loggedIn = UserProfileService.isLoggedIn();
+      setIsLoggedIn(loggedIn);
+    };
+
+    checkLoginStatus();
+  }, []);
 
   return (
     <SafeAreaProvider>
@@ -122,25 +135,33 @@ const AppNavigator = () => {
       }}
     >
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Main">
-          {(props) => <TabNavigator {...props} />}
-        </Stack.Screen>
-        <Stack.Screen name="InflationSetup" component={InflationSetupScreen} />
-        <Stack.Screen 
-          name="MetricDetail" 
-          component={MetricDetailScreen}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen 
-          name="DetailedBreakdownScreen" 
-          component={DetailedBreakdownScreen}
-          options={{
-            presentation: 'modal',
-            headerShown: false,
-          }}
-        />
+        {!isLoggedIn ? (
+          // Show login screen if not logged in
+          <Stack.Screen name="Login" component={LoginScreen} />
+        ) : (
+          // Show main app if logged in
+          <>
+            <Stack.Screen name="Main">
+              {(props) => <TabNavigator {...props} />}
+            </Stack.Screen>
+            <Stack.Screen name="InflationSetup" component={InflationSetupScreen} />
+            <Stack.Screen 
+              name="MetricDetail" 
+              component={MetricDetailScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen 
+              name="DetailedBreakdownScreen" 
+              component={DetailedBreakdownScreen}
+              options={{
+                presentation: 'modal',
+                headerShown: false,
+              }}
+            />
+          </>
+        )}
       </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
