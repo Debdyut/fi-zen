@@ -289,14 +289,14 @@ const FiHomeScreen = ({ navigation, inflationData }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: FiColors.background,
+    backgroundColor: '#E6FBF7',
   },
   stickyHeader: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    backgroundColor: FiColors.background,
+    backgroundColor: '#00D4AA',
     paddingTop: 50,
     paddingHorizontal: 20,
     paddingBottom: 15,
@@ -335,11 +335,11 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    backgroundColor: FiColors.background,
+    backgroundColor: '#E6FBF7',
     paddingTop: 105,
   },
   welcomeSection: {
-    backgroundColor: FiColors.background,
+    backgroundColor: '#E6FBF7',
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: 20,
@@ -349,26 +349,26 @@ const styles = StyleSheet.create({
   },
   greetingText: {
     fontSize: 16,
-    color: FiColors.textInverse + '80',
+    color: '#1A1A1A',
     marginBottom: 4,
   },
   userName: {
     fontSize: 24,
     fontWeight: '600',
-    color: FiColors.textInverse,
+    color: '#1A1A1A',
   },
   wealthSection: {
     alignItems: 'center',
   },
   wealthLabel: {
     fontSize: 14,
-    color: FiColors.textInverse + '80',
+    color: '#1A1A1A',
     marginBottom: 8,
   },
   wealthValue: {
     fontSize: 36,
     fontWeight: '300',
-    color: FiColors.textInverse,
+    color: '#1A1A1A',
     marginBottom: 4,
   },
   wealthSubtext: {

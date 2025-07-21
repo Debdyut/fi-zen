@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   profileButton: { width: 44, height: 44, borderRadius: 22, overflow: 'hidden', borderWidth: 2, borderColor: FiColors.primary },
   avatarImage: { width: 40, height: 40, borderRadius: 20 },
   centerContent: { flex: 1, alignItems: 'center' },
-  greeting: { fontSize: 20, fontWeight: '600', color: FiColors.text, marginBottom: 2 },
+  greeting: { fontSize: 20, fontWeight: '600', color: '#00D4AA', marginBottom: 2 },
   subtitle: { fontSize: 12, color: FiColors.secondary, fontStyle: 'italic' },
   rightIcons: { flexDirection: 'row', gap: 8 },
   iconButton: { width: 36, height: 36, borderRadius: 18, backgroundColor: FiColors.surface, alignItems: 'center', justifyContent: 'center' },
