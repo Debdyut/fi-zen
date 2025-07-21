@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, StatusBar } from 'react-native';
 import { FadeInUp } from '../components/animations/AnimatedCard';
 import { TouchableArea } from '../components/common/AccessibilityHelpers';
+import { useLanguage } from '../localization/LanguageContext';
 
 const FiColors = {
   background: '#1A1A1A',
@@ -14,35 +15,36 @@ const FiColors = {
 };
 
 const GoalsScreen = ({ navigation }) => {
+  const { t } = useLanguage();
   const [activeGoals, setActiveGoals] = useState([
     {
       id: 1,
-      title: 'Emergency Fund',
+      title: t('goals.emergencyFund'),
       target: 500000,
       current: 125000,
       icon: '🛡️',
-      category: 'Safety',
-      deadline: '6 months',
+      category: t('goals.safety'),
+      deadline: `6 ${t('goals.months')}`,
       monthlyTarget: 62500,
     },
     {
       id: 2,
-      title: 'House Down Payment',
+      title: t('goals.houseDownPayment'),
       target: 2000000,
       current: 450000,
       icon: '🏠',
-      category: 'Investment',
-      deadline: '2 years',
+      category: t('goals.investment'),
+      deadline: `2 ${t('goals.years')}`,
       monthlyTarget: 64583,
     },
     {
       id: 3,
-      title: 'Vacation Fund',
+      title: t('goals.vacationFund'),
       target: 150000,
       current: 35000,
       icon: '✈️',
-      category: 'Lifestyle',
-      deadline: '8 months',
+      category: t('goals.lifestyle'),
+      deadline: `8 ${t('goals.months')}`,
       monthlyTarget: 14375,
     },
   ]);
@@ -79,8 +81,8 @@ const GoalsScreen = ({ navigation }) => {
           </View>
           
           <View style={styles.goalFooter}>
-            <Text style={styles.remainingAmount}>₹{remaining.toLocaleString()} remaining</Text>
-            <Text style={styles.monthlyTarget}>₹{goal.monthlyTarget.toLocaleString()}/month</Text>
+            <Text style={styles.remainingAmount}>₹{remaining.toLocaleString()} {t('goals.remaining')}</Text>
+            <Text style={styles.monthlyTarget}>₹{goal.monthlyTarget.toLocaleString()}/{t('goals.month')}</Text>
           </View>
         </TouchableArea>
       </FadeInUp>
@@ -93,24 +95,24 @@ const GoalsScreen = ({ navigation }) => {
         <View style={styles.impactHeader}>
           <Text style={styles.impactIcon}>⚠️</Text>
           <View>
-            <Text style={styles.impactTitle}>Inflation Impact on Goals</Text>
-            <Text style={styles.impactSubtitle}>How inflation affects your targets</Text>
+            <Text style={styles.impactTitle}>{t('goals.inflationImpactTitle')}</Text>
+            <Text style={styles.impactSubtitle}>{t('goals.inflationImpactSubtitle')}</Text>
           </View>
         </View>
         
         <View style={styles.impactContent}>
           <View style={styles.impactItem}>
-            <Text style={styles.impactLabel}>Additional amount needed</Text>
+            <Text style={styles.impactLabel}>{t('goals.additionalAmountNeeded')}</Text>
             <Text style={styles.impactValue}>₹1,24,500</Text>
           </View>
           <View style={styles.impactItem}>
-            <Text style={styles.impactLabel}>Extended timeline</Text>
-            <Text style={styles.impactValue}>+3.2 months</Text>
+            <Text style={styles.impactLabel}>{t('goals.extendedTimeline')}</Text>
+            <Text style={styles.impactValue}>+3.2 {t('goals.months')}</Text>
           </View>
         </View>
         
         <TouchableArea style={styles.adjustButton}>
-          <Text style={styles.adjustButtonText}>Adjust Goals for Inflation</Text>
+          <Text style={styles.adjustButtonText}>{t('goals.adjustGoalsButton')}</Text>
         </TouchableArea>
       </View>
     </FadeInUp>
@@ -119,27 +121,27 @@ const GoalsScreen = ({ navigation }) => {
   const QuickActions = () => (
     <FadeInUp delay={300}>
       <View style={styles.quickActionsSection}>
-        <Text style={styles.sectionTitle}>Quick Actions</Text>
+        <Text style={styles.sectionTitle}>{t('goals.quickActions')}</Text>
         
         <View style={styles.actionsGrid}>
           <TouchableArea style={styles.actionCard}>
             <Text style={styles.actionIcon}>➕</Text>
-            <Text style={styles.actionText}>Add Goal</Text>
+            <Text style={styles.actionText}>{t('goals.addGoal')}</Text>
           </TouchableArea>
           
           <TouchableArea style={styles.actionCard}>
             <Text style={styles.actionIcon}>📊</Text>
-            <Text style={styles.actionText}>Track Progress</Text>
+            <Text style={styles.actionText}>{t('goals.trackProgress')}</Text>
           </TouchableArea>
           
           <TouchableArea style={styles.actionCard}>
             <Text style={styles.actionIcon}>💡</Text>
-            <Text style={styles.actionText}>Get Tips</Text>
+            <Text style={styles.actionText}>{t('goals.getTips')}</Text>
           </TouchableArea>
           
           <TouchableArea style={styles.actionCard}>
             <Text style={styles.actionIcon}>🔄</Text>
-            <Text style={styles.actionText}>Auto-Invest</Text>
+            <Text style={styles.actionText}>{t('goals.autoInvest')}</Text>
           </TouchableArea>
         </View>
       </View>
@@ -153,44 +155,44 @@ const GoalsScreen = ({ navigation }) => {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Financial Goals</Text>
-          <Text style={styles.headerSubtitle}>Track your progress & stay motivated</Text>
+          <Text style={styles.headerTitle}>{t('goals.title')}</Text>
+          <Text style={styles.headerSubtitle}>{t('goals.subtitle')}</Text>
         </View>
         {/* Goal Summary */}
         <View style={styles.infoSection}>
-          <Text style={styles.infoTitle}>Goal Summary</Text>
+          <Text style={styles.infoTitle}>{t('goals.goalSummary')}</Text>
           <View style={styles.infoItem}>
-            <Text style={styles.infoLabel}>Vacation Fund</Text>
+            <Text style={styles.infoLabel}>{t('goals.vacationFund')}</Text>
             <Text style={styles.infoValue}>₹35,000 of ₹1.5L (23%)</Text>
           </View>
           <View style={styles.infoItem}>
-            <Text style={styles.infoLabel}>Total Progress</Text>
+            <Text style={styles.infoLabel}>{t('goals.totalProgress')}</Text>
             <Text style={styles.infoValue}>30% across all goals</Text>
           </View>
         </View>
 
         {/* Goals Overview */}
         <View style={styles.overviewCard}>
-          <Text style={styles.overviewTitle}>Goals Overview</Text>
+          <Text style={styles.overviewTitle}>{t('goals.goalsOverview')}</Text>
           <View style={styles.overviewStats}>
             <View style={styles.overviewStat}>
               <Text style={styles.overviewValue}>{activeGoals.length}</Text>
-              <Text style={styles.overviewLabel}>Active Goals</Text>
+              <Text style={styles.overviewLabel}>{t('goals.activeGoals')}</Text>
             </View>
             <View style={styles.overviewStat}>
               <Text style={styles.overviewValue}>₹6.1L</Text>
-              <Text style={styles.overviewLabel}>Saved</Text>
+              <Text style={styles.overviewLabel}>{t('goals.saved')}</Text>
             </View>
             <View style={styles.overviewStat}>
               <Text style={styles.overviewValue}>₹20.4L</Text>
-              <Text style={styles.overviewLabel}>Target</Text>
+              <Text style={styles.overviewLabel}>{t('goals.target')}</Text>
             </View>
           </View>
         </View>
 
         {/* Active Goals */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Your Goals</Text>
+          <Text style={styles.sectionTitle}>{t('goals.yourGoals')}</Text>
           {activeGoals.slice(0, 2).map((goal, index) => {
             const colors = ['#F0FFF4', '#FFF5F5'];
             return (

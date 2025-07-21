@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 // import LinearGradient from 'react-native-linear-gradient';
 import { AnimatedCard, FadeInUp } from '../animations/AnimatedCard';
 import { TouchableArea } from '../common/AccessibilityHelpers';
+import { useLanguage } from '../../localization/LanguageContext';
 
 // Fi App Colors (from screenshots)
 const FiColors = {
@@ -20,12 +21,13 @@ const FiColors = {
 };
 
 const FiMetricsCards = ({ inflationData, onCardPress }) => {
+  const { t } = useLanguage();
   const metricsData = [
     {
       id: 'inflation_rate',
-      title: 'Your Inflation',
+      title: t('metrics.yourInflation'),
       value: `${inflationData.personal}%`,
-      subtitle: 'vs Govt 6.5%',
+      subtitle: t('metrics.vsGovt'),
       trend: 'up',
       color: FiColors.error,
       icon: '📈',
@@ -33,9 +35,9 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
     },
     {
       id: 'salary_impact',
-      title: 'Salary Impact',
+      title: t('metrics.salaryImpact'),
       value: '₹11.8K',
-      subtitle: 'extra needed/month',
+      subtitle: t('metrics.extraNeeded'),
       trend: 'neutral',
       color: FiColors.warning,
       icon: '💼',
@@ -43,9 +45,9 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
     },
     {
       id: 'investment_target',
-      title: 'Target Returns',
+      title: t('metrics.targetReturns'),
       value: '16.8%',
-      subtitle: 'to beat inflation',
+      subtitle: t('metrics.toBeatInflation'),
       trend: 'up',
       color: FiColors.success,
       icon: '🎯',
@@ -53,9 +55,9 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
     },
     {
       id: 'city_rank',
-      title: 'City Ranking',
+      title: t('metrics.cityRanking'),
       value: '#2',
-      subtitle: 'most expensive',
+      subtitle: t('metrics.mostExpensive'),
       trend: 'neutral',
       color: FiColors.primary,
       icon: '🏙️',
@@ -98,19 +100,19 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
         style={[styles.insightCard, { backgroundColor: '#F0F9FF' }]}
       >
         <View style={styles.insightHeader}>
-          <Text style={styles.insightTitle}>This Week's Insight</Text>
-          <Text style={styles.insightBadge}>New</Text>
+          <Text style={styles.insightTitle}>{t('metrics.thisWeekInsight')}</Text>
+          <Text style={styles.insightBadge}>{t('metrics.newBadge')}</Text>
         </View>
         
         <Text style={styles.insightText}>
-          Your food costs increased 2.3% this week, mainly due to vegetable price surge in Mumbai markets.
+          {t('metrics.foodCostIncrease')}
         </Text>
         
         <TouchableArea 
           style={styles.insightAction}
           onPress={() => onCardPress('weekly_insight')}
         >
-          <Text style={styles.actionText}>View Details →</Text>
+          <Text style={styles.actionText}>{t('metrics.viewDetails')} →</Text>
         </TouchableArea>
       </View>
     </FadeInUp>
@@ -133,10 +135,10 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
       {/* Fi-style Progress Section */}
       <FadeInUp delay={500}>
         <View style={styles.progressSection}>
-          <Text style={styles.progressTitle}>Your Financial Health</Text>
+          <Text style={styles.progressTitle}>{t('metrics.financialHealth')}</Text>
           
           <View style={styles.progressItem}>
-            <Text style={styles.progressLabel}>Inflation Management</Text>
+            <Text style={styles.progressLabel}>{t('metrics.inflationManagement')}</Text>
             <View style={styles.progressBar}>
               <View style={[styles.progressFill, { width: '75%', backgroundColor: FiColors.warning }]} />
             </View>
@@ -144,7 +146,7 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
           </View>
 
           <View style={styles.progressItem}>
-            <Text style={styles.progressLabel}>Investment Readiness</Text>
+            <Text style={styles.progressLabel}>{t('metrics.investmentReadiness')}</Text>
             <View style={styles.progressBar}>
               <View style={[styles.progressFill, { width: '60%', backgroundColor: FiColors.success }]} />
             </View>

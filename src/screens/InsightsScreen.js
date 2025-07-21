@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, StatusBar } from 'react-native';
 import { FadeInUp } from '../components/animations/AnimatedCard';
 import { TouchableArea } from '../components/common/AccessibilityHelpers';
+import { useLanguage } from '../localization/LanguageContext';
 
 const FiColors = {
   background: '#1A1A1A',
@@ -14,6 +15,7 @@ const FiColors = {
 };
 
 const InsightsScreen = ({ navigation }) => {
+  const { t } = useLanguage();
   const InsightCard = ({ title, value, trend, icon, description }) => (
     <FadeInUp delay={100}>
       <TouchableArea>
@@ -54,68 +56,68 @@ const InsightsScreen = ({ navigation }) => {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Financial Insights</Text>
-          <Text style={styles.headerSubtitle}>Your spending patterns & trends</Text>
+          <Text style={styles.headerTitle}>{t('insights.title')}</Text>
+          <Text style={styles.headerSubtitle}>{t('insights.subtitle')}</Text>
         </View>
         {/* Market Overview */}
         <View style={styles.infoSection}>
-          <Text style={styles.infoTitle}>Market Overview</Text>
+          <Text style={styles.infoTitle}>{t('insights.marketOverview')}</Text>
           <View style={styles.infoItem}>
-            <Text style={styles.infoLabel}>Purchasing Power</Text>
+            <Text style={styles.infoLabel}>{t('insights.purchasingPower')}</Text>
             <Text style={styles.infoValue}>87.3% ↘ -2.1%</Text>
           </View>
           <View style={styles.infoItem}>
-            <Text style={styles.infoLabel}>Cost of Living Index</Text>
+            <Text style={styles.infoLabel}>{t('insights.costOfLivingIndex')}</Text>
             <Text style={styles.infoValue}>142.8 ↗ +8.7%</Text>
           </View>
         </View>
 
         {/* Key Metrics */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Key Metrics</Text>
+          <Text style={styles.sectionTitle}>{t('insights.keyMetrics')}</Text>
           
           <View style={[styles.insightCard, { backgroundColor: '#FFF5F5' }]}>
             <InsightCard
-              title="Monthly Inflation Impact"
+              title={t('insights.monthlyInflationImpact')}
               value="₹2,450"
               trend={12.5}
               icon="📈"
-              description="Additional cost due to inflation"
+              description={t('insights.additionalCost')}
             />
           </View>
         </View>
 
         {/* Spending Breakdown */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Inflation Impact by Category</Text>
+          <Text style={styles.sectionTitle}>{t('insights.inflationImpactByCategory')}</Text>
           
           <View style={styles.spendingCard}>
             <SpendingCategory
-              category="Food & Dining"
+              category={t('insights.foodDining')}
               amount="1,250"
               percentage="35"
               icon="🍽️"
             />
             <SpendingCategory
-              category="Transportation"
+              category={t('insights.transportation')}
               amount="890"
               percentage="25"
               icon="🚗"
             />
             <SpendingCategory
-              category="Housing"
+              category={t('insights.housing')}
               amount="650"
               percentage="18"
               icon="🏠"
             />
             <SpendingCategory
-              category="Healthcare"
+              category={t('insights.healthcare')}
               amount="420"
               percentage="12"
               icon="🏥"
             />
             <SpendingCategory
-              category="Others"
+              category={t('insights.others')}
               amount="240"
               percentage="10"
               icon="📦"
@@ -125,15 +127,15 @@ const InsightsScreen = ({ navigation }) => {
 
         {/* Recommendations */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Smart Recommendations</Text>
+          <Text style={styles.sectionTitle}>{t('insights.smartRecommendations')}</Text>
           
           <FadeInUp delay={300}>
             <View style={styles.recommendationCard}>
               <Text style={styles.recommendationIcon}>💡</Text>
               <View style={styles.recommendationContent}>
-                <Text style={styles.recommendationTitle}>Switch to bulk buying</Text>
+                <Text style={styles.recommendationTitle}>{t('insights.switchToBulkBuying')}</Text>
                 <Text style={styles.recommendationText}>
-                  Save ₹180/month on groceries by buying in bulk
+                  {t('insights.bulkBuyingSavings')}
                 </Text>
               </View>
             </View>
@@ -143,9 +145,9 @@ const InsightsScreen = ({ navigation }) => {
             <View style={styles.recommendationCard}>
               <Text style={styles.recommendationIcon}>🚌</Text>
               <View style={styles.recommendationContent}>
-                <Text style={styles.recommendationTitle}>Use public transport</Text>
+                <Text style={styles.recommendationTitle}>{t('insights.usePublicTransport')}</Text>
                 <Text style={styles.recommendationText}>
-                  Reduce fuel costs by ₹320/month with metro passes
+                  {t('insights.publicTransportSavings')}
                 </Text>
               </View>
             </View>

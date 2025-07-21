@@ -10,6 +10,7 @@ import {
   Image,
 } from 'react-native';
 import { FiColors } from '../theme/consolidatedFiColors';
+import { useLanguage } from '../localization/LanguageContext';
 import BalanceCard from '../components/BalanceCard';
 import PlantRewards from '../components/PlantRewards';
 import QuickActions from '../components/QuickActions';
@@ -19,6 +20,7 @@ import DataService from '../services/DataService';
 import { getAvatarSource } from '../utils/avatarHelper';
 
 const HomeScreen = ({ navigation, route }) => {
+  const { t } = useLanguage();
   const [balance, setBalance] = useState(12450.75);
   const [plantGrowth, setPlantGrowth] = useState(3);
   const [rewardPoints, setRewardPoints] = useState(245);
@@ -80,8 +82,8 @@ const HomeScreen = ({ navigation, route }) => {
             </TouchableOpacity>
             
             <View style={styles.centerContent}>
-              <Text style={styles.greeting}>Good morning! 👋</Text>
-              <Text style={styles.subtitle}>Money made simple</Text>
+              <Text style={styles.greeting}>{t('home.greeting')} 👋</Text>
+              <Text style={styles.subtitle}>{t('home.subtitle')}</Text>
             </View>
             
             <View style={styles.rightIcons}>

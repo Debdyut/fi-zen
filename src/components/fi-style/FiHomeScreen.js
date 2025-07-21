@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, StatusBar, Image, Animated } from 'react-native';
 import { FadeInUp } from '../animations/AnimatedCard';
 import { TouchableArea } from '../common/AccessibilityHelpers';
+import { useLanguage } from '../../localization/LanguageContext';
 import FiInflationCard from './FiInflationCard';
 import FiMetricsCards from './FiMetricsCards';
 
@@ -17,6 +18,7 @@ const FiColors = {
 };
 
 const FiHomeScreen = ({ navigation, inflationData }) => {
+  const { t } = useLanguage();
   const [scrollY] = useState(new Animated.Value(0));
   const headerHeight = scrollY.interpolate({
     inputRange: [0, 100],
@@ -84,15 +86,15 @@ const FiHomeScreen = ({ navigation, inflationData }) => {
   const WelcomeSection = () => (
     <View style={styles.welcomeSection}>
       <View style={styles.greeting}>
-        <Text style={styles.greetingText}>{getGreeting()}</Text>
-        <Text style={styles.userName}>Arjun</Text>
+        <Text style={styles.greetingText}>{t('home.greeting')}</Text>
+        <Text style={styles.userName}>{t('home.userName')}</Text>
       </View>
 
       {/* Fi-style wealth display */}
       <View style={styles.wealthSection}>
-        <Text style={styles.wealthLabel}>Your Financial Health</Text>
+        <Text style={styles.wealthLabel}>{t('home.wealthLabel')}</Text>
         <Text style={styles.wealthValue}>₹12,45,000</Text>
-        <Text style={styles.wealthSubtext}>+₹15,000 this month</Text>
+        <Text style={styles.wealthSubtext}>{t('home.wealthSubtext')}</Text>
       </View>
     </View>
   );
@@ -100,27 +102,27 @@ const FiHomeScreen = ({ navigation, inflationData }) => {
   const FiQuickActions = () => (
     <FadeInUp delay={200}>
       <View style={styles.quickActions}>
-        <Text style={styles.sectionTitle}>Quick Actions</Text>
+        <Text style={styles.sectionTitle}>{t('home.quickActions')}</Text>
         
         <View style={styles.actionsGrid}>
           <TouchableArea style={styles.actionCard}>
             <Text style={styles.actionIcon}>📊</Text>
-            <Text style={styles.actionText}>Check Rate</Text>
+            <Text style={styles.actionText}>{t('home.checkRate')}</Text>
           </TouchableArea>
           
           <TouchableArea style={styles.actionCard}>
             <Text style={styles.actionIcon}>💼</Text>
-            <Text style={styles.actionText}>Salary Tool</Text>
+            <Text style={styles.actionText}>{t('home.salaryTool')}</Text>
           </TouchableArea>
           
           <TouchableArea style={styles.actionCard}>
             <Text style={styles.actionIcon}>🏙️</Text>
-            <Text style={styles.actionText}>City Compare</Text>
+            <Text style={styles.actionText}>{t('home.cityCompare')}</Text>
           </TouchableArea>
           
           <TouchableArea style={styles.actionCard}>
             <Text style={styles.actionIcon}>📈</Text>
-            <Text style={styles.actionText}>Invest</Text>
+            <Text style={styles.actionText}>{t('home.invest')}</Text>
           </TouchableArea>
         </View>
       </View>
@@ -131,25 +133,25 @@ const FiHomeScreen = ({ navigation, inflationData }) => {
     <FadeInUp delay={300}>
       <View style={styles.insightsPreview}>
         <View style={styles.previewHeader}>
-          <Text style={styles.sectionTitle}>Latest Insights</Text>
+          <Text style={styles.sectionTitle}>{t('home.latestInsights')}</Text>
           <TouchableArea onPress={() => navigation.navigate('Insights')}>
-            <Text style={styles.viewAllText}>View All</Text>
+            <Text style={styles.viewAllText}>{t('home.viewAll')}</Text>
           </TouchableArea>
         </View>
         
         <View style={styles.insightCard}>
           <Text style={styles.insightIcon}>📈</Text>
           <View style={styles.insightContent}>
-            <Text style={styles.insightTitle}>Inflation Impact</Text>
-            <Text style={styles.insightText}>Your monthly costs increased by ₹2,450</Text>
+            <Text style={styles.insightTitle}>{t('home.inflationImpact')}</Text>
+            <Text style={styles.insightText}>{t('home.inflationImpactText')}</Text>
           </View>
         </View>
         
         <View style={styles.insightCard}>
           <Text style={styles.insightIcon}>💡</Text>
           <View style={styles.insightContent}>
-            <Text style={styles.insightTitle}>Smart Tip</Text>
-            <Text style={styles.insightText}>Switch to bulk buying to save ₹180/month</Text>
+            <Text style={styles.insightTitle}>{t('home.smartTip')}</Text>
+            <Text style={styles.insightText}>{t('home.smartTipText')}</Text>
           </View>
         </View>
       </View>
@@ -160,9 +162,9 @@ const FiHomeScreen = ({ navigation, inflationData }) => {
     <FadeInUp delay={400}>
       <View style={styles.goalsPreview}>
         <View style={styles.previewHeader}>
-          <Text style={styles.sectionTitle}>Your Goals</Text>
+          <Text style={styles.sectionTitle}>{t('home.yourGoals')}</Text>
           <TouchableArea onPress={() => navigation.navigate('Goals')}>
-            <Text style={styles.viewAllText}>View All</Text>
+            <Text style={styles.viewAllText}>{t('home.viewAll')}</Text>
           </TouchableArea>
         </View>
         
@@ -170,8 +172,8 @@ const FiHomeScreen = ({ navigation, inflationData }) => {
           <View style={styles.goalHeader}>
             <Text style={styles.goalIcon}>🛡️</Text>
             <View style={styles.goalInfo}>
-              <Text style={styles.goalTitle}>Emergency Fund</Text>
-              <Text style={styles.goalProgress}>25% complete</Text>
+              <Text style={styles.goalTitle}>{t('home.emergencyFund')}</Text>
+              <Text style={styles.goalProgress}>{t('home.emergencyProgress')}</Text>
             </View>
           </View>
           <View style={styles.goalProgressBar}>
@@ -183,8 +185,8 @@ const FiHomeScreen = ({ navigation, inflationData }) => {
           <View style={styles.goalHeader}>
             <Text style={styles.goalIcon}>🏠</Text>
             <View style={styles.goalInfo}>
-              <Text style={styles.goalTitle}>House Down Payment</Text>
-              <Text style={styles.goalProgress}>23% complete</Text>
+              <Text style={styles.goalTitle}>{t('home.houseDownPayment')}</Text>
+              <Text style={styles.goalProgress}>{t('home.houseProgress')}</Text>
             </View>
           </View>
           <View style={styles.goalProgressBar}>
@@ -198,7 +200,7 @@ const FiHomeScreen = ({ navigation, inflationData }) => {
   const FiTrustBadges = () => (
     <FadeInUp delay={500}>
       <View style={styles.trustSection}>
-        <Text style={styles.trustTitle}>Trusted & Secure</Text>
+        <Text style={styles.trustTitle}>{t('home.trustedSecure')}</Text>
         <ScrollView 
           horizontal
           showsHorizontalScrollIndicator={false}

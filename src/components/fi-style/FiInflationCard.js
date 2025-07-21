@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useLanguage } from '../../localization/LanguageContext';
 
 // Fi App Colors (from screenshots)
 const FiColors = {
@@ -15,18 +16,19 @@ const FiColors = {
 
 const FiInflationCard = ({ inflationData = {} }) => {
   const navigation = useNavigation();
+  const { t } = useLanguage();
   return (
     <View style={styles.container}>
       <View style={styles.card}>
         {/* Fi-style header */}
         <View style={styles.header}>
           <View style={styles.titleSection}>
-            <Text style={styles.title}>Personal Inflation</Text>
-            <Text style={styles.lastUpdated}>Updated 2 hours ago</Text>
+            <Text style={styles.title}>{t('inflation.personalInflation')}</Text>
+            <Text style={styles.lastUpdated}>{t('inflation.lastUpdated')}</Text>
           </View>
           <View style={styles.headerRight}>
             <View style={styles.locationBadge}>
-              <Text style={styles.locationText}>📍 Mumbai</Text>
+              <Text style={styles.locationText}>📍 {t('location.mumbai')}</Text>
             </View>
             <TouchableOpacity style={styles.refreshButton} onPress={() => console.log('Refreshing data...')}>
               <Text style={styles.refreshIcon}>↻</Text>
@@ -39,21 +41,21 @@ const FiInflationCard = ({ inflationData = {} }) => {
           <View style={styles.rateWithTrend}>
             <Text style={styles.mainRate}>{inflationData.personal || 0}%</Text>
             <View style={styles.trendSection}>
-              <Text style={styles.trendIndicator}>↗ Trending up</Text>
-              <Text style={styles.trendSubtext}>vs last month</Text>
+              <Text style={styles.trendIndicator}>↗ {t('inflation.trendingUp')}</Text>
+              <Text style={styles.trendSubtext}>{t('inflation.vsLastMonth')}</Text>
             </View>
           </View>
           <View style={styles.contextBadge}>
-            <Text style={styles.contextText}>📈 Higher than your 6-month average (9.2%)</Text>
+            <Text style={styles.contextText}>📈 {t('inflation.higherThanAverage')}</Text>
           </View>
           <View style={styles.govtRateSection}>
-            <Text style={styles.rateLabel}>vs Govt 6.5%</Text>
+            <Text style={styles.rateLabel}>{t('inflation.vsGovt')}</Text>
             <Image 
               source={require('../../../assets/logos/Logo-MOSPI-01.58746789e2643aae82fb.png')}
               style={styles.mospiLogoSmall}
               resizeMode="contain"
             />
-            <Text style={styles.mospiHelperText}>Official govt inflation data source</Text>
+            <Text style={styles.mospiHelperText}>{t('inflation.officialSource')}</Text>
           </View>
         </View>
 
@@ -61,11 +63,11 @@ const FiInflationCard = ({ inflationData = {} }) => {
         <View style={styles.impactSection}>
           <View style={styles.impactHeader}>
             <Text style={styles.impactEmoji}>💸</Text>
-            <Text style={styles.impactTitle}>Real Impact</Text>
+            <Text style={styles.impactTitle}>{t('inflation.realImpact')}</Text>
           </View>
-          <Text style={styles.impactDescription}>If you spent ₹1,00,000 last year</Text>
-          <Text style={styles.impactValue}>You need ₹11,800 extra this year</Text>
-          <Text style={styles.impactSubtext}>for the same lifestyle</Text>
+          <Text style={styles.impactDescription}>{t('inflation.impactDescription')}</Text>
+          <Text style={styles.impactValue}>{t('inflation.impactValue')}</Text>
+          <Text style={styles.impactSubtext}>{t('inflation.impactSubtext')}</Text>
         </View>
 
         {/* Fi-style action button */}
@@ -74,7 +76,7 @@ const FiInflationCard = ({ inflationData = {} }) => {
           onPress={() => navigation.navigate('DetailedBreakdownScreen')}
           activeOpacity={0.7}
         >
-          <Text style={styles.buttonText}>View Details</Text>
+          <Text style={styles.buttonText}>{t('inflation.viewBreakdown')}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -202,6 +204,7 @@ const styles = StyleSheet.create({
     color: FiColors.textLight,
     textAlign: 'center',
     fontStyle: 'italic',
+    alignSelf: 'center',
   },
   impactSection: {
     backgroundColor: '#FFF5F5',
@@ -234,6 +237,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: FiColors.error,
     marginBottom: 2,
+    textAlign: 'center',
   },
   impactSubtext: {
     fontSize: 12,
