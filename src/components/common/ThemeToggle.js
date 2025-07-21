@@ -13,12 +13,17 @@ const ThemeToggle = ({ style }) => {
       onPress={toggleTheme}
       activeOpacity={0.7}
     >
-      <View style={[styles.toggleContainer, { backgroundColor: colors.backgroundLight }]}>
+      <View style={[styles.toggleContainer, { backgroundColor: isDarkMode ? '#333333' : '#E0E0E0' }]}>
         <View style={[
           styles.toggleSlider,
           {
-            backgroundColor: colors.primary,
-            transform: [{ translateX: isDarkMode ? 0 : 24 }]
+            backgroundColor: '#FFFFFF',
+            transform: [{ translateX: isDarkMode ? 24 : 0 }],
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.2,
+            shadowRadius: 2,
+            elevation: 2,
           }
         ]}>
           <Text style={styles.toggleIcon}>

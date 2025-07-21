@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { useTheme } from '../theme/ThemeContext';
 
 const FiColors = {
   background: '#1A1A1A',
@@ -15,6 +16,7 @@ const FiColors = {
 
 const MetricDetailScreen = ({ route, navigation }) => {
   const { cardId } = route.params;
+  const { isDarkMode } = useTheme();
 
   const getMetricDetails = (id) => {
     const metrics = {
@@ -90,12 +92,12 @@ const MetricDetailScreen = ({ route, navigation }) => {
   const metric = getMetricDetails(cardId);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
+    <View style={[styles.container, { backgroundColor: isDarkMode ? '#1A1A1A' : '#F5F5F5' }]}>
+      <View style={[styles.header, { backgroundColor: isDarkMode ? '#1A1A1A' : FiColors.surface }]}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Text style={styles.backIcon}>←</Text>
+          <Text style={[styles.backIcon, { color: isDarkMode ? '#FFFFFF' : FiColors.text }]}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{metric.title}</Text>
+        <Text style={[styles.headerTitle, { color: isDarkMode ? '#FFFFFF' : FiColors.text }]}>{metric.title}</Text>
         <View style={styles.placeholder} />
       </View>
 

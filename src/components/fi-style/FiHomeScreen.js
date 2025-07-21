@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, StatusBar, Image, Animated } from '
 import { FadeInUp } from '../animations/AnimatedCard';
 import { TouchableArea } from '../common/AccessibilityHelpers';
 import { useLanguage } from '../../localization/LanguageContext';
+import { useTheme } from '../../theme/ThemeContext';
 import FiInflationCard from './FiInflationCard';
 import FiMetricsCards from './FiMetricsCards';
 
@@ -19,6 +20,7 @@ const FiColors = {
 
 const FiHomeScreen = ({ navigation, inflationData }) => {
   const { t } = useLanguage();
+  const { isDarkMode } = useTheme();
   const [scrollY] = useState(new Animated.Value(0));
   const headerHeight = scrollY.interpolate({
     inputRange: [0, 100],
@@ -84,16 +86,16 @@ const FiHomeScreen = ({ navigation, inflationData }) => {
   };
 
   const WelcomeSection = () => (
-    <View style={styles.welcomeSection}>
+    <View style={[styles.welcomeSection, { backgroundColor: isDarkMode ? '#1A1A1A' : '#E6FBF7' }]}>
       <View style={styles.greeting}>
-        <Text style={styles.greetingText}>{t('home.greeting')}</Text>
-        <Text style={styles.userName}>{t('home.userName')}</Text>
+        <Text style={[styles.greetingText, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>{t('home.greeting')}</Text>
+        <Text style={[styles.userName, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>{t('home.userName')}</Text>
       </View>
 
       {/* Fi-style wealth display */}
       <View style={styles.wealthSection}>
-        <Text style={styles.wealthLabel}>{t('home.wealthLabel')}</Text>
-        <Text style={styles.wealthValue}>₹12,45,000</Text>
+        <Text style={[styles.wealthLabel, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>{t('home.wealthLabel')}</Text>
+        <Text style={[styles.wealthValue, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>₹12,45,000</Text>
         <Text style={styles.wealthSubtext}>{t('home.wealthSubtext')}</Text>
       </View>
     </View>
@@ -102,7 +104,7 @@ const FiHomeScreen = ({ navigation, inflationData }) => {
   const FiQuickActions = () => (
     <FadeInUp delay={200}>
       <View style={styles.quickActions}>
-        <Text style={styles.sectionTitle}>{t('home.quickActions')}</Text>
+        <Text style={[styles.sectionTitle, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>{t('home.quickActions')}</Text>
         
         <View style={styles.actionsGrid}>
           <TouchableArea style={styles.actionCard}>
@@ -133,7 +135,7 @@ const FiHomeScreen = ({ navigation, inflationData }) => {
     <FadeInUp delay={300}>
       <View style={styles.insightsPreview}>
         <View style={styles.previewHeader}>
-          <Text style={styles.sectionTitle}>{t('home.latestInsights')}</Text>
+          <Text style={[styles.sectionTitle, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>{t('home.latestInsights')}</Text>
           <TouchableArea onPress={() => navigation.navigate('Insights')}>
             <Text style={styles.viewAllText}>{t('home.viewAll')}</Text>
           </TouchableArea>
@@ -162,7 +164,7 @@ const FiHomeScreen = ({ navigation, inflationData }) => {
     <FadeInUp delay={400}>
       <View style={styles.goalsPreview}>
         <View style={styles.previewHeader}>
-          <Text style={styles.sectionTitle}>{t('home.yourGoals')}</Text>
+          <Text style={[styles.sectionTitle, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>{t('home.yourGoals')}</Text>
           <TouchableArea onPress={() => navigation.navigate('Goals')}>
             <Text style={styles.viewAllText}>{t('home.viewAll')}</Text>
           </TouchableArea>
@@ -248,11 +250,11 @@ const FiHomeScreen = ({ navigation, inflationData }) => {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: isDarkMode ? '#1A1A1A' : '#E6FBF7' }]}>
       <StickyHeader />
       
       <Animated.ScrollView 
-        style={styles.content} 
+        style={[styles.content, { backgroundColor: isDarkMode ? '#1A1A1A' : '#E6FBF7' }]} 
         showsVerticalScrollIndicator={false}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],

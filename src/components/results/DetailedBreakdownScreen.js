@@ -57,14 +57,14 @@ const DetailedBreakdownScreen = () => {
 
   const CategoryCard = ({ categoryKey, data }) => (
     <FadeInUp delay={200}>
-      <AnimatedCard style={[styles.categoryCard, { backgroundColor: colors.surface, shadowColor: colors.primary }]}>
+      <AnimatedCard style={[styles.categoryCard, { backgroundColor: '#FFFFFF', shadowColor: colors.primary }]}>
         <View style={styles.categoryHeader}>
           <CategoryIcon category={categoryKey} size={32} />
           <View style={styles.categoryInfo}>
-            <Text style={[styles.categoryName, { color: colors.text }]}>
+            <Text style={[styles.categoryName, { color: '#1A1A1A' }]}>
               {categoryKey.charAt(0).toUpperCase() + categoryKey.slice(1)}
             </Text>
-            <Text style={[styles.categorySpend, { color: colors.textSecondary }]}>
+            <Text style={[styles.categorySpend, { color: '#666666' }]}>
               ₹{data.monthlySpend.toLocaleString()}/month
             </Text>
           </View>
@@ -73,12 +73,12 @@ const DetailedBreakdownScreen = () => {
             <Text style={[styles.impactLabel, { color: colors.textSecondary }]}>Impact</Text>
           </View>
           <TouchableOpacity 
-            style={[styles.infoButton, { backgroundColor: colors.primary + '20', borderColor: colors.text }]}
+            style={[styles.infoButton, { backgroundColor: '#00D4AA20', borderColor: '#1A1A1A' }]}
             onPress={() => {
               scrollViewRef.current?.scrollToEnd({ animated: true });
             }}
           >
-            <Text style={[styles.infoIcon, { color: colors.text }]}>i</Text>
+            <Text style={[styles.infoIcon, { color: '#1A1A1A' }]}>i</Text>
           </TouchableOpacity>
         </View>
 
@@ -93,9 +93,9 @@ const DetailedBreakdownScreen = () => {
 
         <View style={[styles.comparisonRow, { backgroundColor: colors.primaryLight + '20' }]}>
           <View style={styles.comparisonItem}>
-            <Text style={[styles.comparisonLabel, { color: colors.textSecondary }]}>Your Rate</Text>
+            <Text style={[styles.comparisonLabel, { color: '#666666' }]}>Your Rate</Text>
             <View style={styles.rateWithArrow}>
-              <Text style={[styles.comparisonValue, { color: data.personalRate > data.mospiRate ? colors.error : colors.success }]}>
+              <Text style={[styles.comparisonValue, { color: data.personalRate > data.mospiRate ? '#FF6B6B' : '#00D4AA' }]}>
                 {data.personalRate}%
               </Text>
               <Text style={styles.arrowIcon}>
@@ -104,27 +104,27 @@ const DetailedBreakdownScreen = () => {
             </View>
           </View>
           <View style={styles.comparisonItem}>
-            <Text style={[styles.comparisonLabel, { color: colors.textSecondary }]}>MOSPI Rate</Text>
-            <Text style={[styles.comparisonValue, { color: colors.textSecondary }]}>
+            <Text style={[styles.comparisonLabel, { color: '#666666' }]}>MOSPI Rate</Text>
+            <Text style={[styles.comparisonValue, { color: '#666666' }]}>
               {data.mospiRate}%
             </Text>
           </View>
           <View style={styles.comparisonItem}>
-            <Text style={[styles.comparisonLabel, { color: colors.textSecondary }]}>Weight</Text>
-            <Text style={[styles.comparisonValue, { color: colors.text }]}>{data.weight}%</Text>
+            <Text style={[styles.comparisonLabel, { color: '#666666' }]}>Weight</Text>
+            <Text style={[styles.comparisonValue, { color: '#1A1A1A' }]}>{data.weight}%</Text>
           </View>
         </View>
 
         {/* Subcategories */}
         <View style={[styles.subcategoriesSection, { borderTopColor: colors.border }]}>
-          <Text style={[styles.subcategoriesTitle, { color: colors.text }]}>Breakdown:</Text>
+          <Text style={[styles.subcategoriesTitle, { color: '#1A1A1A' }]}>Breakdown:</Text>
           {Object.entries(data.subcategories).map(([subcat, subdata]) => (
             <View key={subcat} style={styles.subcategoryItem}>
-              <Text style={[styles.subcategoryName, { color: colors.text }]}>{subcat}</Text>
-              <Text style={[styles.subcategoryAmount, { color: colors.textSecondary }]}>₹{subdata.amount.toLocaleString()}</Text>
+              <Text style={[styles.subcategoryName, { color: '#1A1A1A' }]}>{subcat}</Text>
+              <Text style={[styles.subcategoryAmount, { color: '#666666' }]}>₹{subdata.amount.toLocaleString()}</Text>
               <Text style={[
                 styles.subcategoryInflation,
-                { color: subdata.inflation > 10 ? colors.error : colors.success }
+                { color: subdata.inflation > 10 ? '#FF6B6B' : '#00D4AA' }
               ]}>
                 {subdata.inflation}%
               </Text>
@@ -162,17 +162,17 @@ const DetailedBreakdownScreen = () => {
 
       <FadeInUp delay={600}>
         <View style={styles.methodologyCard}>
-          <Text style={[styles.methodologyTitle, { color: colors.text }]}>📋 Calculation Methodology</Text>
-          <Text style={[styles.methodologyText, { color: colors.text }]}>
+          <Text style={[styles.methodologyTitle, { color: '#1A1A1A' }]}>📋 Calculation Methodology</Text>
+          <Text style={[styles.methodologyText, { color: '#1A1A1A' }]}>
             <Text style={styles.bold}>1. Categorization:</Text> Your transactions are automatically categorized using machine learning
           </Text>
-          <Text style={[styles.methodologyText, { color: colors.text }]}>
+          <Text style={[styles.methodologyText, { color: '#1A1A1A' }]}>
             <Text style={styles.bold}>2. Weight Calculation:</Text> Each category's weight is based on your actual spending proportion (e.g., if you spend 40% on food, food gets 40% weight)
           </Text>
-          <Text style={[styles.methodologyText, { color: colors.text }]}>
+          <Text style={[styles.methodologyText, { color: '#1A1A1A' }]}>
             <Text style={styles.bold}>3. MOSPI Comparison:</Text> Your category inflation vs Mumbai MOSPI CPI data
           </Text>
-          <Text style={[styles.methodologyText, { color: colors.text }]}>
+          <Text style={[styles.methodologyText, { color: '#1A1A1A' }]}>
             <Text style={styles.bold}>4. Final Rate:</Text> Weighted average of all category contributions
           </Text>
           <View style={styles.mospiCredit}>

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, StatusBar } from 'react-native';
 import { FadeInUp } from '../components/animations/AnimatedCard';
 import { TouchableArea } from '../components/common/AccessibilityHelpers';
 import { useLanguage } from '../localization/LanguageContext';
+import { useTheme } from '../theme/ThemeContext';
 
 const FiColors = {
   background: '#1A1A1A',
@@ -16,6 +17,7 @@ const FiColors = {
 
 const GoalsScreen = ({ navigation }) => {
   const { t } = useLanguage();
+  const { isDarkMode } = useTheme();
   const [activeGoals, setActiveGoals] = useState([
     {
       id: 1,
@@ -149,14 +151,14 @@ const GoalsScreen = ({ navigation }) => {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: isDarkMode ? '#1A1A1A' : '#E6FBF7' }]}>
       <StatusBar barStyle="light-content" backgroundColor={FiColors.background} />
       
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>{t('goals.title')}</Text>
-          <Text style={styles.headerSubtitle}>{t('goals.subtitle')}</Text>
+        <View style={[styles.header, { backgroundColor: isDarkMode ? '#1A1A1A' : '#E6FBF7' }]}>
+          <Text style={[styles.headerTitle, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>{t('goals.title')}</Text>
+          <Text style={[styles.headerSubtitle, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>{t('goals.subtitle')}</Text>
         </View>
         {/* Goal Summary */}
         <View style={styles.infoSection}>

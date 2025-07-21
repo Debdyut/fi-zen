@@ -2,6 +2,7 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Text, StyleSheet } from 'react-native';
+import { useTheme } from '../theme/ThemeContext';
 
 // Fi-Style Components
 import FiHomeScreen from '../components/fi-style/FiHomeScreen';
@@ -124,13 +125,15 @@ const InflationStack = () => {
 };
 
 const FiStyleTabNavigator = () => {
+  const { isDarkMode } = useTheme();
+  
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: FiColors.background,
-          borderTopColor: FiColors.border + '30',
+          backgroundColor: isDarkMode ? '#000000' : FiColors.background,
+          borderTopColor: isDarkMode ? '#333333' : FiColors.border + '30',
           borderTopWidth: 0.5,
           height: 80,
           paddingBottom: 15,

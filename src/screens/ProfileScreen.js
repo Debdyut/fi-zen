@@ -140,6 +140,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
+    paddingTop: 50,
     paddingBottom: 100,
   },
   profileHeader: {

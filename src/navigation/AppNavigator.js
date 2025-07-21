@@ -52,8 +52,8 @@ const TabNavigator = ({ navigation }) => {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: '#FFFFFF',
-          borderTopColor: colors.border,
+          backgroundColor: isDarkMode ? '#262626' : '#FFFFFF',
+          borderTopColor: isDarkMode ? '#333333' : colors.border,
           borderTopWidth: 0.5,
           height: 80,
           paddingBottom: 15,

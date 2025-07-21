@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, StatusBar } from 'react-native';
 import { FadeInUp } from '../components/animations/AnimatedCard';
 import { TouchableArea } from '../components/common/AccessibilityHelpers';
 import { useLanguage } from '../localization/LanguageContext';
+import { useTheme } from '../theme/ThemeContext';
 
 const FiColors = {
   background: '#1A1A1A',
@@ -16,6 +17,7 @@ const FiColors = {
 
 const InsightsScreen = ({ navigation }) => {
   const { t } = useLanguage();
+  const { isDarkMode } = useTheme();
   const InsightCard = ({ title, value, trend, icon, description }) => (
     <FadeInUp delay={100}>
       <TouchableArea>
@@ -50,25 +52,25 @@ const InsightsScreen = ({ navigation }) => {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: isDarkMode ? '#1A1A1A' : '#E6FBF7' }]}>
       <StatusBar barStyle="light-content" backgroundColor={FiColors.background} />
       
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>{t('insights.title')}</Text>
-          <Text style={styles.headerSubtitle}>{t('insights.subtitle')}</Text>
+        <View style={[styles.header, { backgroundColor: isDarkMode ? '#1A1A1A' : '#E6FBF7' }]}>
+          <Text style={[styles.headerTitle, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>{t('insights.title')}</Text>
+          <Text style={[styles.headerSubtitle, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>{t('insights.subtitle')}</Text>
         </View>
         {/* Market Overview */}
-        <View style={styles.infoSection}>
-          <Text style={styles.infoTitle}>{t('insights.marketOverview')}</Text>
+        <View style={[styles.infoSection, { backgroundColor: isDarkMode ? '#1A1A1A' : '#E6FBF7' }]}>
+          <Text style={[styles.infoTitle, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>{t('insights.marketOverview')}</Text>
           <View style={styles.infoItem}>
-            <Text style={styles.infoLabel}>{t('insights.purchasingPower')}</Text>
-            <Text style={styles.infoValue}>87.3% ↘ -2.1%</Text>
+            <Text style={[styles.infoLabel, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>{t('insights.purchasingPower')}</Text>
+            <Text style={[styles.infoValue, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>87.3% ↘ -2.1%</Text>
           </View>
           <View style={styles.infoItem}>
-            <Text style={styles.infoLabel}>{t('insights.costOfLivingIndex')}</Text>
-            <Text style={styles.infoValue}>142.8 ↗ +8.7%</Text>
+            <Text style={[styles.infoLabel, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>{t('insights.costOfLivingIndex')}</Text>
+            <Text style={[styles.infoValue, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>142.8 ↗ +8.7%</Text>
           </View>
         </View>
 
