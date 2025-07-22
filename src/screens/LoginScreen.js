@@ -15,6 +15,7 @@ import { useLanguage } from '../localization/LanguageContext';
 import { getThemeColors } from '../theme/consolidatedFiColors';
 import { getAvatarSource } from '../utils/avatarHelper';
 import UserProfileService from '../services/UserProfileService';
+import DataService from '../services/DataService';
 import { FadeInUp } from '../components/animations/AnimatedCard';
 import { TouchableArea } from '../components/common/AccessibilityHelpers';
 
@@ -45,12 +46,17 @@ const LoginScreen = ({ navigation }) => {
     setIsLoading(true);
     
     try {
-      // Set the selected user as current user
+      // Set the selected user as current user in both services
       const success = UserProfileService.setCurrentUser(selectedUser);
+      DataService.setCurrentUser(selectedUser);
+      
+      console.log(`Login: Selected user ${selectedUser} (${userProfiles[selectedUser].name})`);
       
       if (success) {
-        // Navigate to main app
-        navigation.replace('MainTabs');
+        // Navigate to main app with selected user
+        navigation.replace('MainTabs', { 
+          selectedUserId: selectedUser
+        });
       } else {
         console.error('Failed to set user');
       }

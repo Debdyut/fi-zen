@@ -20,13 +20,28 @@ const FiColors = {
   error: '#FF6B6B',
 };
 
-const FiMetricsCards = ({ inflationData, onCardPress }) => {
+const FiMetricsCards = ({ inflationData, onCardPress, userData, userProfile }) => {
   const { t } = useLanguage();
+  
+  // Calculate personal inflation
+  const personalInflation = userData?.monthlySpending ? (() => {
+    const spending = userData.monthlySpending;
+    const totalSpending = Object.values(spending).reduce((a, b) => a + b, 0);
+    const categoryInflation = { housing: 6.2, food: 12.8, transport: 9.4, entertainment: 8.1, miscellaneous: 7.3, investments: 0 };
+    let weightedInflation = 0;
+    Object.entries(spending).forEach(([category, amount]) => {
+      const weight = amount / totalSpending;
+      const rate = categoryInflation[category] || 8.0;
+      weightedInflation += weight * rate;
+    });
+    return Math.round(weightedInflation * 10) / 10;
+  })() : 8.5;
+  
   const metricsData = [
     {
       id: 'inflation_rate',
       title: t('metrics.yourInflation'),
-      value: `${inflationData.personal}%`,
+      value: `${personalInflation}%`,
       subtitle: t('metrics.vsGovt'),
       trend: 'up',
       color: FiColors.error,
@@ -36,7 +51,7 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
     {
       id: 'salary_impact',
       title: t('metrics.salaryImpact'),
-      value: '₹11.8K',
+      value: `₹${((userProfile?.monthlyIncome || 50000) * personalInflation / 100 / 1000).toFixed(1)}K`,
       subtitle: t('metrics.extraNeeded'),
       trend: 'neutral',
       color: FiColors.warning,
@@ -46,7 +61,7 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
     {
       id: 'investment_target',
       title: t('metrics.targetReturns'),
-      value: '16.8%',
+      value: `${(personalInflation + 4).toFixed(1)}%`,
       subtitle: t('metrics.toBeatInflation'),
       trend: 'up',
       color: FiColors.success,
@@ -56,7 +71,11 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
     {
       id: 'city_rank',
       title: t('metrics.cityRanking'),
-      value: '#2',
+      value: `#${userProfile?.location ? (() => {
+        const cityRanks = { 'Mumbai': 1, 'Delhi': 2, 'Bangalore': 3, 'Chennai': 4, 'Pune': 5, 'Hyderabad': 6 };
+        const city = userProfile.location.split(',')[0];
+        return cityRanks[city] || 7;
+      })() : 2}`,
       subtitle: t('metrics.mostExpensive'),
       trend: 'neutral',
       color: FiColors.primary,
@@ -138,19 +157,19 @@ const FiMetricsCards = ({ inflationData, onCardPress }) => {
           <Text style={styles.progressTitle}>{t('metrics.financialHealth')}</Text>
           
           <View style={styles.progressItem}>
-            <Text style={styles.progressLabel}>{t('metrics.inflationManagement')}</Text>
+            <Text style={styles.progressLabel}>Inflation Management</Text>
             <View style={styles.progressBar}>
-              <View style={[styles.progressFill, { width: '75%', backgroundColor: FiColors.warning }]} />
+              <View style={[styles.progressFill, { width: `${Math.min(100, (6.5/personalInflation) * 100)}%`, backgroundColor: FiColors.warning }]} />
             </View>
-            <Text style={styles.progressValue}>75%</Text>
+            <Text style={styles.progressValue}>{Math.min(100, Math.round((6.5/personalInflation) * 100))}%</Text>
           </View>
 
           <View style={styles.progressItem}>
-            <Text style={styles.progressLabel}>{t('metrics.investmentReadiness')}</Text>
+            <Text style={styles.progressLabel}>Investment Readiness</Text>
             <View style={styles.progressBar}>
-              <View style={[styles.progressFill, { width: '60%', backgroundColor: FiColors.success }]} />
+              <View style={[styles.progressFill, { width: `${Math.min(100, ((userData?.totalMutualFunds || 0) + (userData?.totalStocks || 0)) / ((userProfile?.monthlyIncome || 50000) * 12) * 100)}%`, backgroundColor: FiColors.success }]} />
             </View>
-            <Text style={styles.progressValue}>60%</Text>
+            <Text style={styles.progressValue}>{Math.min(100, Math.round(((userData?.totalMutualFunds || 0) + (userData?.totalStocks || 0)) / ((userProfile?.monthlyIncome || 50000) * 12) * 100))}%</Text>
           </View>
         </View>
       </FadeInUp>

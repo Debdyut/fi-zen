@@ -132,56 +132,25 @@ const InsightsScreen = ({ navigation }) => {
         </View>
 
         {/* Real Spending Insights */}
-        <View style={styles.insightsGrid}>
-          <InsightCard
-            title="Savings Rate"
-            value={`${spendingInsights?.savingsRate || 0}%`}
-            icon="💰"
-            description="Your monthly savings rate"
-            color={spendingInsights?.savingsRate > 20 ? FiColors.success : 
-                   spendingInsights?.savingsRate > 10 ? FiColors.warning : FiColors.error}
-          />
-          
-          <InsightCard
-            title="Total Spending"
-            value={`₹${spendingInsights?.totalSpending?.toLocaleString() || '0'}`}
-            icon="💸"
-            description="Monthly expenses"
-            color={FiColors.primary}
-          />
-          
-          <InsightCard
-            title="Peer Ranking"
-            value={`${peerComparison?.percentile || 50}th`}
-            icon="👥"
-            description="Percentile among peers"
-            color={peerComparison?.percentile > 75 ? FiColors.success : FiColors.warning}
-          />
-          
-          <InsightCard
-            title="Risk Profile"
-            value={userProfile?.riskProfile || 'Moderate'}
-            icon="📊"
-            description="Investment risk appetite"
-            color={FiColors.primary}
-          />
-        </View>
-
-        {/* Spending Breakdown */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Spending Breakdown</Text>
-          <View style={styles.spendingCard}>
-            {spendingInsights?.topCategories?.map((category, index) => (
-              <SpendingCategory
-                key={index}
-                category={category.category.charAt(0).toUpperCase() + category.category.slice(1)}
-                amount={category.amount.toLocaleString()}
-                percentage={Math.round(category.percentage)}
-                icon={getCategoryIcon(category.category)}
-              />
-            ))}
+          <Text style={styles.sectionTitle}>Your Financial Health</Text>
+          <View style={styles.metricsContainer}>
+            <View style={styles.metricRow}>
+              <Text style={styles.metricLabel}>How much you save each month</Text>
+              <Text style={[styles.metricValue, {color: spendingInsights?.savingsRate > 20 ? FiColors.success : spendingInsights?.savingsRate > 10 ? FiColors.warning : FiColors.error}]}>{spendingInsights?.savingsRate || 0}%</Text>
+            </View>
+            <View style={styles.metricRow}>
+              <Text style={styles.metricLabel}>Your total monthly expenses</Text>
+              <Text style={styles.metricValue}>₹{spendingInsights?.totalSpending?.toLocaleString() || '0'}</Text>
+            </View>
+            <View style={styles.metricRow}>
+              <Text style={styles.metricLabel}>Compared to similar earners</Text>
+              <Text style={[styles.metricValue, {color: peerComparison?.percentile > 75 ? FiColors.success : FiColors.warning}]}>Top {100 - (peerComparison?.percentile || 50)}%</Text>
+            </View>
           </View>
         </View>
+
+
 
         {/* Insights & Recommendations */}
         <View style={styles.section}>
@@ -220,54 +189,31 @@ const InsightsScreen = ({ navigation }) => {
 
         {/* Key Metrics */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('insights.keyMetrics')}</Text>
-          
-          <View style={[styles.insightCard, { backgroundColor: '#FFF5F5' }]}>
-            <InsightCard
-              title={t('insights.monthlyInflationImpact')}
-              value="₹2,450"
-              trend={12.5}
-              icon="📈"
-              description={t('insights.additionalCost')}
-            />
+          <Text style={styles.sectionTitle}>Inflation Impact</Text>
+          <View style={styles.metricsContainer}>
+            <View style={styles.metricRow}>
+              <Text style={styles.metricLabel}>Extra money needed due to rising prices</Text>
+              <Text style={[styles.metricValue, {color: FiColors.error}]}>₹{Math.round((spendingInsights?.totalSpending || 50000) * 0.05).toLocaleString()}/month</Text>
+            </View>
           </View>
         </View>
 
         {/* Spending Breakdown */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('insights.inflationImpactByCategory')}</Text>
+          <Text style={styles.sectionTitle}>Where Inflation Hits You Most</Text>
           
           <View style={styles.spendingCard}>
-            <SpendingCategory
-              category={t('insights.foodDining')}
-              amount="1,250"
-              percentage="35"
-              icon="🍽️"
-            />
-            <SpendingCategory
-              category={t('insights.transportation')}
-              amount="890"
-              percentage="25"
-              icon="🚗"
-            />
-            <SpendingCategory
-              category={t('insights.housing')}
-              amount="650"
-              percentage="18"
-              icon="🏠"
-            />
-            <SpendingCategory
-              category={t('insights.healthcare')}
-              amount="420"
-              percentage="12"
-              icon="🏥"
-            />
-            <SpendingCategory
-              category={t('insights.others')}
-              amount="240"
-              percentage="10"
-              icon="📦"
-            />
+            {spendingInsights?.topCategories?.slice(0, 5).map((category, index) => (
+              <SpendingCategory
+                key={index}
+                category={category.category.charAt(0).toUpperCase() + category.category.slice(1)}
+                amount={Math.round(category.amount * 0.128).toLocaleString()}
+                percentage={Math.round(category.percentage * 0.128)}
+                icon={getCategoryIcon(category.category)}
+              />
+            )) || [
+              <SpendingCategory key="fallback" category="Food" amount="1,250" percentage="35" icon="🍽️" />
+            ]}
           </View>
         </View>
 
@@ -333,7 +279,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   section: {
-    margin: 16,
+    marginHorizontal: 16,
+    marginBottom: 8,
   },
   sectionTitle: {
     fontSize: 20,
@@ -366,22 +313,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
     marginBottom: 20,
   },
   spendingCard: {
     backgroundColor: FiColors.surface,
     borderRadius: 16,
-    padding: 20,
-    marginHorizontal: 16,
-    marginBottom: 20,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
   },
   recommendationsCard: {
     backgroundColor: FiColors.surface,
     borderRadius: 16,
-    padding: 20,
-    marginHorizontal: 16,
-    marginBottom: 20,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
   },
   insightItem: {
     flexDirection: 'row',
@@ -401,8 +354,8 @@ const styles = StyleSheet.create({
   },
   cardHeader: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
+    alignItems: 'flex-start',
+    marginBottom: 12,
   },
   cardIcon: {
     fontSize: 24,
@@ -410,26 +363,29 @@ const styles = StyleSheet.create({
   },
   cardTitleContainer: {
     flex: 1,
+    minWidth: 0,
   },
   cardTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
     color: FiColors.text,
     marginBottom: 2,
+    flexWrap: 'wrap',
   },
   cardDescription: {
-    fontSize: 14,
+    fontSize: 12,
     color: FiColors.textSecondary,
+    flexWrap: 'wrap',
   },
   cardContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
   },
   cardValue: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: '700',
     color: FiColors.text,
+    marginBottom: 4,
   },
   cardTrend: {
     fontSize: 16,
@@ -441,10 +397,33 @@ const styles = StyleSheet.create({
   trendDown: {
     color: FiColors.primary,
   },
+  metricsContainer: {
+    backgroundColor: FiColors.surface,
+    borderRadius: 16,
+    padding: 16,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
+  },
+  metricRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: FiColors.border + '30',
+  },
+  metricLabel: {
+    fontSize: 16,
+    color: FiColors.text,
+    flex: 1,
+  },
+  metricValue: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: FiColors.text,
   },
   categoryItem: {
     flexDirection: 'row',

@@ -14,21 +14,26 @@ class DataService {
   // Get list of available test users
   getAvailableUsers() {
     try {
-      return this.enhancedService.getAvailableUsers();
+      const users = this.enhancedService.getAvailableUsers();
+      console.log(`✅ DataService: Loaded ${users.length} users from EnhancedDataService`);
+      return users;
     } catch (error) {
-      console.warn('Falling back to UserProfileService:', error.message);
+      console.warn('⚠️ Falling back to UserProfileService:', error.message);
       return this.userProfileService.getAvailableUsers();
     }
   }
 
   // Set current user
   setCurrentUser(userId) {
+    console.log(`DataService: Setting current user to ${userId}`);
     this.currentUser = userId;
+    this.enhancedService.currentUser = userId;
     return userId;
   }
 
   // Get current user ID
   getCurrentUser() {
+    console.log(`DataService: Getting current user: ${this.currentUser}`);
     return this.currentUser;
   }
 
@@ -37,9 +42,11 @@ class DataService {
   // Get user's total balance
   async getUserBalance(userId) {
     try {
-      return await this.enhancedService.getUserBalance(userId);
+      const balance = await this.enhancedService.getUserBalance(userId);
+      console.log(`✅ DataService: Loaded balance ₹${balance.toLocaleString()} for user ${userId}`);
+      return balance;
     } catch (error) {
-      console.warn('Falling back to UserProfileService for balance:', error.message);
+      console.warn('⚠️ Falling back to UserProfileService for balance:', error.message);
       return this.userProfileService.getUserBalance(userId);
     }
   }
@@ -47,9 +54,11 @@ class DataService {
   // Get user's net worth
   async getUserNetWorth(userId) {
     try {
-      return await this.enhancedService.getUserNetWorth(userId);
+      const netWorth = await this.enhancedService.getUserNetWorth(userId);
+      console.log(`✅ DataService: Loaded net worth ₹${netWorth?.netWorth?.toLocaleString()} for user ${userId}`);
+      return netWorth;
     } catch (error) {
-      console.warn('Falling back to UserProfileService for net worth:', error.message);
+      console.warn('⚠️ Falling back to UserProfileService for net worth:', error.message);
       return this.userProfileService.getUserNetWorth(userId);
     }
   }
@@ -66,9 +75,11 @@ class DataService {
   // Get user profile
   async getUserProfile(userId) {
     try {
-      return await this.enhancedService.getUserProfile(userId);
+      const profile = await this.enhancedService.getUserProfile(userId);
+      console.log(`✅ DataService: Loaded profile for ${profile?.name} (${userId})`);
+      return profile;
     } catch (error) {
-      console.warn('Falling back to UserProfileService for profile:', error.message);
+      console.warn('⚠️ Falling back to UserProfileService for profile:', error.message);
       return this.userProfileService.getUserProfile(userId);
     }
   }

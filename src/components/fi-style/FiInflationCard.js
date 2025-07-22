@@ -14,9 +14,49 @@ const FiColors = {
   error: '#FF6B6B'
 };
 
-const FiInflationCard = ({ inflationData = {} }) => {
+const FiInflationCard = ({ inflationData = {}, userData = null, userProfile = null }) => {
   const navigation = useNavigation();
   const { t } = useLanguage();
+  
+  // Calculate personal inflation based on user spending patterns
+  const calculatePersonalInflation = () => {
+    if (!userData?.monthlySpending) return 8.5; // fallback
+    
+    const spending = userData.monthlySpending;
+    const totalSpending = Object.values(spending).reduce((a, b) => a + b, 0);
+    
+    // Weight categories by spending amount and apply inflation rates
+    const categoryInflation = {
+      housing: 6.2,    // Lower inflation for housing
+      food: 12.8,      // Higher food inflation
+      transport: 9.4,  // Fuel price increases
+      entertainment: 8.1,
+      miscellaneous: 7.3,
+      investments: 0   // No inflation on investments
+    };
+    
+    let weightedInflation = 0;
+    Object.entries(spending).forEach(([category, amount]) => {
+      const weight = amount / totalSpending;
+      const rate = categoryInflation[category] || 8.0;
+      weightedInflation += weight * rate;
+    });
+    
+    return Math.round(weightedInflation * 10) / 10;
+  };
+  
+  // Calculate monthly impact in rupees
+  const calculateMonthlyImpact = () => {
+    if (!userData?.monthlySpending) return 2500;
+    const totalSpending = Object.values(userData.monthlySpending).reduce((a, b) => a + b, 0);
+    const personalRate = calculatePersonalInflation();
+    return Math.round((totalSpending * personalRate) / 100);
+  };
+  
+  const personalInflation = calculatePersonalInflation();
+  const monthlyImpact = calculateMonthlyImpact();
+  const govtRate = 6.5;
+  const difference = personalInflation - govtRate;
   return (
     <View style={styles.container}>
       <View style={styles.card}>
@@ -28,7 +68,7 @@ const FiInflationCard = ({ inflationData = {} }) => {
           </View>
           <View style={styles.headerRight}>
             <View style={styles.locationBadge}>
-              <Text style={styles.locationText}>📍 {t('location.mumbai')}</Text>
+              <Text style={styles.locationText}>📍 {userProfile?.location || 'Mumbai, Maharashtra'}</Text>
             </View>
             <TouchableOpacity style={styles.refreshButton} onPress={() => console.log('Refreshing data...')}>
               <Text style={styles.refreshIcon}>↻</Text>
@@ -39,7 +79,7 @@ const FiInflationCard = ({ inflationData = {} }) => {
         {/* Large number display (Fi wealth style) */}
         <View style={styles.rateDisplay}>
           <View style={styles.rateWithTrend}>
-            <Text style={styles.mainRate}>{inflationData.personal || 0}%</Text>
+            <Text style={styles.mainRate}>{personalInflation}%</Text>
             <View style={styles.trendSection}>
               <Text style={styles.trendIndicator}>↗ {t('inflation.trendingUp')}</Text>
               <Text style={styles.trendSubtext}>{t('inflation.vsLastMonth')}</Text>
@@ -65,9 +105,9 @@ const FiInflationCard = ({ inflationData = {} }) => {
             <Text style={styles.impactEmoji}>💸</Text>
             <Text style={styles.impactTitle}>{t('inflation.realImpact')}</Text>
           </View>
-          <Text style={styles.impactDescription}>{t('inflation.impactDescription')}</Text>
-          <Text style={styles.impactValue}>{t('inflation.impactValue')}</Text>
-          <Text style={styles.impactSubtext}>{t('inflation.impactSubtext')}</Text>
+          <Text style={styles.impactDescription}>Your monthly expenses are increasing by</Text>
+          <Text style={styles.impactValue}>₹{monthlyImpact.toLocaleString()}</Text>
+          <Text style={styles.impactSubtext}>{difference > 0 ? `${difference.toFixed(1)}% higher than govt rate` : `${Math.abs(difference).toFixed(1)}% lower than govt rate`}</Text>
         </View>
 
         {/* Fi-style action button */}

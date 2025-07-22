@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, StatusBar, Image, Animated } from 'react-native';
 import { FadeInUp } from '../animations/AnimatedCard';
 import { TouchableArea } from '../common/AccessibilityHelpers';
@@ -6,6 +6,7 @@ import { useLanguage } from '../../localization/LanguageContext';
 import { useTheme } from '../../theme/ThemeContext';
 import FiInflationCard from './FiInflationCard';
 import FiMetricsCards from './FiMetricsCards';
+import DataService from '../../services/DataService';
 
 // Fi App Colors (from screenshots)
 const FiColors = {
@@ -18,10 +19,39 @@ const FiColors = {
   border: '#E0E0E0',
 };
 
-const FiHomeScreen = ({ navigation, inflationData }) => {
+const FiHomeScreen = ({ navigation, inflationData, selectedUserId }) => {
   const { t } = useLanguage();
   const { isDarkMode } = useTheme();
   const [scrollY] = useState(new Animated.Value(0));
+  const [userProfile, setUserProfile] = useState(null);
+  const [balance, setBalance] = useState(0);
+  const [netWorth, setNetWorth] = useState(0);
+  const [userData, setUserData] = useState(null);
+  
+  useEffect(() => {
+    loadUserData();
+  }, [selectedUserId]);
+  
+  const loadUserData = async () => {
+    try {
+      const currentUser = selectedUserId || DataService.getCurrentUser() || '1010101010';
+      console.log('FiHomeScreen: Loading data for user', currentUser);
+      
+      const profile = await DataService.getUserProfile(currentUser);
+      const userBalance = await DataService.getUserBalance(currentUser);
+      const userNetWorth = await DataService.getUserNetWorth(currentUser);
+      const fullUserData = await DataService.getUserData(currentUser);
+      
+      setUserProfile(profile);
+      setBalance(userBalance);
+      setNetWorth(userNetWorth?.netWorth || 0);
+      setUserData(fullUserData);
+      
+      console.log('FiHomeScreen: Loaded', profile?.name, userBalance, userNetWorth?.netWorth);
+    } catch (error) {
+      console.error('FiHomeScreen: Error loading user data:', error);
+    }
+  };
   const headerHeight = scrollY.interpolate({
     inputRange: [0, 100],
     outputRange: [105, 70],
@@ -89,14 +119,14 @@ const FiHomeScreen = ({ navigation, inflationData }) => {
     <View style={[styles.welcomeSection, { backgroundColor: isDarkMode ? '#1A1A1A' : '#E6FBF7' }]}>
       <View style={styles.greeting}>
         <Text style={[styles.greetingText, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>{t('home.greeting')}</Text>
-        <Text style={[styles.userName, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>{t('home.userName')}</Text>
+        <Text style={[styles.userName, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>{userProfile?.name || 'User'}</Text>
       </View>
 
       {/* Fi-style wealth display */}
       <View style={styles.wealthSection}>
         <Text style={[styles.wealthLabel, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>{t('home.wealthLabel')}</Text>
-        <Text style={[styles.wealthValue, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>₹12,45,000</Text>
-        <Text style={styles.wealthSubtext}>{t('home.wealthSubtext')}</Text>
+        <Text style={[styles.wealthValue, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>₹{balance.toLocaleString()}</Text>
+        <Text style={styles.wealthSubtext}>+₹{((userData?.monthlySpending ? Object.values(userData.monthlySpending).reduce((a,b) => a+b, 0) : 15000) * 0.1).toLocaleString()} this month</Text>
       </View>
     </View>
   );
@@ -175,11 +205,11 @@ const FiHomeScreen = ({ navigation, inflationData }) => {
             <Text style={styles.goalIcon}>🛡️</Text>
             <View style={styles.goalInfo}>
               <Text style={styles.goalTitle}>{t('home.emergencyFund')}</Text>
-              <Text style={styles.goalProgress}>{t('home.emergencyProgress')}</Text>
+              <Text style={styles.goalProgress}>₹{Math.round((balance || 0) * 0.25).toLocaleString()} / ₹{Math.round((userProfile?.monthlyIncome || 50000) * 6).toLocaleString()}</Text>
             </View>
           </View>
           <View style={styles.goalProgressBar}>
-            <View style={[styles.goalProgressFill, { width: '25%' }]} />
+            <View style={[styles.goalProgressFill, { width: `${Math.min(100, ((balance || 0) * 0.25) / ((userProfile?.monthlyIncome || 50000) * 6) * 100)}%` }]} />
           </View>
         </View>
         
@@ -188,11 +218,11 @@ const FiHomeScreen = ({ navigation, inflationData }) => {
             <Text style={styles.goalIcon}>🏠</Text>
             <View style={styles.goalInfo}>
               <Text style={styles.goalTitle}>{t('home.houseDownPayment')}</Text>
-              <Text style={styles.goalProgress}>{t('home.houseProgress')}</Text>
+              <Text style={styles.goalProgress}>₹{Math.round((netWorth || 0) * 0.15).toLocaleString()} / ₹{Math.round((userProfile?.monthlyIncome || 50000) * 60).toLocaleString()}</Text>
             </View>
           </View>
           <View style={styles.goalProgressBar}>
-            <View style={[styles.goalProgressFill, { width: '23%' }]} />
+            <View style={[styles.goalProgressFill, { width: `${Math.min(100, ((netWorth || 0) * 0.15) / ((userProfile?.monthlyIncome || 50000) * 60) * 100)}%` }]} />
           </View>
         </View>
       </View>
@@ -265,11 +295,17 @@ const FiHomeScreen = ({ navigation, inflationData }) => {
         <WelcomeSection />
         
         {/* Main Inflation Card */}
-        <FiInflationCard inflationData={inflationData} />
+        <FiInflationCard 
+          inflationData={inflationData} 
+          userData={userData}
+          userProfile={userProfile}
+        />
         
         {/* Metrics Cards */}
         <FiMetricsCards 
           inflationData={inflationData}
+          userData={userData}
+          userProfile={userProfile}
           onCardPress={(cardId) => navigation.navigate('MetricDetail', { cardId })}
         />
         

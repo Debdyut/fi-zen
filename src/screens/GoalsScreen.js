@@ -137,53 +137,55 @@ const GoalsScreen = ({ navigation }) => {
 
     return goals;
   };
-    },
-    {
-      id: 3,
-      title: t('goals.vacationFund'),
-      target: 150000,
-      current: 35000,
-      icon: '✈️',
-      category: t('goals.lifestyle'),
-      deadline: `8 ${t('goals.months')}`,
-      monthlyTarget: 14375,
-    },
-  ]);
 
   const GoalCard = ({ goal, bgColor }) => {
-    const progress = (goal.current / goal.target) * 100;
-    const remaining = goal.target - goal.current;
+    const progress = (goal.currentAmount / goal.targetAmount) * 100;
+    const remaining = goal.targetAmount - goal.currentAmount;
+    const monthsToTarget = Math.ceil(remaining / goal.monthlyContribution);
     
     return (
       <FadeInUp delay={100}>
         <TouchableArea style={[styles.goalCard, { backgroundColor: bgColor }]}>
           <View style={styles.goalHeader}>
-            <View style={styles.goalTitleSection}>
-              <Text style={styles.goalIcon}>{goal.icon}</Text>
-              <View>
-                <Text style={styles.goalTitle}>{goal.title}</Text>
-                <Text style={styles.goalCategory}>{goal.category} • {goal.deadline}</Text>
-              </View>
+            <Text style={styles.goalIcon}>{goal.icon}</Text>
+            <View style={styles.goalInfo}>
+              <Text style={styles.goalTitle}>{goal.title}</Text>
+              <Text style={styles.goalCategory}>{goal.category}</Text>
             </View>
-            <Text style={styles.goalProgress}>{progress.toFixed(0)}%</Text>
+            <Text style={[styles.goalPriority, { 
+              color: goal.priority === 'high' ? FiColors.error : 
+                     goal.priority === 'medium' ? FiColors.warning : FiColors.success 
+            }]}>
+              {goal.priority?.toUpperCase()}
+            </Text>
           </View>
           
-          <View style={styles.goalAmounts}>
-            <Text style={styles.goalCurrent}>₹{goal.current.toLocaleString()}</Text>
-            <Text style={styles.goalTarget}>of ₹{goal.target.toLocaleString()}</Text>
+          <View style={styles.goalProgress}>
+            <View style={styles.progressBar}>
+              <View style={[styles.progressFill, { width: `${Math.min(progress, 100)}%` }]} />
+            </View>
+            <Text style={styles.progressText}>{Math.round(progress)}%</Text>
           </View>
           
-          <View style={styles.progressBarContainer}>
-            <View style={styles.progressBarBackground}>
-              <View 
-                style={[styles.progressBarFill, { width: `${Math.min(progress, 100)}%` }]}
-              />
+          <View style={styles.goalStats}>
+            <View style={styles.goalStat}>
+              <Text style={styles.goalStatValue}>₹{goal.currentAmount.toLocaleString()}</Text>
+              <Text style={styles.goalStatLabel}>Current</Text>
+            </View>
+            <View style={styles.goalStat}>
+              <Text style={styles.goalStatValue}>₹{goal.targetAmount.toLocaleString()}</Text>
+              <Text style={styles.goalStatLabel}>Target</Text>
+            </View>
+            <View style={styles.goalStat}>
+              <Text style={styles.goalStatValue}>{monthsToTarget}m</Text>
+              <Text style={styles.goalStatLabel}>To Go</Text>
             </View>
           </View>
           
           <View style={styles.goalFooter}>
-            <Text style={styles.remainingAmount}>₹{remaining.toLocaleString()} {t('goals.remaining')}</Text>
-            <Text style={styles.monthlyTarget}>₹{goal.monthlyTarget.toLocaleString()}/{t('goals.month')}</Text>
+            <Text style={styles.monthlyContribution}>
+              ₹{goal.monthlyContribution.toLocaleString()}/month
+            </Text>
           </View>
         </TouchableArea>
       </FadeInUp>
@@ -247,59 +249,7 @@ const GoalsScreen = ({ navigation }) => {
         </View>
       </View>
     </FadeInUp>
-  const GoalCard = ({ goal, bgColor }) => {
-    const progress = (goal.currentAmount / goal.targetAmount) * 100;
-    const remaining = goal.targetAmount - goal.currentAmount;
-    const monthsToTarget = Math.ceil(remaining / goal.monthlyContribution);
-    
-    return (
-      <FadeInUp delay={100}>
-        <TouchableArea style={[styles.goalCard, { backgroundColor: bgColor }]}>
-          <View style={styles.goalHeader}>
-            <Text style={styles.goalIcon}>{goal.icon}</Text>
-            <View style={styles.goalInfo}>
-              <Text style={styles.goalTitle}>{goal.title}</Text>
-              <Text style={styles.goalCategory}>{goal.category}</Text>
-            </View>
-            <Text style={[styles.goalPriority, { 
-              color: goal.priority === 'high' ? FiColors.error : 
-                     goal.priority === 'medium' ? FiColors.warning : FiColors.success 
-            }]}>
-              {goal.priority?.toUpperCase()}
-            </Text>
-          </View>
-          
-          <View style={styles.goalProgress}>
-            <View style={styles.progressBar}>
-              <View style={[styles.progressFill, { width: `${Math.min(progress, 100)}%` }]} />
-            </View>
-            <Text style={styles.progressText}>{Math.round(progress)}%</Text>
-          </View>
-          
-          <View style={styles.goalStats}>
-            <View style={styles.goalStat}>
-              <Text style={styles.goalStatValue}>₹{goal.currentAmount.toLocaleString()}</Text>
-              <Text style={styles.goalStatLabel}>Current</Text>
-            </View>
-            <View style={styles.goalStat}>
-              <Text style={styles.goalStatValue}>₹{goal.targetAmount.toLocaleString()}</Text>
-              <Text style={styles.goalStatLabel}>Target</Text>
-            </View>
-            <View style={styles.goalStat}>
-              <Text style={styles.goalStatValue}>{monthsToTarget}m</Text>
-              <Text style={styles.goalStatLabel}>To Go</Text>
-            </View>
-          </View>
-          
-          <View style={styles.goalFooter}>
-            <Text style={styles.monthlyContribution}>
-              ₹{goal.monthlyContribution.toLocaleString()}/month
-            </Text>
-          </View>
-        </TouchableArea>
-      </FadeInUp>
-    );
-  };
+  );
 
   if (loading) {
     return (
@@ -364,27 +314,6 @@ const GoalsScreen = ({ navigation }) => {
             />
           ))}
         </View>
-          </View>
-        </View>
-
-        {/* Active Goals */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('goals.yourGoals')}</Text>
-          {activeGoals.slice(0, 2).map((goal, index) => {
-            const colors = ['#F0FFF4', '#FFF5F5'];
-            return (
-              <GoalCard key={goal.id} goal={goal} bgColor={colors[index % colors.length]} />
-            );
-          })}
-        </View>
-
-        {/* Inflation Impact */}
-        <View style={styles.section}>
-          <InflationImpactCard />
-        </View>
-
-        {/* Quick Actions */}
-        <QuickActions />
       </ScrollView>
     </View>
   );

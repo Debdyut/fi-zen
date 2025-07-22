@@ -8,14 +8,12 @@ import {
   SafeAreaView,
   ScrollView,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import { FiColors } from '../theme/consolidatedFiColors';
 import { useLanguage } from '../localization/LanguageContext';
-import BalanceCard from '../components/BalanceCard';
-import PlantRewards from '../components/PlantRewards';
-import QuickActions from '../components/QuickActions';
-import VibeCard from '../components/VibeCard';
-import InflationCard from '../components/InflationCard';
+
+// Removed missing component imports
 import DataService from '../services/DataService';
 import { getAvatarSource } from '../utils/avatarHelper';
 
@@ -28,12 +26,45 @@ const HomeScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(true);
   const [plantGrowth, setPlantGrowth] = useState(3);
   const [rewardPoints, setRewardPoints] = useState(245);
-  const [currentUser, setCurrentUser] = useState('1010101010');
-  const [availableUsers] = useState(DataService.getAvailableUsers());
+  const [currentUser, setCurrentUser] = useState(null);
+  const [availableUsers] = useState(() => {
+    const users = DataService.getAvailableUsers();
+    console.log('Available users:', users);
+    return users;
+  });
   const [userAvatar, setUserAvatar] = useState(1);
 
   useEffect(() => {
-    loadUserData();
+    console.log('🏠 HomeScreen mounted, route.params:', route.params);
+    // Check if user was passed via navigation params first
+    const paramUser = route.params?.selectedUserId;
+    const serviceUser = DataService.getCurrentUser();
+    const user = paramUser || serviceUser || '1010101010';
+    console.log('HomeScreen: Getting user - param:', paramUser, 'service:', serviceUser, 'final:', user);
+    setCurrentUser(user);
+    if (paramUser) {
+      DataService.setCurrentUser(paramUser);
+    }
+  }, [route.params?.selectedUserId]);
+
+  // Also listen for focus events to refresh data
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      console.log('🎯 HomeScreen focused');
+      const user = DataService.getCurrentUser() || '1010101010';
+      console.log('HomeScreen focus: current user from service:', user);
+      setCurrentUser(user);
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  useEffect(() => {
+    if (currentUser) {
+      console.log('HomeScreen: useEffect triggered - Loading data for user:', currentUser);
+      loadUserData();
+    } else {
+      console.log('HomeScreen: useEffect triggered but no currentUser');
+    }
   }, [currentUser]);
 
   useEffect(() => {
@@ -46,12 +77,19 @@ const HomeScreen = ({ navigation, route }) => {
   const loadUserData = async () => {
     try {
       setLoading(true);
+      console.log(`🔄 loadUserData called for user: ${currentUser}`);
       
       // Load comprehensive user data
+      console.log('📞 Calling DataService.getUserBalance...');
       const userBalance = await DataService.getUserBalance(currentUser);
+      console.log('📞 Calling DataService.getUserNetWorth...');
       const userNetWorth = await DataService.getUserNetWorth(currentUser);
+      console.log('📞 Calling DataService.getUserProfile...');
       const profile = await DataService.getUserProfile(currentUser);
+      console.log('📞 Calling DataService.getUserAvatar...');
       const avatar = DataService.getUserAvatar(currentUser);
+      
+      console.log('Raw data loaded:', { userBalance, userNetWorth, profile, avatar });
       
       setBalance(userBalance);
       setNetWorth(userNetWorth?.netWorth || 0);
@@ -59,7 +97,9 @@ const HomeScreen = ({ navigation, route }) => {
       setUserProfile(profile);
       setUserAvatar(avatar);
       
-      console.log(`✅ Loaded data for ${profile?.name}: ₹${userBalance.toLocaleString()} balance, ₹${userNetWorth?.netWorth?.toLocaleString()} net worth`);
+      console.log('State updated - Balance:', userBalance, 'NetWorth:', userNetWorth?.netWorth, 'Name:', profile?.name);
+      
+      console.log(`✅ UI Updated for ${profile?.name}: ₹${userBalance.toLocaleString()} balance, ₹${userNetWorth?.netWorth?.toLocaleString()} net worth`);
       
     } catch (error) {
       console.error('Error loading user data:', error);
@@ -77,16 +117,18 @@ const HomeScreen = ({ navigation, route }) => {
   };
 
   const switchUser = (userId) => {
+    console.log(`Switching to user: ${userId}`);
     setCurrentUser(userId);
     DataService.setCurrentUser(userId);
   };
 
-  if (loading) {
+  if (loading || !currentUser) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={FiColors.primary} />
           <Text style={styles.loadingText}>Loading user data...</Text>
+          <Text style={styles.loadingText}>Current user: {currentUser || 'None'}</Text>
         </View>
       </SafeAreaView>
     );
@@ -103,7 +145,9 @@ const HomeScreen = ({ navigation, route }) => {
               onPress={() => {
                 const currentIndex = availableUsers.findIndex(user => user.userId === currentUser);
                 const nextIndex = (currentIndex + 1) % availableUsers.length;
-                switchUser(availableUsers[nextIndex].userId);
+                const nextUser = availableUsers[nextIndex];
+                console.log('Current user:', currentUser, 'Next user:', nextUser);
+                switchUser(nextUser.userId);
               }}>
               <Image 
                 source={getAvatarSource(userAvatar)}
@@ -115,6 +159,7 @@ const HomeScreen = ({ navigation, route }) => {
               <Text style={styles.greeting}>Hi {userName}! 👋</Text>
               <Text style={styles.subtitle}>{userProfile?.profession || 'Professional'}</Text>
               <Text style={styles.location}>{userProfile?.location || ''}</Text>
+              <Text style={styles.debugText}>User: {currentUser}</Text>
             </View>
             
             <View style={styles.rightIcons}>
@@ -129,16 +174,15 @@ const HomeScreen = ({ navigation, route }) => {
           
           {/* Enhanced Balance Card with Net Worth */}
           <View style={styles.balanceSection}>
-            <BalanceCard balance={balance} />
+            <View style={styles.balanceCard}>
+              <Text style={styles.balanceLabel}>Total Balance</Text>
+              <Text style={styles.balanceValue}>₹{balance.toLocaleString()}</Text>
+            </View>
             <View style={styles.netWorthCard}>
               <Text style={styles.netWorthLabel}>Net Worth</Text>
               <Text style={styles.netWorthValue}>₹{netWorth.toLocaleString()}</Text>
             </View>
           </View>
-          
-          <InflationCard userId={currentUser} navigation={navigation} />
-          
-          <PlantRewards plantGrowth={plantGrowth} rewardPoints={rewardPoints} />
           
           <View style={styles.actionContainer}>
             <TouchableOpacity
@@ -152,10 +196,6 @@ const HomeScreen = ({ navigation, route }) => {
               <Text style={styles.secondaryButtonText}>📤 Send Money</Text>
             </TouchableOpacity>
           </View>
-          
-          <QuickActions />
-          
-          <VibeCard />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -219,6 +259,27 @@ const styles = StyleSheet.create({
     color: FiColors.text,
     fontSize: 24,
     fontWeight: '600',
+  },
+  balanceCard: {
+    backgroundColor: FiColors.surface,
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  balanceLabel: {
+    color: FiColors.textSecondary,
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  balanceValue: {
+    color: FiColors.text,
+    fontSize: 28,
+    fontWeight: '700',
+  },
+  debugText: {
+    color: FiColors.textSecondary,
+    fontSize: 10,
+    marginTop: 2,
   },
 });
 

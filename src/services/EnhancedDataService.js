@@ -1,25 +1,45 @@
 // Enhanced DataService - Production ready service layer
 // Reads from standardized JSON files with caching and validation
 
-const fs = require('fs');
-const path = require('path');
-const DataValidator = require('../data/utils/DataValidator');
+// Import actual data files for React Native
+const userIndex = require('../data/standardized/userIndex.json');
+
+// Import user data files
+const userData = {
+  '1010101010': require('../data/standardized/1010101010.json'),
+  '1111111111': require('../data/standardized/1111111111.json'),
+  '1212121212': require('../data/standardized/1212121212.json'),
+  '1313131313': require('../data/standardized/1313131313.json'),
+  '1414141414': require('../data/standardized/1414141414.json'),
+  '1717171717': require('../data/standardized/1717171717.json'),
+  '1818181818': require('../data/standardized/1818181818.json'),
+  '1919191919': require('../data/standardized/1919191919.json'),
+  '2020202020': require('../data/standardized/2020202020.json'),
+  '2020202021': require('../data/standardized/2020202021.json'),
+  '2121212121': require('../data/standardized/2121212121.json'),
+  '2222222222': require('../data/standardized/2222222222.json'),
+  '2525252525': require('../data/standardized/2525252525.json'),
+  '3333333333': require('../data/standardized/3333333333.json'),
+  '4444444444': require('../data/standardized/4444444444.json'),
+  '5555555555': require('../data/standardized/5555555555.json'),
+  '6666666666': require('../data/standardized/6666666666.json'),
+  '7777777777': require('../data/standardized/7777777777.json'),
+  '8888888888': require('../data/standardized/8888888888.json'),
+  '9999999999': require('../data/standardized/9999999999.json')
+};
 
 class EnhancedDataService {
   constructor() {
-    this.dataPath = path.join(__dirname, '../data/standardized');
-    this.indexPath = path.join(this.dataPath, 'userIndex.json');
-    this.validator = new DataValidator();
+    this.currentUser = '1010101010'; // Default user
     
     // In-memory cache for performance
     this.cache = {
-      userIndex: null,
+      userIndex: userIndex,
       users: new Map(),
-      lastUpdated: null
+      lastUpdated: new Date()
     };
     
-    // Load user index on initialization
-    this.loadUserIndex();
+    console.log(`✅ EnhancedDataService initialized with ${Object.keys(userIndex).length} users`);
   }
 
   // ==================== CORE DATA OPERATIONS ====================
@@ -28,19 +48,9 @@ class EnhancedDataService {
    * Load and cache user index for fast lookups
    */
   loadUserIndex() {
-    try {
-      if (fs.existsSync(this.indexPath)) {
-        const indexData = fs.readFileSync(this.indexPath, 'utf8');
-        this.cache.userIndex = JSON.parse(indexData);
-        this.cache.lastUpdated = new Date();
-        console.log(`📇 Loaded user index: ${Object.keys(this.cache.userIndex).length} users`);
-      } else {
-        throw new Error('User index not found');
-      }
-    } catch (error) {
-      console.error('❌ Error loading user index:', error.message);
-      this.cache.userIndex = {};
-    }
+    // Data is already loaded via require statements
+    this.cache.userIndex = userIndex;
+    this.cache.lastUpdated = new Date();
   }
 
   /**
@@ -80,24 +90,18 @@ class EnhancedDataService {
     }
 
     try {
-      const userFilePath = path.join(this.dataPath, `${userId}.json`);
+      // Get user data from imported files
+      const userDataObj = userData[userId];
       
-      if (!fs.existsSync(userFilePath)) {
+      if (!userDataObj) {
         throw new Error(`User not found: ${userId}`);
       }
 
-      const userData = JSON.parse(fs.readFileSync(userFilePath, 'utf8'));
-      
-      // Validate data integrity
-      const validation = this.validator.validateUserData(userData);
-      if (!validation.isValid) {
-        console.warn(`⚠️ Data validation warnings for ${userId}:`, validation.errors);
-      }
-
       // Cache the user data
-      this.cache.users.set(userId, userData);
+      this.cache.users.set(userId, userDataObj);
       
-      return userData;
+      console.log(`✅ Loaded user data for ${userDataObj.profile?.name} (${userId})`);
+      return userDataObj;
     } catch (error) {
       console.error(`❌ Error loading user ${userId}:`, error.message);
       throw error;
@@ -425,11 +429,12 @@ class EnhancedDataService {
    * @returns {number} Avatar number
    */
   getUserAvatar(userId) {
-    if (this.cache.userIndex && this.cache.userIndex[userId]) {
-      // Extract avatar from userId or use default mapping
+    try {
+      const userDataObj = userData[userId];
+      return userDataObj?.profile?.avatar || parseInt(userId.slice(-1)) || 1;
+    } catch (error) {
       return parseInt(userId.slice(-1)) || 1;
     }
-    return 1;
   }
 
   /**

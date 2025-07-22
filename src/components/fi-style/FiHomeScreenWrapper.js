@@ -1,7 +1,15 @@
 import React from 'react';
 import FiHomeScreen from './FiHomeScreen';
+import DataService from '../../services/DataService';
 
-const FiHomeScreenWrapper = ({ navigation }) => {
+const FiHomeScreenWrapper = ({ navigation, route }) => {
+  // Get selected user from DataService
+  const selectedUser = route.params?.selectedUserId || DataService.getCurrentUser() || '1010101010';
+  console.log('FiHomeScreenWrapper: Using user', selectedUser);
+  
+  // Set the user in DataService
+  DataService.setCurrentUser(selectedUser);
+  
   // Mock inflation data for demo
   const mockInflationData = {
     personal: 11.8,
@@ -15,8 +23,10 @@ const FiHomeScreenWrapper = ({ navigation }) => {
 
   return (
     <FiHomeScreen 
-      navigation={navigation} 
-      inflationData={mockInflationData} 
+      navigation={navigation}
+      route={route}
+      inflationData={mockInflationData}
+      selectedUserId={selectedUser}
     />
   );
 };
