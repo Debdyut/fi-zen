@@ -7,6 +7,18 @@ class DataService {
     this.enhancedService = EnhancedDataService;
     this.userProfileService = UserProfileService;
     this.currentUser = '1010101010'; // Default user
+    this.useAPI = false; // Default to file mode
+  }
+
+  // Set data source mode
+  setDataSource(useAPI) {
+    this.useAPI = useAPI;
+    console.log(`🔄 DataService: Switched to ${useAPI ? 'API' : 'FILE'} mode`);
+  }
+
+  // Get current data source
+  getDataSource() {
+    return this.useAPI ? 'API' : 'FILE';
   }
 
   // ==================== USER MANAGEMENT ====================
@@ -76,11 +88,12 @@ class DataService {
   async getUserProfile(userId) {
     try {
       const profile = await this.enhancedService.getUserProfile(userId);
-      console.log(`✅ DataService: Loaded profile for ${profile?.name} (${userId})`);
-      return profile;
+      console.log(`✅ DataService: Loaded profile for ${profile?.name} (${userId}) from ${this.getDataSource()}`);
+      return { ...profile, _dataSource: this.getDataSource() };
     } catch (error) {
       console.warn('⚠️ Falling back to UserProfileService for profile:', error.message);
-      return this.userProfileService.getUserProfile(userId);
+      const profile = this.userProfileService.getUserProfile(userId);
+      return { ...profile, _dataSource: 'FILE_FALLBACK' };
     }
   }
 

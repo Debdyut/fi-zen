@@ -18,6 +18,7 @@ import UserProfileService from '../services/UserProfileService';
 import DataService from '../services/DataService';
 import { FadeInUp } from '../components/animations/AnimatedCard';
 import { TouchableArea } from '../components/common/AccessibilityHelpers';
+import APIToggle from '../components/common/APIToggle';
 
 const { width } = Dimensions.get('window');
 const cardWidth = (width - 60) / 2; // 2 columns with margins
@@ -27,6 +28,7 @@ const LoginScreen = ({ navigation }) => {
   const { t } = useLanguage();
   const colors = getThemeColors(isDarkMode);
   const [isLoading, setIsLoading] = useState(false);
+  const [useAPI, setUseAPI] = useState(false);
   const scrollViewRef = React.useRef(null);
 
   const userProfiles = UserProfileService.getAllUserProfiles();
@@ -49,6 +51,11 @@ const LoginScreen = ({ navigation }) => {
       // Set the selected user as current user in both services
       const success = UserProfileService.setCurrentUser(selectedUser);
       DataService.setCurrentUser(selectedUser);
+      DataService.setDataSource(useAPI);
+      
+      // Test data source
+      const testProfile = await DataService.getUserProfile(selectedUser);
+      console.log(`📊 Login verification: Data source = ${testProfile._dataSource}`);
       
       console.log(`Login: Selected user ${selectedUser} (${userProfiles[selectedUser].name})`);
       
@@ -136,6 +143,18 @@ const LoginScreen = ({ navigation }) => {
           </Text>
         </View>
 
+        {/* API Toggle */}
+        <APIToggle 
+          useAPI={useAPI}
+          onToggle={() => {
+            const newUseAPI = !useAPI;
+            setUseAPI(newUseAPI);
+            DataService.setDataSource(newUseAPI);
+            console.log(`🔄 Login: Switched to ${newUseAPI ? 'API' : 'FILE'} mode`);
+          }}
+          colors={colors}
+        />
+
         {/* Selected User Info */}
         {selectedUser && (
           <View>
@@ -182,7 +201,7 @@ const LoginScreen = ({ navigation }) => {
             activeOpacity={0.8}
           >
             <Text style={[styles.loginButtonText, { color: colors.white }]}>
-              {isLoading ? 'Logging in...' : 'Continue to App'}
+              {isLoading ? 'Logging in...' : `Continue with ${useAPI ? 'API' : 'Files'}`}
             </Text>
           </TouchableOpacity>
         </View>
