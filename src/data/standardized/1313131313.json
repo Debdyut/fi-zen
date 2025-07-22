@@ -1,0 +1,112 @@
+{
+  "userId": "1313131313",
+  "profile": {
+    "name": "Sneha Reddy",
+    "location": "Hyderabad, Telangana",
+    "profession": "Graphic Designer",
+    "age": 24,
+    "monthlyIncome": 65000,
+    "riskProfile": "conservative",
+    "financialLiteracy": "low",
+    "assetAllocation": {
+      "equity": 30,
+      "debt": 40,
+      "gold": 20,
+      "cash": 10
+    },
+    "debtProfile": {
+      "creditCard": 15000,
+      "personalLoan": 0,
+      "homeLoan": 0
+    },
+    "spendingPattern": "budget_conscious",
+    "investmentFocus": "safety_first",
+    "avatar": 3,
+    "panCard": "ABCDE1313X",
+    "aadharCard": "1313-1313-13"
+  },
+  "bankAccounts": [
+    {
+      "accountId": "PRIMARY_001",
+      "bankName": "HDFC Bank",
+      "accountType": "Salary",
+      "balance": 67615
+    },
+    {
+      "accountId": "SECONDARY_001",
+      "bankName": "SBI",
+      "accountType": "Savings",
+      "balance": 28977
+    }
+  ],
+  "totalBankBalance": 96592,
+  "mutualFunds": [
+    {
+      "schemeName": "HDFC Hybrid Equity Fund - Direct Growth",
+      "sipAmount": 9750,
+      "currentValue": 139411,
+      "investedAmount": 146250,
+      "returns": -6839,
+      "returnsPercentage": -4.68
+    },
+    {
+      "schemeName": "SBI Conservative Hybrid Fund - Direct Growth",
+      "sipAmount": 9750,
+      "currentValue": 219304,
+      "investedAmount": 224250,
+      "returns": -4946,
+      "returnsPercentage": -2.21
+    }
+  ],
+  "totalMutualFunds": 358715,
+  "stocks": [],
+  "totalStocks": 0,
+  "goldInvestments": [
+    {
+      "type": "Digital Gold",
+      "platform": "Paytm Gold",
+      "currentValue": 39000,
+      "grams": 7.16
+    }
+  ],
+  "totalGold": 39000,
+  "creditCards": [
+    {
+      "bankName": "HDFC Bank",
+      "cardType": "Credit Card",
+      "creditLimit": 60000,
+      "outstandingAmount": 15000,
+      "minimumDue": 750
+    }
+  ],
+  "monthlySpending": {
+    "housing": 16250,
+    "food": 9750,
+    "transport": 6500,
+    "investments": 7800,
+    "entertainment": 3250,
+    "miscellaneous": 6500
+  },
+  "netWorth": {
+    "totalAssets": 494307,
+    "totalLiabilities": 15000,
+    "netWorth": 479307,
+    "breakdown": {
+      "bankAccounts": 96592,
+      "mutualFunds": 358715,
+      "stocks": 0,
+      "gold": 39000,
+      "creditCardDebt": -15000,
+      "loans": 0,
+      "nps": 0
+    }
+  },
+  "recentTransactions": [],
+  "goals": [],
+  "metadata": {
+    "createdAt": "2025-07-22T04:36:35.019Z",
+    "updatedAt": "2025-07-22T04:36:35.019Z",
+    "version": "1.0",
+    "dataSource": "expert_generated"
+  }
+}

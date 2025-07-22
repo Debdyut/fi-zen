@@ -1,0 +1,34 @@
+{
+  "userId": "7777777777",
+  "profile": {
+    "name": "Deepika Rao",
+    "location": "Mangalore, Karnataka",
+    "profession": "Doctor",
+    "age": 28,
+    "avatar": 14,
+    "income": 200000,
+    "monthlyIncome": 200000,
+    "panCard": "ABCDE7777X",
+    "aadharCard": "7777-7777-77"
+  },
+  "bankAccounts": [
+    {
+      "accountId": "PRIMARY_001",
+      "bankName": "HDFC Bank",
+      "accountType": "Salary",
+      "balance": 38408
+    },
+    {
+      "accountId": "SECONDARY_001",
+      "bankName": "SBI",
+      "accountType": "Savings",
+      "balance": 77784
+    }
+  ],
+  "totalBankBalance": 116193,
+  "netWorth": {
+    "totalAssets": 209147.4,
+    "totalLiabilities": 60000,
+    "netWorth": 174289.5
+  }
+}

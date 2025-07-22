@@ -1,0 +1,252 @@
+{
+  "userId": "7777777777",
+  "profile": {
+    "name": "Deepika Rao",
+    "location": "Mangalore, Karnataka",
+    "profession": "Doctor",
+    "age": 28,
+    "avatar": 14,
+    "income": 200000,
+    "monthlyIncome": 200000,
+    "panCard": "ABCDE7777X",
+    "aadharCard": "7777-7777-77"
+  },
+  "bankAccounts": [
+    {
+      "accountId": "STATE_BANK_OF_INDIA_001",
+      "bankName": "State Bank of India",
+      "accountType": "Salary",
+      "accountNumber": "7777777777001",
+      "balance": 207143,
+      "branch": "Main Branch",
+      "ifscCode": "SBIN0001234"
+    },
+    {
+      "accountId": "HDFC_BANK_001",
+      "bankName": "HDFC Bank",
+      "accountType": "Savings",
+      "accountNumber": "7777777777002",
+      "balance": 135121,
+      "branch": "Secondary Branch",
+      "ifscCode": "HDFC0001234"
+    }
+  ],
+  "totalBankBalance": 342264,
+  "mutualFunds": [
+    {
+      "schemeCode": "120503",
+      "schemeName": "SBI Bluechip Fund - Direct Growth",
+      "folioNumber": "7771",
+      "units": 683.918,
+      "nav": 89.45,
+      "currentValue": 61176.47,
+      "investedAmount": 52000,
+      "returns": 9176.47,
+      "returnsPercentage": 17.65,
+      "sipAmount": 4000,
+      "sipDate": 5,
+      "sipStatus": "Active"
+    },
+    {
+      "schemeCode": "120716",
+      "schemeName": "HDFC Mid-Cap Opportunities Fund - Direct Growth",
+      "folioNumber": "7772",
+      "units": 936.848,
+      "nav": 145.67,
+      "currentValue": 136470.59,
+      "investedAmount": 116000,
+      "returns": 20470.59,
+      "returnsPercentage": 17.65,
+      "sipAmount": 4000,
+      "sipDate": 10,
+      "sipStatus": "Active"
+    },
+    {
+      "schemeCode": "120717",
+      "schemeName": "Axis Small Cap Fund - Direct Growth",
+      "folioNumber": "7773",
+      "units": 1610.378,
+      "nav": 78.9,
+      "currentValue": 127058.82,
+      "investedAmount": 108000,
+      "returns": 19058.82,
+      "returnsPercentage": 17.65,
+      "sipAmount": 4000,
+      "sipDate": 15,
+      "sipStatus": "Active"
+    },
+    {
+      "schemeCode": "120718",
+      "schemeName": "Mirae Asset Large Cap Fund - Direct Growth",
+      "folioNumber": "7774",
+      "units": 1000.643,
+      "nav": 98.76,
+      "currentValue": 98823.53,
+      "investedAmount": 84000,
+      "returns": 14823.53,
+      "returnsPercentage": 17.65,
+      "sipAmount": 4000,
+      "sipDate": 20,
+      "sipStatus": "Active"
+    }
+  ],
+  "totalMutualFunds": 423529.41,
+  "stocks": [
+    {
+      "symbol": "RELIANCE",
+      "companyName": "Reliance Industries Ltd",
+      "quantity": 50,
+      "avgPrice": 2467.46,
+      "currentPrice": 2678.5,
+      "investedAmount": 123373.23,
+      "currentValue": 133925,
+      "returns": 10551.77,
+      "returnsPercentage": 8.55
+    },
+    {
+      "symbol": "TCS",
+      "companyName": "Tata Consultancy Services",
+      "quantity": 56,
+      "avgPrice": 3653.56,
+      "currentPrice": 3456.75,
+      "investedAmount": 204599.6,
+      "currentValue": 193578,
+      "returns": -11021.6,
+      "returnsPercentage": -5.39
+    },
+    {
+      "symbol": "INFY",
+      "companyName": "Infosys Limited",
+      "quantity": 30,
+      "avgPrice": 1613.4,
+      "currentPrice": 1678.5,
+      "investedAmount": 48401.92,
+      "currentValue": 50355,
+      "returns": 1953.08,
+      "returnsPercentage": 4.04
+    },
+    {
+      "symbol": "HDFCBANK",
+      "companyName": "HDFC Bank Limited",
+      "quantity": 10,
+      "avgPrice": 1473.74,
+      "currentPrice": 1789.25,
+      "investedAmount": 14737.38,
+      "currentValue": 17892.5,
+      "returns": 3155.12,
+      "returnsPercentage": 21.41
+    }
+  ],
+  "totalStocks": 395750.5,
+  "goldInvestments": [
+    {
+      "type": "Digital Gold",
+      "platform": "Paytm Gold",
+      "grams": 18.34,
+      "currentValue": 99949,
+      "returns": 4997
+    }
+  ],
+  "totalGold": 99949,
+  "npsAccount": {
+    "pranNumber": "7777777777",
+    "currentValue": 159303,
+    "monthlyContribution": 10000
+  },
+  "creditCards": [],
+  "netWorth": {
+    "totalAssets": 1420795.91,
+    "totalLiabilities": 0,
+    "netWorth": 1420795.91,
+    "breakdown": {
+      "bankAccounts": 342264,
+      "mutualFunds": 423529.41,
+      "stocks": 395750.5,
+      "gold": 99949,
+      "nps": 159303,
+      "creditCardDebt": 0
+    }
+  },
+  "recentTransactions": [
+    {
+      "date": "2025-07-21",
+      "description": "Zomato Delivery",
+      "amount": -2447,
+      "category": "food",
+      "paymentMethod": "Credit Card",
+      "merchant": "Dominos"
+    },
+    {
+      "date": "2025-07-20",
+      "description": "Metro Card",
+      "amount": -1946,
+      "category": "transport",
+      "paymentMethod": "UPI",
+      "merchant": "Ola"
+    },
+    {
+      "date": "2025-07-19",
+      "description": "Salary Credit",
+      "amount": 200000,
+      "category": "income",
+      "paymentMethod": "NEFT",
+      "merchant": "Doctor Company Ltd"
+    },
+    {
+      "date": "2025-07-19",
+      "description": "Swiggy Order",
+      "amount": -1919,
+      "category": "food",
+      "paymentMethod": "UPI",
+      "merchant": "McDonald's"
+    },
+    {
+      "date": "2025-07-18",
+      "description": "Local Store",
+      "amount": -2679,
+      "category": "shopping",
+      "paymentMethod": "UPI",
+      "merchant": "Lifestyle"
+    },
+    {
+      "date": "2025-07-17",
+      "description": "Bus Ticket",
+      "amount": -2694,
+      "category": "transport",
+      "paymentMethod": "Credit Card",
+      "merchant": "Shell"
+    },
+    {
+      "date": "2025-07-16",
+      "description": "Uber Ride",
+      "amount": -789,
+      "category": "transport",
+      "paymentMethod": "Credit Card",
+      "merchant": "Shell"
+    },
+    {
+      "date": "2025-07-15",
+      "description": "Zomato Delivery",
+      "amount": -2897,
+      "category": "food",
+      "paymentMethod": "UPI",
+      "merchant": "Swiggy"
+    },
+    {
+      "date": "2025-07-14",
+      "description": "Metro Card",
+      "amount": -1388,
+      "category": "transport",
+      "paymentMethod": "UPI",
+      "merchant": "DMRC"
+    },
+    {
+      "date": "2025-07-13",
+      "description": "Local Store",
+      "amount": -1709,
+      "category": "shopping",
+      "paymentMethod": "UPI",
+      "merchant": "Reliance"
+    }
+  ]
+}

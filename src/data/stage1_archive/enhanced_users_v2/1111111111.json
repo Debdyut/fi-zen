@@ -1,0 +1,193 @@
+{
+  "userId": "1111111111",
+  "profile": {
+    "name": "Priya Patel",
+    "location": "Ahmedabad, Gujarat",
+    "profession": "Marketing Manager",
+    "age": 26,
+    "avatar": 2,
+    "income": 85000,
+    "monthlyIncome": 85000,
+    "panCard": "ABCDE1111X",
+    "aadharCard": "1111-1111-11"
+  },
+  "bankAccounts": [
+    {
+      "accountId": "AXIS_BANK_001",
+      "bankName": "Axis Bank",
+      "accountType": "Salary",
+      "accountNumber": "1111111111001",
+      "balance": 146435,
+      "branch": "Main Branch",
+      "ifscCode": "UTIB0001234"
+    },
+    {
+      "accountId": "HDFC_BANK_001",
+      "bankName": "HDFC Bank",
+      "accountType": "Savings",
+      "accountNumber": "1111111111002",
+      "balance": 34765,
+      "branch": "Secondary Branch",
+      "ifscCode": "HDFC0001234"
+    }
+  ],
+  "totalBankBalance": 181200,
+  "mutualFunds": [
+    {
+      "schemeCode": "120503",
+      "schemeName": "SBI Bluechip Fund - Direct Growth",
+      "folioNumber": "1111",
+      "units": 417.243,
+      "nav": 89.45,
+      "currentValue": 37322.35,
+      "investedAmount": 31724,
+      "returns": 5598.35,
+      "returnsPercentage": 17.65,
+      "sipAmount": 2266,
+      "sipDate": 5,
+      "sipStatus": "Active"
+    },
+    {
+      "schemeCode": "120716",
+      "schemeName": "HDFC Mid-Cap Opportunities Fund - Direct Growth",
+      "folioNumber": "1112",
+      "units": 549.025,
+      "nav": 145.67,
+      "currentValue": 79976.47,
+      "investedAmount": 67980,
+      "returns": 11996.47,
+      "returnsPercentage": 17.65,
+      "sipAmount": 2266,
+      "sipDate": 10,
+      "sipStatus": "Active"
+    },
+    {
+      "schemeCode": "120717",
+      "schemeName": "Axis Small Cap Fund - Direct Growth",
+      "folioNumber": "1113",
+      "units": 912.279,
+      "nav": 78.9,
+      "currentValue": 71978.82,
+      "investedAmount": 61182,
+      "returns": 10796.82,
+      "returnsPercentage": 17.65,
+      "sipAmount": 2266,
+      "sipDate": 15,
+      "sipStatus": "Active"
+    }
+  ],
+  "totalMutualFunds": 189277.64,
+  "stocks": [
+    {
+      "symbol": "RELIANCE",
+      "companyName": "Reliance Industries Ltd",
+      "quantity": 43,
+      "avgPrice": 2597.33,
+      "currentPrice": 2678.5,
+      "investedAmount": 111685.4,
+      "currentValue": 115175.5,
+      "returns": 3490.1,
+      "returnsPercentage": 3.12
+    }
+  ],
+  "totalStocks": 115175.5,
+  "goldInvestments": [],
+  "totalGold": 0,
+  "npsAccount": null,
+  "creditCards": [],
+  "netWorth": {
+    "totalAssets": 485653.14,
+    "totalLiabilities": 0,
+    "netWorth": 485653.14,
+    "breakdown": {
+      "bankAccounts": 181200,
+      "mutualFunds": 189277.64,
+      "stocks": 115175.5,
+      "gold": 0,
+      "nps": 0,
+      "creditCardDebt": 0
+    }
+  },
+  "recentTransactions": [
+    {
+      "date": "2025-07-21",
+      "description": "Zomato Delivery",
+      "amount": -898,
+      "category": "food",
+      "paymentMethod": "UPI",
+      "merchant": "Zomato"
+    },
+    {
+      "date": "2025-07-20",
+      "description": "Zomato Delivery",
+      "amount": -1350,
+      "category": "food",
+      "paymentMethod": "UPI",
+      "merchant": "Swiggy"
+    },
+    {
+      "date": "2025-07-19",
+      "description": "Salary Credit",
+      "amount": 85000,
+      "category": "income",
+      "paymentMethod": "NEFT",
+      "merchant": "Marketing Manager Company Ltd"
+    },
+    {
+      "date": "2025-07-19",
+      "description": "Medicine",
+      "amount": -2147,
+      "category": "healthcare",
+      "paymentMethod": "UPI",
+      "merchant": "Practo"
+    },
+    {
+      "date": "2025-07-18",
+      "description": "Grocery Store",
+      "amount": -2551,
+      "category": "food",
+      "paymentMethod": "Credit Card",
+      "merchant": "BigBasket"
+    },
+    {
+      "date": "2025-07-17",
+      "description": "Amazon Purchase",
+      "amount": -3049,
+      "category": "shopping",
+      "paymentMethod": "Credit Card",
+      "merchant": "Amazon"
+    },
+    {
+      "date": "2025-07-16",
+      "description": "Bus Ticket",
+      "amount": -2812,
+      "category": "transport",
+      "paymentMethod": "Credit Card",
+      "merchant": "Ola"
+    },
+    {
+      "date": "2025-07-15",
+      "description": "Dominos Pizza",
+      "amount": -1809,
+      "category": "food",
+      "paymentMethod": "UPI",
+      "merchant": "Swiggy"
+    },
+    {
+      "date": "2025-07-14",
+      "description": "Uber Ride",
+      "amount": -2418,
+      "category": "transport",
+      "paymentMethod": "Credit Card",
+      "merchant": "KSRTC"
+    },
+    {
+      "date": "2025-07-13",
+      "description": "Amazon Purchase",
+      "amount": -1591,
+      "category": "shopping",
+      "paymentMethod": "UPI",
+      "merchant": "Reliance"
+    }
+  ]
+}

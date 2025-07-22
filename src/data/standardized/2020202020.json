@@ -1,0 +1,104 @@
+{
+  "userId": "2020202020",
+  "profile": {
+    "name": "Anita Gupta",
+    "location": "Pune, Maharashtra",
+    "profession": "HR Specialist",
+    "age": 27,
+    "monthlyIncome": 78000,
+    "riskProfile": "moderate",
+    "financialLiteracy": "medium",
+    "assetAllocation": {
+      "equity": 55,
+      "debt": 30,
+      "gold": 10,
+      "cash": 5
+    },
+    "debtProfile": {
+      "creditCard": 0,
+      "personalLoan": 0,
+      "homeLoan": 0
+    },
+    "spendingPattern": "systematic_saver",
+    "investmentFocus": "sip_focused",
+    "avatar": 1,
+    "panCard": "ABCDE2020X",
+    "aadharCard": "2020-2020-20"
+  },
+  "bankAccounts": [
+    {
+      "accountId": "PRIMARY_001",
+      "bankName": "HDFC Bank",
+      "accountType": "Salary",
+      "balance": 85267
+    },
+    {
+      "accountId": "SECONDARY_001",
+      "bankName": "SBI",
+      "accountType": "Savings",
+      "balance": 36543
+    }
+  ],
+  "totalBankBalance": 121810,
+  "mutualFunds": [
+    {
+      "schemeName": "SBI Bluechip Fund - Direct Growth",
+      "sipAmount": 21450,
+      "currentValue": 478013,
+      "investedAmount": 450450,
+      "returns": 27563,
+      "returnsPercentage": 6.12
+    },
+    {
+      "schemeName": "HDFC Top 100 Fund - Direct Growth",
+      "sipAmount": 21450,
+      "currentValue": 361012,
+      "investedAmount": 364650,
+      "returns": -3638,
+      "returnsPercentage": -1
+    }
+  ],
+  "totalMutualFunds": 839025,
+  "stocks": [],
+  "totalStocks": 0,
+  "goldInvestments": [
+    {
+      "type": "Digital Gold",
+      "platform": "Paytm Gold",
+      "currentValue": 23400,
+      "grams": 4.29
+    }
+  ],
+  "totalGold": 23400,
+  "creditCards": [],
+  "monthlySpending": {
+    "housing": 21840,
+    "food": 11700,
+    "transport": 7800,
+    "investments": 15600,
+    "entertainment": 6240,
+    "miscellaneous": 7800
+  },
+  "netWorth": {
+    "totalAssets": 984235,
+    "totalLiabilities": 0,
+    "netWorth": 984235,
+    "breakdown": {
+      "bankAccounts": 121810,
+      "mutualFunds": 839025,
+      "stocks": 0,
+      "gold": 23400,
+      "creditCardDebt": 0,
+      "loans": 0,
+      "nps": 0
+    }
+  },
+  "recentTransactions": [],
+  "goals": [],
+  "metadata": {
+    "createdAt": "2025-07-22T04:36:35.021Z",
+    "updatedAt": "2025-07-22T04:36:35.021Z",
+    "version": "1.0",
+    "dataSource": "expert_generated"
+  }
+}

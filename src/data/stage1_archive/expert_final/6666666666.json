@@ -1,0 +1,103 @@
+{
+  "userId": "6666666666",
+  "profile": {
+    "name": "Suresh Pillai",
+    "location": "Thiruvananthapuram, Kerala",
+    "profession": "Civil Engineer",
+    "age": 34,
+    "monthlyIncome": 110000,
+    "riskProfile": "moderate",
+    "financialLiteracy": "medium",
+    "assetAllocation": {
+      "equity": 40,
+      "debt": 35,
+      "gold": 20,
+      "cash": 5
+    },
+    "debtProfile": {
+      "creditCard": 20000,
+      "personalLoan": 0,
+      "homeLoan": 2200000
+    },
+    "spendingPattern": "traditional",
+    "investmentFocus": "real_estate_gold",
+    "avatar": 6,
+    "panCard": "ABCDE6666X",
+    "aadharCard": "6666-6666-66"
+  },
+  "bankAccounts": [
+    {
+      "accountId": "PRIMARY_001",
+      "bankName": "HDFC Bank",
+      "accountType": "Salary",
+      "balance": 225133
+    },
+    {
+      "accountId": "SECONDARY_001",
+      "bankName": "SBI",
+      "accountType": "Savings",
+      "balance": 96485
+    }
+  ],
+  "totalBankBalance": 321619,
+  "mutualFunds": [
+    {
+      "schemeName": "SBI Bluechip Fund - Direct Growth",
+      "sipAmount": 22000,
+      "currentValue": 313541,
+      "investedAmount": 286000,
+      "returns": 27541,
+      "returnsPercentage": 9.63
+    },
+    {
+      "schemeName": "HDFC Top 100 Fund - Direct Growth",
+      "sipAmount": 22000,
+      "currentValue": 255388,
+      "investedAmount": 264000,
+      "returns": -8612,
+      "returnsPercentage": -3.26
+    }
+  ],
+  "totalMutualFunds": 568929,
+  "stocks": [],
+  "totalStocks": 0,
+  "goldInvestments": [
+    {
+      "type": "Digital Gold",
+      "platform": "Paytm Gold",
+      "currentValue": 66000,
+      "grams": 12.11
+    }
+  ],
+  "totalGold": 66000,
+  "creditCards": [
+    {
+      "bankName": "HDFC Bank",
+      "cardType": "Credit Card",
+      "creditLimit": 80000,
+      "outstandingAmount": 20000,
+      "minimumDue": 1000
+    }
+  ],
+  "monthlySpending": {
+    "housing": 33000,
+    "food": 16500,
+    "transport": 11000,
+    "investments": 13200,
+    "entertainment": 8800,
+    "miscellaneous": 11000
+  },
+  "netWorth": {
+    "totalAssets": 956548,
+    "totalLiabilities": 20000,
+    "netWorth": 936548,
+    "breakdown": {
+      "bankAccounts": 321619,
+      "mutualFunds": 568929,
+      "stocks": 0,
+      "gold": 66000,
+      "creditCardDebt": -20000,
+      "loans": 0
+    }
+  }
+}

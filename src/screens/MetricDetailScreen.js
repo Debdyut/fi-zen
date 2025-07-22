@@ -1,6 +1,7 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
+import DataService from '../services/DataService';
 
 const FiColors = {
   background: '#1A1A1A',
@@ -17,9 +18,99 @@ const FiColors = {
 const MetricDetailScreen = ({ route, navigation }) => {
   const { cardId } = route.params;
   const { isDarkMode } = useTheme();
+  const [loading, setLoading] = useState(true);
+  const [userData, setUserData] = useState(null);
+  const [portfolio, setPortfolio] = useState(null);
+  const [assetAllocation, setAssetAllocation] = useState(null);
+  const [returns, setReturns] = useState(null);
+
+  useEffect(() => {
+    loadMetricData();
+  }, []);
+
+  const loadMetricData = async () => {
+    try {
+      setLoading(true);
+      const currentUser = DataService.getCurrentUser();
+      
+      // Load comprehensive data for metrics
+      const [userDataResult, portfolioResult, allocationResult, returnsResult] = await Promise.all([
+        DataService.getUserData(currentUser),
+        DataService.getUserPortfolio(currentUser),
+        DataService.getUserAssetAllocation(currentUser),
+        DataService.getUserReturns(currentUser)
+      ]);
+      
+      setUserData(userDataResult);
+      setPortfolio(portfolioResult);
+      setAssetAllocation(allocationResult);
+      setReturns(returnsResult);
+      
+    } catch (error) {
+      console.error('Error loading metric data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getMetricDetails = (id) => {
+    if (!userData || !portfolio || !assetAllocation || !returns) {
+      return { title: 'Loading...', value: '...', description: 'Loading data...', details: [] };
+    }
+
     const metrics = {
+      portfolio_value: {
+        title: 'Portfolio Value',
+        value: `₹${(portfolio.totalMutualFunds + portfolio.totalStocks + portfolio.totalGold).toLocaleString()}`,
+        description: `Your total investment portfolio across ${portfolio.mutualFunds.length + portfolio.stocks.length + portfolio.goldInvestments.length} holdings`,
+        details: [
+          { label: 'Mutual Funds', value: `₹${portfolio.totalMutualFunds.toLocaleString()}`, impact: portfolio.mutualFunds.length > 0 ? 'Active' : 'None' },
+          { label: 'Stocks', value: `₹${portfolio.totalStocks.toLocaleString()}`, impact: portfolio.stocks.length > 0 ? 'Active' : 'None' },
+          { label: 'Gold', value: `₹${portfolio.totalGold.toLocaleString()}`, impact: portfolio.goldInvestments.length > 0 ? 'Active' : 'None' },
+          { label: 'NPS', value: `₹${portfolio.npsAccount?.currentValue?.toLocaleString() || '0'}`, impact: portfolio.npsAccount ? 'Active' : 'None' },
+        ],
+        color: FiColors.success,
+        icon: '💼'
+      },
+      asset_allocation: {
+        title: 'Asset Allocation',
+        value: `${assetAllocation.equity}% Equity`,
+        description: `Your portfolio allocation across different asset classes`,
+        details: [
+          { label: 'Equity', value: `${assetAllocation.equity}%`, impact: assetAllocation.equity > 60 ? 'Aggressive' : assetAllocation.equity > 30 ? 'Moderate' : 'Conservative' },
+          { label: 'Cash', value: `${assetAllocation.cash}%`, impact: assetAllocation.cash > 20 ? 'High' : 'Normal' },
+          { label: 'Gold', value: `${assetAllocation.gold}%`, impact: assetAllocation.gold > 10 ? 'High' : 'Normal' },
+          { label: 'NPS', value: `${assetAllocation.nps || 0}%`, impact: assetAllocation.nps > 0 ? 'Active' : 'None' },
+        ],
+        color: assetAllocation.equity > 60 ? FiColors.warning : FiColors.primary,
+        icon: '🥧'
+      },
+      investment_returns: {
+        title: 'Investment Returns',
+        value: `${returns.overallReturnPercentage}%`,
+        description: `Total returns of ₹${returns.totalReturns.toLocaleString()} across your investments`,
+        details: [
+          { label: 'Mutual Funds', value: `₹${returns.breakdown.mutualFunds.toLocaleString()}`, impact: returns.breakdown.mutualFunds > 0 ? 'Positive' : 'Negative' },
+          { label: 'Stocks', value: `₹${returns.breakdown.stocks.toLocaleString()}`, impact: returns.breakdown.stocks > 0 ? 'Positive' : 'Negative' },
+          { label: 'Gold', value: `₹${returns.breakdown.gold.toLocaleString()}`, impact: returns.breakdown.gold > 0 ? 'Positive' : 'Negative' },
+          { label: 'Overall %', value: `${returns.overallReturnPercentage}%`, impact: returns.overallReturnPercentage > 12 ? 'Excellent' : returns.overallReturnPercentage > 8 ? 'Good' : 'Average' },
+        ],
+        color: returns.overallReturnPercentage > 0 ? FiColors.success : FiColors.error,
+        icon: '📈'
+      },
+      net_worth: {
+        title: 'Net Worth',
+        value: `₹${userData.netWorth.netWorth.toLocaleString()}`,
+        description: `Your total assets minus liabilities`,
+        details: [
+          { label: 'Total Assets', value: `₹${userData.netWorth.totalAssets.toLocaleString()}`, impact: 'Assets' },
+          { label: 'Total Liabilities', value: `₹${userData.netWorth.totalLiabilities.toLocaleString()}`, impact: 'Liabilities' },
+          { label: 'Bank Accounts', value: `₹${userData.netWorth.breakdown.bankAccounts.toLocaleString()}`, impact: 'Liquid' },
+          { label: 'Investments', value: `₹${(userData.netWorth.breakdown.mutualFunds + userData.netWorth.breakdown.stocks).toLocaleString()}`, impact: 'Growth' },
+        ],
+        color: userData.netWorth.netWorth > 0 ? FiColors.success : FiColors.error,
+        icon: '💰'
+      },
       inflation_rate: {
         title: 'Your Inflation Rate',
         value: '8.2%',
@@ -86,8 +177,26 @@ const MetricDetailScreen = ({ route, navigation }) => {
         icon: '📊'
       }
     };
-    return metrics[id] || metrics.inflation_rate;
+    return metrics[id] || metrics.portfolio_value;
   };
+
+  if (loading) {
+    return (
+      <View style={[styles.container, { backgroundColor: isDarkMode ? '#1A1A1A' : '#F5F5F5' }]}>
+        <View style={[styles.header, { backgroundColor: isDarkMode ? '#1A1A1A' : FiColors.surface }]}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Text style={[styles.backIcon, { color: isDarkMode ? '#FFFFFF' : FiColors.text }]}>←</Text>
+          </TouchableOpacity>
+          <Text style={[styles.headerTitle, { color: isDarkMode ? '#FFFFFF' : FiColors.text }]}>Loading...</Text>
+          <View style={styles.placeholder} />
+        </View>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={FiColors.primary} />
+          <Text style={styles.loadingText}>Loading metric data...</Text>
+        </View>
+      </View>
+    );
+  }
 
   const metric = getMetricDetails(cardId);
 
@@ -116,8 +225,9 @@ const MetricDetailScreen = ({ route, navigation }) => {
               <Text style={styles.detailValue}>{detail.value}</Text>
               {detail.impact && (
                 <Text style={[styles.detailImpact, { 
-                  color: detail.impact === 'High' ? FiColors.error : 
-                        detail.impact === 'Medium' ? FiColors.warning : FiColors.success 
+                  color: detail.impact === 'High' || detail.impact === 'Positive' || detail.impact === 'Excellent' ? FiColors.success :
+                        detail.impact === 'Medium' || detail.impact === 'Good' || detail.impact === 'Active' ? FiColors.warning :
+                        detail.impact === 'Low' || detail.impact === 'Negative' || detail.impact === 'None' ? FiColors.error : FiColors.textSecondary
                 }]}>
                   {detail.impact}
                 </Text>
@@ -176,6 +286,17 @@ const styles = StyleSheet.create({
   },
   placeholder: {
     width: 40,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: FiColors.textSecondary,
   },
   content: {
     flex: 1,

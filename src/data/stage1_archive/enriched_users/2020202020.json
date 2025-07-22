@@ -1,0 +1,34 @@
+{
+  "userId": "2020202020",
+  "profile": {
+    "name": "Anita Gupta",
+    "location": "Pune, Maharashtra",
+    "profession": "HR Specialist",
+    "age": 27,
+    "avatar": 6,
+    "income": 78000,
+    "monthlyIncome": 78000,
+    "panCard": "ABCDE2020X",
+    "aadharCard": "2020-2020-20"
+  },
+  "bankAccounts": [
+    {
+      "accountId": "PRIMARY_001",
+      "bankName": "HDFC Bank",
+      "accountType": "Salary",
+      "balance": 27115
+    },
+    {
+      "accountId": "SECONDARY_001",
+      "bankName": "SBI",
+      "accountType": "Savings",
+      "balance": 63085
+    }
+  ],
+  "totalBankBalance": 90201,
+  "netWorth": {
+    "totalAssets": 162361.80000000002,
+    "totalLiabilities": 23400,
+    "netWorth": 135301.5
+  }
+}

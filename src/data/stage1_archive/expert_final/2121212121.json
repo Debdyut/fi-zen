@@ -1,0 +1,126 @@
+{
+  "userId": "2121212121",
+  "profile": {
+    "name": "Karthik Nair",
+    "location": "Kochi, Kerala",
+    "profession": "Product Manager",
+    "age": 35,
+    "monthlyIncome": 180000,
+    "riskProfile": "aggressive",
+    "financialLiteracy": "high",
+    "assetAllocation": {
+      "equity": 75,
+      "debt": 10,
+      "gold": 5,
+      "cash": 10
+    },
+    "debtProfile": {
+      "creditCard": 120000,
+      "personalLoan": 0,
+      "homeLoan": 3500000
+    },
+    "spendingPattern": "lifestyle_heavy",
+    "investmentFocus": "growth_aggressive",
+    "avatar": 1,
+    "panCard": "ABCDE2121X",
+    "aadharCard": "2121-2121-21"
+  },
+  "bankAccounts": [
+    {
+      "accountId": "PRIMARY_001",
+      "bankName": "HDFC Bank",
+      "accountType": "Salary",
+      "balance": 238283
+    },
+    {
+      "accountId": "SECONDARY_001",
+      "bankName": "SBI",
+      "accountType": "Savings",
+      "balance": 102121
+    }
+  ],
+  "totalBankBalance": 340405,
+  "mutualFunds": [
+    {
+      "schemeName": "Axis Small Cap Fund - Direct Growth",
+      "sipAmount": 67500,
+      "currentValue": 724999,
+      "investedAmount": 742500,
+      "returns": -17501,
+      "returnsPercentage": -2.36
+    },
+    {
+      "schemeName": "Parag Parikh Flexi Cap Fund - Direct Growth",
+      "sipAmount": 67500,
+      "currentValue": 1740516,
+      "investedAmount": 1552500,
+      "returns": 188016,
+      "returnsPercentage": 12.11
+    }
+  ],
+  "totalMutualFunds": 2465515,
+  "stocks": [
+    {
+      "symbol": "INFY",
+      "companyName": "Infosys Limited",
+      "quantity": 100,
+      "avgPrice": 1450,
+      "currentPrice": 1678.5,
+      "investedAmount": 145000,
+      "currentValue": 167850,
+      "returns": 22850,
+      "returnsPercentage": 15.76
+    },
+    {
+      "symbol": "TCS",
+      "companyName": "Tata Consultancy Services",
+      "quantity": 80,
+      "avgPrice": 3200,
+      "currentPrice": 3456.75,
+      "investedAmount": 256000,
+      "currentValue": 276540,
+      "returns": 20540,
+      "returnsPercentage": 8.02
+    }
+  ],
+  "totalStocks": 444390,
+  "goldInvestments": [
+    {
+      "type": "Digital Gold",
+      "platform": "Paytm Gold",
+      "currentValue": 27000,
+      "grams": 4.95
+    }
+  ],
+  "totalGold": 27000,
+  "creditCards": [
+    {
+      "bankName": "HDFC Bank",
+      "cardType": "Credit Card",
+      "creditLimit": 480000,
+      "outstandingAmount": 120000,
+      "minimumDue": 6000
+    }
+  ],
+  "monthlySpending": {
+    "housing": 54000,
+    "food": 27000,
+    "transport": 18000,
+    "investments": 21600,
+    "entertainment": 14400,
+    "miscellaneous": 18000
+  },
+  "netWorth": {
+    "totalAssets": 3277310,
+    "totalLiabilities": 120000,
+    "netWorth": 3157310,
+    "breakdown": {
+      "bankAccounts": 340405,
+      "mutualFunds": 2465515,
+      "stocks": 444390,
+      "gold": 27000,
+      "creditCardDebt": -120000,
+      "loans": 0
+    }
+  }
+}

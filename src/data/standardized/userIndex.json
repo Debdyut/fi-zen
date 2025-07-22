@@ -1,0 +1,202 @@
+{
+  "1010101010": {
+    "filename": "1010101010.json",
+    "name": "Arjun Sharma",
+    "profession": "Software Engineer",
+    "location": "Mumbai, Maharashtra",
+    "riskProfile": "aggressive",
+    "monthlyIncome": 125000,
+    "netWorth": 2659155,
+    "lastUpdated": "2025-07-22T04:36:35.018Z"
+  },
+  "1111111111": {
+    "filename": "1111111111.json",
+    "name": "Priya Patel",
+    "profession": "Marketing Manager",
+    "location": "Ahmedabad, Gujarat",
+    "riskProfile": "moderate",
+    "monthlyIncome": 85000,
+    "netWorth": 766254,
+    "lastUpdated": "2025-07-22T04:36:35.019Z"
+  },
+  "1212121212": {
+    "filename": "1212121212.json",
+    "name": "Rajesh Kumar",
+    "profession": "Business Analyst",
+    "location": "Delhi, NCR",
+    "riskProfile": "moderate_aggressive",
+    "monthlyIncome": 150000,
+    "netWorth": 2355252,
+    "lastUpdated": "2025-07-22T04:36:35.019Z"
+  },
+  "1313131313": {
+    "filename": "1313131313.json",
+    "name": "Sneha Reddy",
+    "profession": "Graphic Designer",
+    "location": "Hyderabad, Telangana",
+    "riskProfile": "conservative",
+    "monthlyIncome": 65000,
+    "netWorth": 479307,
+    "lastUpdated": "2025-07-22T04:36:35.019Z"
+  },
+  "1414141414": {
+    "filename": "1414141414.json",
+    "name": "Vikram Singh",
+    "profession": "Sales Executive",
+    "location": "Jaipur, Rajasthan",
+    "riskProfile": "moderate",
+    "monthlyIncome": 95000,
+    "netWorth": 1010679,
+    "lastUpdated": "2025-07-22T04:36:35.019Z"
+  },
+  "1717171717": {
+    "filename": "1717171717.json",
+    "name": "Sanjay Mehta",
+    "profession": "VP Engineering",
+    "location": "Bangalore, Karnataka",
+    "riskProfile": "sophisticated_aggressive",
+    "monthlyIncome": 350000,
+    "netWorth": 4380600,
+    "lastUpdated": "2025-07-22T04:36:35.020Z"
+  },
+  "1818181818": {
+    "filename": "1818181818.json",
+    "name": "Ramesh Agarwal",
+    "profession": "Manufacturing Manager",
+    "location": "Pune, Maharashtra",
+    "riskProfile": "moderate",
+    "monthlyIncome": 180000,
+    "netWorth": 1125250,
+    "lastUpdated": "2025-07-22T04:36:35.020Z"
+  },
+  "1919191919": {
+    "filename": "1919191919.json",
+    "name": "Priya Entrepreneur",
+    "profession": "Restaurant Owner",
+    "location": "Chennai, Tamil Nadu",
+    "riskProfile": "moderate_aggressive",
+    "monthlyIncome": 165000,
+    "netWorth": 270000,
+    "lastUpdated": "2025-07-22T04:36:35.021Z"
+  },
+  "2020202020": {
+    "filename": "2020202020.json",
+    "name": "Anita Gupta",
+    "profession": "HR Specialist",
+    "location": "Pune, Maharashtra",
+    "riskProfile": "moderate",
+    "monthlyIncome": 78000,
+    "netWorth": 984235,
+    "lastUpdated": "2025-07-22T04:36:35.021Z"
+  },
+  "2020202021": {
+    "filename": "2020202021.json",
+    "name": "Akash Trader",
+    "profession": "Proprietary Trader",
+    "location": "Mumbai, Maharashtra",
+    "riskProfile": "very_aggressive",
+    "monthlyIncome": 275000,
+    "netWorth": 1066237,
+    "lastUpdated": "2025-07-22T04:36:35.021Z"
+  },
+  "2121212121": {
+    "filename": "2121212121.json",
+    "name": "Karthik Nair",
+    "profession": "Product Manager",
+    "location": "Kochi, Kerala",
+    "riskProfile": "aggressive",
+    "monthlyIncome": 180000,
+    "netWorth": 3157309,
+    "lastUpdated": "2025-07-22T04:36:35.022Z"
+  },
+  "2222222222": {
+    "filename": "2222222222.json",
+    "name": "Meera Joshi",
+    "profession": "Content Writer",
+    "location": "Indore, Madhya Pradesh",
+    "riskProfile": "conservative",
+    "monthlyIncome": 55000,
+    "netWorth": 547050,
+    "lastUpdated": "2025-07-22T04:36:35.022Z"
+  },
+  "2525252525": {
+    "filename": "2525252525.json",
+    "name": "Rohit Agarwal",
+    "profession": "Financial Advisor",
+    "location": "Kolkata, West Bengal",
+    "riskProfile": "moderate_aggressive",
+    "monthlyIncome": 120000,
+    "netWorth": 2547207,
+    "lastUpdated": "2025-07-22T04:36:35.022Z"
+  },
+  "3333333333": {
+    "filename": "3333333333.json",
+    "name": "Kavya Iyer",
+    "profession": "UX Designer",
+    "location": "Chennai, Tamil Nadu",
+    "riskProfile": "moderate_aggressive",
+    "monthlyIncome": 90000,
+    "netWorth": 1149856,
+    "lastUpdated": "2025-07-22T04:36:35.022Z"
+  },
+  "4444444444": {
+    "filename": "4444444444.json",
+    "name": "Amit Verma",
+    "profession": "Data Scientist",
+    "location": "Gurgaon, Haryana",
+    "riskProfile": "aggressive",
+    "monthlyIncome": 160000,
+    "netWorth": 2605713,
+    "lastUpdated": "2025-07-22T04:36:35.023Z"
+  },
+  "5555555555": {
+    "filename": "5555555555.json",
+    "name": "Ritu Malhotra",
+    "profession": "Teacher",
+    "location": "Chandigarh, Punjab",
+    "riskProfile": "conservative",
+    "monthlyIncome": 45000,
+    "netWorth": 276640,
+    "lastUpdated": "2025-07-22T04:36:35.023Z"
+  },
+  "6666666666": {
+    "filename": "6666666666.json",
+    "name": "Suresh Pillai",
+    "profession": "Civil Engineer",
+    "location": "Thiruvananthapuram, Kerala",
+    "riskProfile": "moderate",
+    "monthlyIncome": 110000,
+    "netWorth": 936547,
+    "lastUpdated": "2025-07-22T04:36:35.023Z"
+  },
+  "7777777777": {
+    "filename": "7777777777.json",
+    "name": "Deepika Rao",
+    "profession": "Doctor",
+    "location": "Mangalore, Karnataka",
+    "riskProfile": "conservative",
+    "monthlyIncome": 200000,
+    "netWorth": 1686268,
+    "lastUpdated": "2025-07-22T04:36:35.023Z"
+  },
+  "8888888888": {
+    "filename": "8888888888.json",
+    "name": "Manish Tiwari",
+    "profession": "Architect",
+    "location": "Lucknow, Uttar Pradesh",
+    "riskProfile": "moderate",
+    "monthlyIncome": 140000,
+    "netWorth": 1070483,
+    "lastUpdated": "2025-07-22T04:36:35.024Z"
+  },
+  "9999999999": {
+    "filename": "9999999999.json",
+    "name": "Pooja Bhatt",
+    "profession": "Pharmacist",
+    "location": "Surat, Gujarat",
+    "riskProfile": "moderate",
+    "monthlyIncome": 75000,
+    "netWorth": 485943,
+    "lastUpdated": "2025-07-22T04:36:35.024Z"
+  }
+}

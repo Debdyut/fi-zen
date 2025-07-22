@@ -1,0 +1,34 @@
+{
+  "userId": "1010101010",
+  "profile": {
+    "name": "Arjun Sharma",
+    "location": "Mumbai, Maharashtra",
+    "profession": "Software Engineer",
+    "age": 28,
+    "avatar": 1,
+    "income": 125000,
+    "monthlyIncome": 125000,
+    "panCard": "ABCDE1010X",
+    "aadharCard": "1010-1010-10"
+  },
+  "bankAccounts": [
+    {
+      "accountId": "PRIMARY_001",
+      "bankName": "HDFC Bank",
+      "accountType": "Salary",
+      "balance": 110602
+    },
+    {
+      "accountId": "SECONDARY_001",
+      "bankName": "SBI",
+      "accountType": "Savings",
+      "balance": 130131
+    }
+  ],
+  "totalBankBalance": 240734,
+  "netWorth": {
+    "totalAssets": 433321.2,
+    "totalLiabilities": 37500,
+    "netWorth": 361101
+  }
+}

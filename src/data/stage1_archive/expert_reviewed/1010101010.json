@@ -1,0 +1,82 @@
+{
+  "userId": "1010101010",
+  "profile": {
+    "name": "Arjun Sharma",
+    "location": "Mumbai, Maharashtra",
+    "profession": "Software Engineer",
+    "age": 28,
+    "avatar": 1,
+    "monthlyIncome": 125000,
+    "riskProfile": "aggressive",
+    "financialLiteracy": "high"
+  },
+  "bankAccounts": [
+    {
+      "accountId": "HDFC_SAL_001",
+      "bankName": "HDFC Bank",
+      "accountType": "Salary",
+      "balance": 85000,
+      "branch": "Bandra Kurla Complex"
+    },
+    {
+      "accountId": "ICICI_SAV_001",
+      "bankName": "ICICI Bank",
+      "accountType": "Savings",
+      "balance": 45000,
+      "branch": "Powai"
+    }
+  ],
+  "totalBankBalance": 130000,
+  "mutualFunds": [
+    {
+      "schemeName": "Axis Small Cap Fund - Direct Growth",
+      "sipAmount": 8000,
+      "currentValue": 95000,
+      "investedAmount": 80000,
+      "returns": 15000,
+      "returnsPercentage": 18.75
+    },
+    {
+      "schemeName": "Parag Parikh Flexi Cap Fund - Direct Growth",
+      "sipAmount": 7000,
+      "currentValue": 85000,
+      "investedAmount": 75000,
+      "returns": 10000,
+      "returnsPercentage": 13.33
+    }
+  ],
+  "totalMutualFunds": 180000,
+  "stocks": [
+    {
+      "symbol": "INFY",
+      "companyName": "Infosys Limited",
+      "quantity": 50,
+      "currentValue": 84000,
+      "investedAmount": 70000,
+      "returns": 14000
+    }
+  ],
+  "totalStocks": 84000,
+  "monthlySpending": {
+    "housing": 45000,
+    "food": 18000,
+    "transport": 12000,
+    "investments": 15000,
+    "entertainment": 8000,
+    "miscellaneous": 10000
+  },
+  "creditCards": [
+    {
+      "bankName": "HDFC Bank",
+      "cardType": "Regalia Gold",
+      "creditLimit": 500000,
+      "outstandingAmount": 65000,
+      "minimumDue": 6500
+    }
+  ],
+  "netWorth": {
+    "totalAssets": 459000,
+    "totalLiabilities": 65000,
+    "netWorth": 394000
+  }
+}

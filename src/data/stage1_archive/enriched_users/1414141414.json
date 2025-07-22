@@ -1,0 +1,34 @@
+{
+  "userId": "1414141414",
+  "profile": {
+    "name": "Vikram Singh",
+    "location": "Jaipur, Rajasthan",
+    "profession": "Sales Executive",
+    "age": 30,
+    "avatar": 5,
+    "income": 95000,
+    "monthlyIncome": 95000,
+    "panCard": "ABCDE1414X",
+    "aadharCard": "1414-1414-14"
+  },
+  "bankAccounts": [
+    {
+      "accountId": "PRIMARY_001",
+      "bankName": "HDFC Bank",
+      "accountType": "Salary",
+      "balance": 40549
+    },
+    {
+      "accountId": "SECONDARY_001",
+      "bankName": "SBI",
+      "accountType": "Savings",
+      "balance": 19037
+    }
+  ],
+  "totalBankBalance": 59587,
+  "netWorth": {
+    "totalAssets": 107256.6,
+    "totalLiabilities": 28500,
+    "netWorth": 89380.5
+  }
+}

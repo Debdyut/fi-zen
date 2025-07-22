@@ -1,0 +1,34 @@
+{
+  "userId": "6666666666",
+  "profile": {
+    "name": "Suresh Pillai",
+    "location": "Thiruvananthapuram, Kerala",
+    "profession": "Civil Engineer",
+    "age": 34,
+    "avatar": 13,
+    "income": 110000,
+    "monthlyIncome": 110000,
+    "panCard": "ABCDE6666X",
+    "aadharCard": "6666-6666-66"
+  },
+  "bankAccounts": [
+    {
+      "accountId": "PRIMARY_001",
+      "bankName": "HDFC Bank",
+      "accountType": "Salary",
+      "balance": 97317
+    },
+    {
+      "accountId": "SECONDARY_001",
+      "bankName": "SBI",
+      "accountType": "Savings",
+      "balance": 40710
+    }
+  ],
+  "totalBankBalance": 138028,
+  "netWorth": {
+    "totalAssets": 248450.4,
+    "totalLiabilities": 33000,
+    "netWorth": 207042
+  }
+}

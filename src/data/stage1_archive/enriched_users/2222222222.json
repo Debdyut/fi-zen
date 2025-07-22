@@ -1,0 +1,34 @@
+{
+  "userId": "2222222222",
+  "profile": {
+    "name": "Meera Joshi",
+    "location": "Indore, Madhya Pradesh",
+    "profession": "Content Writer",
+    "age": 25,
+    "avatar": 8,
+    "income": 55000,
+    "monthlyIncome": 55000,
+    "panCard": "ABCDE2222X",
+    "aadharCard": "2222-2222-22"
+  },
+  "bankAccounts": [
+    {
+      "accountId": "PRIMARY_001",
+      "bankName": "HDFC Bank",
+      "accountType": "Salary",
+      "balance": 23823
+    },
+    {
+      "accountId": "SECONDARY_001",
+      "bankName": "SBI",
+      "accountType": "Savings",
+      "balance": 23159
+    }
+  ],
+  "totalBankBalance": 46983,
+  "netWorth": {
+    "totalAssets": 84569.40000000001,
+    "totalLiabilities": 16500,
+    "netWorth": 70474.5
+  }
+}

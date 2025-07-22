@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, StatusBar } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, StatusBar, ActivityIndicator } from 'react-native';
 import { FadeInUp } from '../components/animations/AnimatedCard';
 import { TouchableArea } from '../components/common/AccessibilityHelpers';
 import { useLanguage } from '../localization/LanguageContext';
 import { useTheme } from '../theme/ThemeContext';
+import DataService from '../services/DataService';
 
 const FiColors = {
   background: '#1A1A1A',
@@ -13,31 +14,129 @@ const FiColors = {
   textSecondary: '#666666',
   textInverse: '#FFFFFF',
   border: '#E0E0E0',
+  success: '#00D4AA',
+  warning: '#FFB800',
+  error: '#FF6B6B',
 };
 
 const GoalsScreen = ({ navigation }) => {
   const { t } = useLanguage();
   const { isDarkMode } = useTheme();
-  const [activeGoals, setActiveGoals] = useState([
-    {
-      id: 1,
-      title: t('goals.emergencyFund'),
-      target: 500000,
-      current: 125000,
+  const [loading, setLoading] = useState(true);
+  const [userGoals, setUserGoals] = useState([]);
+  const [userProfile, setUserProfile] = useState(null);
+  const [portfolio, setPortfolio] = useState(null);
+  const [netWorth, setNetWorth] = useState(null);
+
+  useEffect(() => {
+    loadGoalsData();
+  }, []);
+
+  const loadGoalsData = async () => {
+    try {
+      setLoading(true);
+      const currentUser = DataService.getCurrentUser();
+      
+      const [goals, profile, portfolioData, netWorthData] = await Promise.all([
+        DataService.getUserGoals(currentUser),
+        DataService.getUserProfile(currentUser),
+        DataService.getUserPortfolio(currentUser),
+        DataService.getUserNetWorth(currentUser)
+      ]);
+      
+      // If no goals exist, generate realistic goals based on user profile
+      const finalGoals = goals.length > 0 ? goals : generateRealisticGoals(profile, portfolioData, netWorthData);
+      
+      setUserGoals(finalGoals);
+      setUserProfile(profile);
+      setPortfolio(portfolioData);
+      setNetWorth(netWorthData);
+      
+    } catch (error) {
+      console.error('Error loading goals data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const generateRealisticGoals = (profile, portfolio, netWorth) => {
+    const income = profile.monthlyIncome;
+    const age = profile.age;
+    const riskProfile = profile.riskProfile;
+    
+    const goals = [];
+    
+    // Emergency Fund Goal
+    const emergencyTarget = income * 6; // 6 months of expenses
+    const currentEmergency = Math.min(netWorth.breakdown.bankAccounts, emergencyTarget);
+    goals.push({
+      goalId: 'emergency_fund',
+      title: 'Emergency Fund',
+      targetAmount: emergencyTarget,
+      currentAmount: currentEmergency,
+      targetDate: new Date(Date.now() + 12 * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 1 year
+      monthlyContribution: Math.max(5000, (emergencyTarget - currentEmergency) / 12),
+      priority: 'high',
+      status: 'active',
       icon: '🛡️',
-      category: t('goals.safety'),
-      deadline: `6 ${t('goals.months')}`,
-      monthlyTarget: 62500,
-    },
-    {
-      id: 2,
-      title: t('goals.houseDownPayment'),
-      target: 2000000,
-      current: 450000,
-      icon: '🏠',
-      category: t('goals.investment'),
-      deadline: `2 ${t('goals.years')}`,
-      monthlyTarget: 64583,
+      category: 'Safety'
+    });
+
+    // House Down Payment (if age < 35 and income > 80k)
+    if (age < 35 && income > 80000) {
+      const houseTarget = income * 24; // 2 years of income for down payment
+      const currentHouse = Math.min(netWorth.breakdown.bankAccounts * 0.3, houseTarget * 0.5);
+      goals.push({
+        goalId: 'house_down_payment',
+        title: 'House Down Payment',
+        targetAmount: houseTarget,
+        currentAmount: currentHouse,
+        targetDate: new Date(Date.now() + 36 * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 3 years
+        monthlyContribution: Math.max(10000, (houseTarget - currentHouse) / 36),
+        priority: 'medium',
+        status: 'active',
+        icon: '🏠',
+        category: 'Investment'
+      });
+    }
+
+    // Retirement Goal (if age > 25)
+    if (age > 25) {
+      const retirementTarget = income * 12 * (65 - age) * 0.8; // 80% of income for remaining years
+      const currentRetirement = portfolio.totalMutualFunds + portfolio.totalStocks;
+      goals.push({
+        goalId: 'retirement_fund',
+        title: 'Retirement Fund',
+        targetAmount: retirementTarget,
+        currentAmount: currentRetirement,
+        targetDate: new Date(Date.now() + (65 - age) * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        monthlyContribution: Math.max(15000, income * 0.15),
+        priority: 'high',
+        status: 'active',
+        icon: '🏖️',
+        category: 'Retirement'
+      });
+    }
+
+    // Vacation Goal (if income > 100k)
+    if (income > 100000) {
+      const vacationTarget = income * 0.5; // 6 months of income for vacation
+      goals.push({
+        goalId: 'dream_vacation',
+        title: 'Dream Vacation',
+        targetAmount: vacationTarget,
+        currentAmount: vacationTarget * 0.1,
+        targetDate: new Date(Date.now() + 18 * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 1.5 years
+        monthlyContribution: Math.max(3000, vacationTarget / 18),
+        priority: 'low',
+        status: 'active',
+        icon: '✈️',
+        category: 'Lifestyle'
+      });
+    }
+
+    return goals;
+  };
     },
     {
       id: 3,
@@ -148,7 +247,75 @@ const GoalsScreen = ({ navigation }) => {
         </View>
       </View>
     </FadeInUp>
-  );
+  const GoalCard = ({ goal, bgColor }) => {
+    const progress = (goal.currentAmount / goal.targetAmount) * 100;
+    const remaining = goal.targetAmount - goal.currentAmount;
+    const monthsToTarget = Math.ceil(remaining / goal.monthlyContribution);
+    
+    return (
+      <FadeInUp delay={100}>
+        <TouchableArea style={[styles.goalCard, { backgroundColor: bgColor }]}>
+          <View style={styles.goalHeader}>
+            <Text style={styles.goalIcon}>{goal.icon}</Text>
+            <View style={styles.goalInfo}>
+              <Text style={styles.goalTitle}>{goal.title}</Text>
+              <Text style={styles.goalCategory}>{goal.category}</Text>
+            </View>
+            <Text style={[styles.goalPriority, { 
+              color: goal.priority === 'high' ? FiColors.error : 
+                     goal.priority === 'medium' ? FiColors.warning : FiColors.success 
+            }]}>
+              {goal.priority?.toUpperCase()}
+            </Text>
+          </View>
+          
+          <View style={styles.goalProgress}>
+            <View style={styles.progressBar}>
+              <View style={[styles.progressFill, { width: `${Math.min(progress, 100)}%` }]} />
+            </View>
+            <Text style={styles.progressText}>{Math.round(progress)}%</Text>
+          </View>
+          
+          <View style={styles.goalStats}>
+            <View style={styles.goalStat}>
+              <Text style={styles.goalStatValue}>₹{goal.currentAmount.toLocaleString()}</Text>
+              <Text style={styles.goalStatLabel}>Current</Text>
+            </View>
+            <View style={styles.goalStat}>
+              <Text style={styles.goalStatValue}>₹{goal.targetAmount.toLocaleString()}</Text>
+              <Text style={styles.goalStatLabel}>Target</Text>
+            </View>
+            <View style={styles.goalStat}>
+              <Text style={styles.goalStatValue}>{monthsToTarget}m</Text>
+              <Text style={styles.goalStatLabel}>To Go</Text>
+            </View>
+          </View>
+          
+          <View style={styles.goalFooter}>
+            <Text style={styles.monthlyContribution}>
+              ₹{goal.monthlyContribution.toLocaleString()}/month
+            </Text>
+          </View>
+        </TouchableArea>
+      </FadeInUp>
+    );
+  };
+
+  if (loading) {
+    return (
+      <View style={[styles.container, { backgroundColor: isDarkMode ? '#1A1A1A' : '#E6FBF7' }]}>
+        <StatusBar barStyle="light-content" backgroundColor={FiColors.background} />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={FiColors.primary} />
+          <Text style={styles.loadingText}>Loading your goals...</Text>
+        </View>
+      </View>
+    );
+  }
+
+  const totalTarget = userGoals.reduce((sum, goal) => sum + goal.targetAmount, 0);
+  const totalCurrent = userGoals.reduce((sum, goal) => sum + goal.currentAmount, 0);
+  const overallProgress = totalTarget > 0 ? (totalCurrent / totalTarget) * 100 : 0;
 
   return (
     <View style={[styles.container, { backgroundColor: isDarkMode ? '#1A1A1A' : '#E6FBF7' }]}>
@@ -157,38 +324,46 @@ const GoalsScreen = ({ navigation }) => {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false} contentInsetAdjustmentBehavior="automatic">
         {/* Header */}
         <View style={[styles.header, { backgroundColor: isDarkMode ? '#1A1A1A' : '#E6FBF7' }]}>
-          <Text style={[styles.headerTitle, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>{t('goals.title')}</Text>
-          <Text style={[styles.headerSubtitle, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>{t('goals.subtitle')}</Text>
-        </View>
-        {/* Goal Summary */}
-        <View style={styles.infoSection}>
-          <Text style={styles.infoTitle}>{t('goals.goalSummary')}</Text>
-          <View style={styles.infoItem}>
-            <Text style={styles.infoLabel}>{t('goals.vacationFund')}</Text>
-            <Text style={styles.infoValue}>₹35,000 of ₹1.5L (23%)</Text>
-          </View>
-          <View style={styles.infoItem}>
-            <Text style={styles.infoLabel}>{t('goals.totalProgress')}</Text>
-            <Text style={styles.infoValue}>30% across all goals</Text>
-          </View>
+          <Text style={[styles.headerTitle, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>Financial Goals</Text>
+          <Text style={[styles.headerSubtitle, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>
+            {userProfile?.name}'s goal tracking
+          </Text>
         </View>
 
         {/* Goals Overview */}
         <View style={styles.overviewCard}>
-          <Text style={styles.overviewTitle}>{t('goals.goalsOverview')}</Text>
+          <Text style={styles.overviewTitle}>Goals Overview</Text>
           <View style={styles.overviewStats}>
             <View style={styles.overviewStat}>
-              <Text style={styles.overviewValue}>{activeGoals.length}</Text>
-              <Text style={styles.overviewLabel}>{t('goals.activeGoals')}</Text>
+              <Text style={styles.overviewValue}>{userGoals.length}</Text>
+              <Text style={styles.overviewLabel}>Active Goals</Text>
             </View>
             <View style={styles.overviewStat}>
-              <Text style={styles.overviewValue}>₹6.1L</Text>
-              <Text style={styles.overviewLabel}>{t('goals.saved')}</Text>
+              <Text style={styles.overviewValue}>₹{(totalCurrent / 100000).toFixed(1)}L</Text>
+              <Text style={styles.overviewLabel}>Saved</Text>
             </View>
             <View style={styles.overviewStat}>
-              <Text style={styles.overviewValue}>₹20.4L</Text>
-              <Text style={styles.overviewLabel}>{t('goals.target')}</Text>
+              <Text style={styles.overviewValue}>₹{(totalTarget / 100000).toFixed(1)}L</Text>
+              <Text style={styles.overviewLabel}>Target</Text>
             </View>
+            <View style={styles.overviewStat}>
+              <Text style={styles.overviewValue}>{Math.round(overallProgress)}%</Text>
+              <Text style={styles.overviewLabel}>Progress</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Individual Goals */}
+        <View style={styles.goalsSection}>
+          <Text style={styles.sectionTitle}>Your Goals</Text>
+          {userGoals.map((goal, index) => (
+            <GoalCard 
+              key={goal.goalId} 
+              goal={goal} 
+              bgColor={index % 2 === 0 ? '#FFFBF0' : '#F0F9FF'} 
+            />
+          ))}
+        </View>
           </View>
         </View>
 
@@ -223,6 +398,89 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: FiColors.textSecondary,
+  },
+  goalsSection: {
+    paddingHorizontal: 16,
+    paddingBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: FiColors.text,
+    marginBottom: 16,
+    marginLeft: 4,
+  },
+  goalPriority: {
+    fontSize: 12,
+    fontWeight: '600',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+    backgroundColor: 'rgba(0,0,0,0.1)',
+  },
+  goalProgress: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 12,
+  },
+  progressBar: {
+    flex: 1,
+    height: 8,
+    backgroundColor: '#E0E0E0',
+    borderRadius: 4,
+    marginRight: 12,
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: FiColors.primary,
+    borderRadius: 4,
+  },
+  progressText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: FiColors.text,
+    minWidth: 40,
+    textAlign: 'right',
+  },
+  goalStats: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 12,
+  },
+  goalStat: {
+    alignItems: 'center',
+  },
+  goalStatValue: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: FiColors.text,
+  },
+  goalStatLabel: {
+    fontSize: 12,
+    color: FiColors.textSecondary,
+    marginTop: 2,
+  },
+  goalFooter: {
+    borderTopWidth: 1,
+    borderTopColor: '#E0E0E0',
+    paddingTop: 12,
+    alignItems: 'center',
+  },
+  monthlyContribution: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: FiColors.primary,
   },
   header: {
     backgroundColor: '#E6FBF7',

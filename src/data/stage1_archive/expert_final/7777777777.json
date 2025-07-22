@@ -1,0 +1,104 @@
+{
+  "userId": "7777777777",
+  "profile": {
+    "name": "Deepika Rao",
+    "location": "Mangalore, Karnataka",
+    "profession": "Doctor",
+    "age": 28,
+    "monthlyIncome": 200000,
+    "riskProfile": "conservative",
+    "financialLiteracy": "medium",
+    "assetAllocation": {
+      "equity": 35,
+      "debt": 45,
+      "gold": 10,
+      "cash": 10
+    },
+    "debtProfile": {
+      "creditCard": 50000,
+      "personalLoan": 0,
+      "homeLoan": 0,
+      "educationLoan": 1500000
+    },
+    "spendingPattern": "debt_repayment",
+    "investmentFocus": "debt_clearing",
+    "avatar": 7,
+    "panCard": "ABCDE7777X",
+    "aadharCard": "7777-7777-77"
+  },
+  "bankAccounts": [
+    {
+      "accountId": "PRIMARY_001",
+      "bankName": "HDFC Bank",
+      "accountType": "Salary",
+      "balance": 296224
+    },
+    {
+      "accountId": "SECONDARY_001",
+      "bankName": "SBI",
+      "accountType": "Savings",
+      "balance": 126953
+    }
+  ],
+  "totalBankBalance": 423178,
+  "mutualFunds": [
+    {
+      "schemeName": "HDFC Hybrid Equity Fund - Direct Growth",
+      "sipAmount": 35000,
+      "currentValue": 540839,
+      "investedAmount": 490000,
+      "returns": 50839,
+      "returnsPercentage": 10.38
+    },
+    {
+      "schemeName": "SBI Conservative Hybrid Fund - Direct Growth",
+      "sipAmount": 35000,
+      "currentValue": 712252,
+      "investedAmount": 665000,
+      "returns": 47252,
+      "returnsPercentage": 7.11
+    }
+  ],
+  "totalMutualFunds": 1253091,
+  "stocks": [],
+  "totalStocks": 0,
+  "goldInvestments": [
+    {
+      "type": "Digital Gold",
+      "platform": "Paytm Gold",
+      "currentValue": 60000,
+      "grams": 11.01
+    }
+  ],
+  "totalGold": 60000,
+  "creditCards": [
+    {
+      "bankName": "HDFC Bank",
+      "cardType": "Credit Card",
+      "creditLimit": 200000,
+      "outstandingAmount": 50000,
+      "minimumDue": 2500
+    }
+  ],
+  "monthlySpending": {
+    "housing": 50000,
+    "food": 24000,
+    "transport": 20000,
+    "investments": 24000,
+    "entertainment": 16000,
+    "miscellaneous": 20000
+  },
+  "netWorth": {
+    "totalAssets": 1736269,
+    "totalLiabilities": 1550000,
+    "netWorth": 186269,
+    "breakdown": {
+      "bankAccounts": 423178,
+      "mutualFunds": 1253091,
+      "stocks": 0,
+      "gold": 60000,
+      "creditCardDebt": -50000,
+      "loans": -1500000
+    }
+  }
+}

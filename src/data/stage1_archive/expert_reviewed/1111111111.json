@@ -1,0 +1,76 @@
+{
+  "userId": "1111111111",
+  "profile": {
+    "name": "Priya Patel",
+    "location": "Ahmedabad, Gujarat",
+    "profession": "Marketing Manager",
+    "age": 26,
+    "avatar": 2,
+    "monthlyIncome": 85000,
+    "riskProfile": "moderate",
+    "financialLiteracy": "medium"
+  },
+  "bankAccounts": [
+    {
+      "accountId": "SBI_SAL_001",
+      "bankName": "State Bank of India",
+      "accountType": "Salary",
+      "balance": 65000
+    },
+    {
+      "accountId": "HDFC_SAV_001",
+      "bankName": "HDFC Bank",
+      "accountType": "Savings",
+      "balance": 35000
+    }
+  ],
+  "totalBankBalance": 100000,
+  "mutualFunds": [
+    {
+      "schemeName": "SBI Bluechip Fund - Direct Growth",
+      "sipAmount": 4000,
+      "currentValue": 48000,
+      "investedAmount": 42000,
+      "returns": 6000
+    },
+    {
+      "schemeName": "HDFC Hybrid Equity Fund - Direct Growth",
+      "sipAmount": 3000,
+      "currentValue": 35000,
+      "investedAmount": 32000,
+      "returns": 3000
+    }
+  ],
+  "totalMutualFunds": 83000,
+  "goldInvestments": [
+    {
+      "type": "Digital Gold",
+      "platform": "Paytm Gold",
+      "grams": 15,
+      "currentValue": 82000,
+      "investedAmount": 75000
+    }
+  ],
+  "goals": [
+    {
+      "title": "Wedding Fund",
+      "targetAmount": 1200000,
+      "currentAmount": 200000,
+      "monthlyContribution": 10000
+    }
+  ],
+  "monthlySpending": {
+    "housing": 20000,
+    "food": 12000,
+    "transport": 6000,
+    "investments": 7000,
+    "shopping": 8000,
+    "family": 5000,
+    "miscellaneous": 8000
+  },
+  "netWorth": {
+    "totalAssets": 265000,
+    "totalLiabilities": 0,
+    "netWorth": 265000
+  }
+}

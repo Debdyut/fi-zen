@@ -226,4 +226,4 @@ class UserProfileService {
   }
 }
 
-export default new UserProfileService();
+module.exports = new UserProfileService();

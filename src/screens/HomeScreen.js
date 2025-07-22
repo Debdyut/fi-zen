@@ -21,7 +21,11 @@ import { getAvatarSource } from '../utils/avatarHelper';
 
 const HomeScreen = ({ navigation, route }) => {
   const { t } = useLanguage();
-  const [balance, setBalance] = useState(12450.75);
+  const [balance, setBalance] = useState(0);
+  const [netWorth, setNetWorth] = useState(0);
+  const [userName, setUserName] = useState('');
+  const [userProfile, setUserProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [plantGrowth, setPlantGrowth] = useState(3);
   const [rewardPoints, setRewardPoints] = useState(245);
   const [currentUser, setCurrentUser] = useState('1010101010');
@@ -41,12 +45,26 @@ const HomeScreen = ({ navigation, route }) => {
 
   const loadUserData = async () => {
     try {
+      setLoading(true);
+      
+      // Load comprehensive user data
       const userBalance = await DataService.getUserBalance(currentUser);
+      const userNetWorth = await DataService.getUserNetWorth(currentUser);
+      const profile = await DataService.getUserProfile(currentUser);
       const avatar = DataService.getUserAvatar(currentUser);
+      
       setBalance(userBalance);
+      setNetWorth(userNetWorth?.netWorth || 0);
+      setUserName(profile?.name || 'User');
+      setUserProfile(profile);
       setUserAvatar(avatar);
+      
+      console.log(`✅ Loaded data for ${profile?.name}: ₹${userBalance.toLocaleString()} balance, ₹${userNetWorth?.netWorth?.toLocaleString()} net worth`);
+      
     } catch (error) {
       console.error('Error loading user data:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -63,6 +81,17 @@ const HomeScreen = ({ navigation, route }) => {
     DataService.setCurrentUser(userId);
   };
 
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={FiColors.primary} />
+          <Text style={styles.loadingText}>Loading user data...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={FiColors.background} />
@@ -72,8 +101,9 @@ const HomeScreen = ({ navigation, route }) => {
             <TouchableOpacity 
               style={styles.profileButton}
               onPress={() => {
-                const nextUserIndex = (availableUsers.indexOf(currentUser) + 1) % availableUsers.length;
-                switchUser(availableUsers[nextUserIndex]);
+                const currentIndex = availableUsers.findIndex(user => user.userId === currentUser);
+                const nextIndex = (currentIndex + 1) % availableUsers.length;
+                switchUser(availableUsers[nextIndex].userId);
               }}>
               <Image 
                 source={getAvatarSource(userAvatar)}
@@ -82,8 +112,9 @@ const HomeScreen = ({ navigation, route }) => {
             </TouchableOpacity>
             
             <View style={styles.centerContent}>
-              <Text style={styles.greeting}>{t('home.greeting')} 👋</Text>
-              <Text style={styles.subtitle}>{t('home.subtitle')}</Text>
+              <Text style={styles.greeting}>Hi {userName}! 👋</Text>
+              <Text style={styles.subtitle}>{userProfile?.profession || 'Professional'}</Text>
+              <Text style={styles.location}>{userProfile?.location || ''}</Text>
             </View>
             
             <View style={styles.rightIcons}>
@@ -96,9 +127,14 @@ const HomeScreen = ({ navigation, route }) => {
             </View>
           </View>
           
-          <Text style={styles.userInfo}>User: {currentUser}</Text>
-          
-          <BalanceCard balance={balance} />
+          {/* Enhanced Balance Card with Net Worth */}
+          <View style={styles.balanceSection}>
+            <BalanceCard balance={balance} />
+            <View style={styles.netWorthCard}>
+              <Text style={styles.netWorthLabel}>Net Worth</Text>
+              <Text style={styles.netWorthValue}>₹{netWorth.toLocaleString()}</Text>
+            </View>
+          </View>
           
           <InflationCard userId={currentUser} navigation={navigation} />
           
@@ -146,6 +182,44 @@ const styles = StyleSheet.create({
   secondaryButton: { backgroundColor: FiColors.secondary },
   primaryButtonText: { color: FiColors.white, fontSize: 16, fontWeight: '600' },
   secondaryButtonText: { color: FiColors.white, fontSize: 16, fontWeight: '600' },
+  
+  // New styles for enhanced data
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: FiColors.background,
+  },
+  loadingText: {
+    color: FiColors.textInverse,
+    fontSize: 16,
+    marginTop: 16,
+  },
+  location: {
+    color: FiColors.textSecondary,
+    fontSize: 12,
+    marginTop: 2,
+  },
+  balanceSection: {
+    marginBottom: 20,
+  },
+  netWorthCard: {
+    backgroundColor: FiColors.surface,
+    padding: 16,
+    borderRadius: 12,
+    marginTop: 12,
+    alignItems: 'center',
+  },
+  netWorthLabel: {
+    color: FiColors.textSecondary,
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  netWorthValue: {
+    color: FiColors.text,
+    fontSize: 24,
+    fontWeight: '600',
+  },
 });
 
 export default HomeScreen;

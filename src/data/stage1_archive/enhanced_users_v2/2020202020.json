@@ -1,0 +1,202 @@
+{
+  "userId": "2020202020",
+  "profile": {
+    "name": "Anita Gupta",
+    "location": "Pune, Maharashtra",
+    "profession": "HR Specialist",
+    "age": 27,
+    "avatar": 6,
+    "income": 78000,
+    "monthlyIncome": 78000,
+    "panCard": "ABCDE2020X",
+    "aadharCard": "2020-2020-20"
+  },
+  "bankAccounts": [
+    {
+      "accountId": "HDFC_BANK_001",
+      "bankName": "HDFC Bank",
+      "accountType": "Salary",
+      "accountNumber": "2020202020001",
+      "balance": 90781,
+      "branch": "Main Branch",
+      "ifscCode": "HDFC0001234"
+    },
+    {
+      "accountId": "STATE_BANK_OF_INDIA_001",
+      "bankName": "State Bank of India",
+      "accountType": "Savings",
+      "accountNumber": "2020202020002",
+      "balance": 51081,
+      "branch": "Secondary Branch",
+      "ifscCode": "SBIN0001234"
+    }
+  ],
+  "totalBankBalance": 141862,
+  "mutualFunds": [
+    {
+      "schemeCode": "120503",
+      "schemeName": "SBI Bluechip Fund - Direct Growth",
+      "folioNumber": "0201",
+      "units": 656.561,
+      "nav": 89.45,
+      "currentValue": 58729.41,
+      "investedAmount": 49920,
+      "returns": 8809.41,
+      "returnsPercentage": 17.65,
+      "sipAmount": 2080,
+      "sipDate": 5,
+      "sipStatus": "Active"
+    },
+    {
+      "schemeCode": "120716",
+      "schemeName": "HDFC Mid-Cap Opportunities Fund - Direct Growth",
+      "folioNumber": "0202",
+      "units": 335.973,
+      "nav": 145.67,
+      "currentValue": 48941.18,
+      "investedAmount": 41600,
+      "returns": 7341.18,
+      "returnsPercentage": 17.65,
+      "sipAmount": 2080,
+      "sipDate": 10,
+      "sipStatus": "Active"
+    },
+    {
+      "schemeCode": "120717",
+      "schemeName": "Axis Small Cap Fund - Direct Growth",
+      "folioNumber": "0203",
+      "units": 992.47,
+      "nav": 78.9,
+      "currentValue": 78305.88,
+      "investedAmount": 66560,
+      "returns": 11745.88,
+      "returnsPercentage": 17.65,
+      "sipAmount": 2080,
+      "sipDate": 15,
+      "sipStatus": "Active"
+    }
+  ],
+  "totalMutualFunds": 185976.47,
+  "stocks": [],
+  "totalStocks": 0,
+  "goldInvestments": [
+    {
+      "type": "Digital Gold",
+      "platform": "Paytm Gold",
+      "grams": 11.19,
+      "currentValue": 61005,
+      "returns": 3050
+    }
+  ],
+  "totalGold": 61005,
+  "npsAccount": {
+    "pranNumber": "2020202020",
+    "currentValue": 89261,
+    "monthlyContribution": 3900
+  },
+  "creditCards": [
+    {
+      "cardId": "CC_2020202020",
+      "bankName": "HDFC Bank",
+      "cardType": "Credit Card",
+      "creditLimit": 177780,
+      "outstandingAmount": 44445,
+      "minimumDue": 2222
+    }
+  ],
+  "netWorth": {
+    "totalAssets": 478104.47,
+    "totalLiabilities": 44445,
+    "netWorth": 433659.47,
+    "breakdown": {
+      "bankAccounts": 141862,
+      "mutualFunds": 185976.47,
+      "stocks": 0,
+      "gold": 61005,
+      "nps": 89261,
+      "creditCardDebt": -44445
+    }
+  },
+  "recentTransactions": [
+    {
+      "date": "2025-07-21",
+      "description": "Lifestyle Store",
+      "amount": -410,
+      "category": "shopping",
+      "paymentMethod": "UPI",
+      "merchant": "Amazon"
+    },
+    {
+      "date": "2025-07-20",
+      "description": "McDonald's",
+      "amount": -1677,
+      "category": "food",
+      "paymentMethod": "UPI",
+      "merchant": "Swiggy"
+    },
+    {
+      "date": "2025-07-19",
+      "description": "Salary Credit",
+      "amount": 78000,
+      "category": "income",
+      "paymentMethod": "NEFT",
+      "merchant": "HR Specialist Company Ltd"
+    },
+    {
+      "date": "2025-07-19",
+      "description": "Amazon Purchase",
+      "amount": -3095,
+      "category": "shopping",
+      "paymentMethod": "UPI",
+      "merchant": "Lifestyle"
+    },
+    {
+      "date": "2025-07-18",
+      "description": "Metro Card",
+      "amount": -2758,
+      "category": "transport",
+      "paymentMethod": "UPI",
+      "merchant": "DMRC"
+    },
+    {
+      "date": "2025-07-17",
+      "description": "BookMyShow",
+      "amount": -2008,
+      "category": "entertainment",
+      "paymentMethod": "Credit Card",
+      "merchant": "BookMyShow"
+    },
+    {
+      "date": "2025-07-16",
+      "description": "Lab Test",
+      "amount": -388,
+      "category": "healthcare",
+      "paymentMethod": "UPI",
+      "merchant": "MedPlus"
+    },
+    {
+      "date": "2025-07-15",
+      "description": "Doctor Visit",
+      "amount": -2593,
+      "category": "healthcare",
+      "paymentMethod": "UPI",
+      "merchant": "Practo"
+    },
+    {
+      "date": "2025-07-14",
+      "description": "Gaming",
+      "amount": -3041,
+      "category": "entertainment",
+      "paymentMethod": "Credit Card",
+      "merchant": "Netflix"
+    },
+    {
+      "date": "2025-07-13",
+      "description": "Grocery Store",
+      "amount": -669,
+      "category": "food",
+      "paymentMethod": "UPI",
+      "merchant": "McDonald's"
+    }
+  ]
+}

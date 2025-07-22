@@ -1,0 +1,112 @@
+{
+  "userId": "1010101010",
+  "profile": {
+    "name": "Arjun Sharma",
+    "location": "Mumbai, Maharashtra",
+    "profession": "Software Engineer",
+    "age": 28,
+    "monthlyIncome": 125000,
+    "riskProfile": "aggressive",
+    "financialLiteracy": "high",
+    "assetAllocation": {
+      "equity": 70,
+      "debt": 15,
+      "gold": 5,
+      "cash": 10
+    },
+    "debtProfile": {
+      "creditCard": 65000,
+      "personalLoan": 0,
+      "homeLoan": 0
+    },
+    "spendingPattern": "lifestyle_inflation",
+    "investmentFocus": "growth_stocks",
+    "avatar": 1,
+    "panCard": "ABCDE1010X",
+    "aadharCard": "1010-1010-10"
+  },
+  "bankAccounts": [
+    {
+      "accountId": "PRIMARY_001",
+      "bankName": "HDFC Bank",
+      "accountType": "Salary",
+      "balance": 138958
+    },
+    {
+      "accountId": "SECONDARY_001",
+      "bankName": "SBI",
+      "accountType": "Savings",
+      "balance": 59553
+    }
+  ],
+  "totalBankBalance": 198512,
+  "mutualFunds": [
+    {
+      "schemeName": "Axis Small Cap Fund - Direct Growth",
+      "sipAmount": 43750,
+      "currentValue": 1180816,
+      "investedAmount": 1006250,
+      "returns": 174566,
+      "returnsPercentage": 17.35
+    },
+    {
+      "schemeName": "Parag Parikh Flexi Cap Fund - Direct Growth",
+      "sipAmount": 43750,
+      "currentValue": 801078,
+      "investedAmount": 700000,
+      "returns": 101078,
+      "returnsPercentage": 14.44
+    }
+  ],
+  "totalMutualFunds": 1981894,
+  "stocks": [
+    {
+      "symbol": "INFY",
+      "companyName": "Infosys Limited",
+      "currentValue": 525000,
+      "investedAmount": 472500,
+      "returns": 52500,
+      "quantity": 50
+    }
+  ],
+  "totalStocks": 525000,
+  "goldInvestments": [
+    {
+      "type": "Digital Gold",
+      "platform": "Paytm Gold",
+      "currentValue": 18750,
+      "grams": 3.44
+    }
+  ],
+  "totalGold": 18750,
+  "creditCards": [
+    {
+      "bankName": "HDFC Bank",
+      "cardType": "Credit Card",
+      "creditLimit": 260000,
+      "outstandingAmount": 65000,
+      "minimumDue": 3250
+    }
+  ],
+  "monthlySpending": {
+    "housing": 43750,
+    "food": 22500,
+    "transport": 12500,
+    "investments": 15000,
+    "entertainment": 15000,
+    "miscellaneous": 12500
+  },
+  "netWorth": {
+    "totalAssets": 2724156,
+    "totalLiabilities": 65000,
+    "netWorth": 2659156,
+    "breakdown": {
+      "bankAccounts": 198512,
+      "mutualFunds": 1981894,
+      "stocks": 525000,
+      "gold": 18750,
+      "creditCardDebt": -65000,
+      "loans": 0
+    }
+  }
+}

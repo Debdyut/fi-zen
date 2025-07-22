@@ -1,0 +1,34 @@
+{
+  "userId": "9999999999",
+  "profile": {
+    "name": "Pooja Bhatt",
+    "location": "Surat, Gujarat",
+    "profession": "Pharmacist",
+    "age": 27,
+    "avatar": 16,
+    "income": 75000,
+    "monthlyIncome": 75000,
+    "panCard": "ABCDE9999X",
+    "aadharCard": "9999-9999-99"
+  },
+  "bankAccounts": [
+    {
+      "accountId": "PRIMARY_001",
+      "bankName": "HDFC Bank",
+      "accountType": "Salary",
+      "balance": 17527
+    },
+    {
+      "accountId": "SECONDARY_001",
+      "bankName": "SBI",
+      "accountType": "Savings",
+      "balance": 66921
+    }
+  ],
+  "totalBankBalance": 84449,
+  "netWorth": {
+    "totalAssets": 152008.2,
+    "totalLiabilities": 22500,
+    "netWorth": 126673.5
+  }
+}

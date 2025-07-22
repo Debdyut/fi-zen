@@ -1,0 +1,112 @@
+{
+  "userId": "9999999999",
+  "profile": {
+    "name": "Pooja Bhatt",
+    "location": "Surat, Gujarat",
+    "profession": "Pharmacist",
+    "age": 27,
+    "monthlyIncome": 75000,
+    "riskProfile": "moderate",
+    "financialLiteracy": "medium",
+    "assetAllocation": {
+      "equity": 50,
+      "debt": 30,
+      "gold": 15,
+      "cash": 5
+    },
+    "debtProfile": {
+      "creditCard": 18000,
+      "personalLoan": 0,
+      "homeLoan": 0
+    },
+    "spendingPattern": "healthcare_focused",
+    "investmentFocus": "health_insurance",
+    "avatar": 9,
+    "panCard": "ABCDE9999X",
+    "aadharCard": "9999-9999-99"
+  },
+  "bankAccounts": [
+    {
+      "accountId": "PRIMARY_001",
+      "bankName": "HDFC Bank",
+      "accountType": "Salary",
+      "balance": 79137
+    },
+    {
+      "accountId": "SECONDARY_001",
+      "bankName": "SBI",
+      "accountType": "Savings",
+      "balance": 33915
+    }
+  ],
+  "totalBankBalance": 113052,
+  "mutualFunds": [
+    {
+      "schemeName": "SBI Bluechip Fund - Direct Growth",
+      "sipAmount": 18750,
+      "currentValue": 171135,
+      "investedAmount": 150000,
+      "returns": 21135,
+      "returnsPercentage": 14.09
+    },
+    {
+      "schemeName": "HDFC Top 100 Fund - Direct Growth",
+      "sipAmount": 18750,
+      "currentValue": 152256,
+      "investedAmount": 150000,
+      "returns": 2256,
+      "returnsPercentage": 1.5
+    }
+  ],
+  "totalMutualFunds": 323391,
+  "stocks": [],
+  "totalStocks": 0,
+  "goldInvestments": [
+    {
+      "type": "Digital Gold",
+      "platform": "Paytm Gold",
+      "currentValue": 67500,
+      "grams": 12.39
+    }
+  ],
+  "totalGold": 67500,
+  "creditCards": [
+    {
+      "bankName": "HDFC Bank",
+      "cardType": "Credit Card",
+      "creditLimit": 72000,
+      "outstandingAmount": 18000,
+      "minimumDue": 900
+    }
+  ],
+  "monthlySpending": {
+    "housing": 22500,
+    "food": 11250,
+    "transport": 7500,
+    "investments": 9000,
+    "entertainment": 6000,
+    "miscellaneous": 7500
+  },
+  "netWorth": {
+    "totalAssets": 503943,
+    "totalLiabilities": 18000,
+    "netWorth": 485943,
+    "breakdown": {
+      "bankAccounts": 113052,
+      "mutualFunds": 323391,
+      "stocks": 0,
+      "gold": 67500,
+      "creditCardDebt": -18000,
+      "loans": 0,
+      "nps": 0
+    }
+  },
+  "recentTransactions": [],
+  "goals": [],
+  "metadata": {
+    "createdAt": "2025-07-22T04:36:35.024Z",
+    "updatedAt": "2025-07-22T04:36:35.024Z",
+    "version": "1.0",
+    "dataSource": "expert_generated"
+  }
+}

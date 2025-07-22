@@ -1,0 +1,190 @@
+{
+  "userId": "1313131313",
+  "profile": {
+    "name": "Sneha Reddy",
+    "location": "Hyderabad, Telangana",
+    "profession": "Graphic Designer",
+    "age": 24,
+    "avatar": 4,
+    "income": 65000,
+    "monthlyIncome": 65000,
+    "panCard": "ABCDE1313X",
+    "aadharCard": "1313-1313-13"
+  },
+  "bankAccounts": [
+    {
+      "accountId": "AXIS_BANK_001",
+      "bankName": "Axis Bank",
+      "accountType": "Salary",
+      "accountNumber": "1313131313001",
+      "balance": 136097,
+      "branch": "Main Branch",
+      "ifscCode": "UTIB0001234"
+    },
+    {
+      "accountId": "HDFC_BANK_001",
+      "bankName": "HDFC Bank",
+      "accountType": "Savings",
+      "accountNumber": "1313131313002",
+      "balance": 16154,
+      "branch": "Secondary Branch",
+      "ifscCode": "HDFC0001234"
+    }
+  ],
+  "totalBankBalance": 152251,
+  "mutualFunds": [
+    {
+      "schemeCode": "120503",
+      "schemeName": "SBI Bluechip Fund - Direct Growth",
+      "folioNumber": "3131",
+      "units": 569.822,
+      "nav": 89.45,
+      "currentValue": 50970.59,
+      "investedAmount": 43325,
+      "returns": 7645.59,
+      "returnsPercentage": 17.65,
+      "sipAmount": 1733,
+      "sipDate": 5,
+      "sipStatus": "Active"
+    },
+    {
+      "schemeCode": "120716",
+      "schemeName": "HDFC Mid-Cap Opportunities Fund - Direct Growth",
+      "folioNumber": "3132",
+      "units": 349.904,
+      "nav": 145.67,
+      "currentValue": 50970.59,
+      "investedAmount": 43325,
+      "returns": 7645.59,
+      "returnsPercentage": 17.65,
+      "sipAmount": 1733,
+      "sipDate": 10,
+      "sipStatus": "Active"
+    },
+    {
+      "schemeCode": "120717",
+      "schemeName": "Axis Small Cap Fund - Direct Growth",
+      "folioNumber": "3133",
+      "units": 904.421,
+      "nav": 78.9,
+      "currentValue": 71358.82,
+      "investedAmount": 60655,
+      "returns": 10703.82,
+      "returnsPercentage": 17.65,
+      "sipAmount": 1733,
+      "sipDate": 15,
+      "sipStatus": "Active"
+    }
+  ],
+  "totalMutualFunds": 173300,
+  "stocks": [],
+  "totalStocks": 0,
+  "goldInvestments": [],
+  "totalGold": 0,
+  "npsAccount": null,
+  "creditCards": [
+    {
+      "cardId": "CC_1313131313",
+      "bankName": "Axis Bank",
+      "cardType": "Credit Card",
+      "creditLimit": 107528,
+      "outstandingAmount": 26882,
+      "minimumDue": 1344
+    }
+  ],
+  "netWorth": {
+    "totalAssets": 325551,
+    "totalLiabilities": 26882,
+    "netWorth": 298669,
+    "breakdown": {
+      "bankAccounts": 152251,
+      "mutualFunds": 173300,
+      "stocks": 0,
+      "gold": 0,
+      "nps": 0,
+      "creditCardDebt": -26882
+    }
+  },
+  "recentTransactions": [
+    {
+      "date": "2025-07-21",
+      "description": "Amazon Purchase",
+      "amount": -1974,
+      "category": "shopping",
+      "paymentMethod": "UPI",
+      "merchant": "Amazon"
+    },
+    {
+      "date": "2025-07-20",
+      "description": "Netflix",
+      "amount": -2574,
+      "category": "entertainment",
+      "paymentMethod": "UPI",
+      "merchant": "Netflix"
+    },
+    {
+      "date": "2025-07-19",
+      "description": "Salary Credit",
+      "amount": 65000,
+      "category": "income",
+      "paymentMethod": "NEFT",
+      "merchant": "Graphic Designer Company Ltd"
+    },
+    {
+      "date": "2025-07-19",
+      "description": "Pharmacy",
+      "amount": -2109,
+      "category": "healthcare",
+      "paymentMethod": "Credit Card",
+      "merchant": "MedPlus"
+    },
+    {
+      "date": "2025-07-18",
+      "description": "Metro Card",
+      "amount": -2856,
+      "category": "transport",
+      "paymentMethod": "UPI",
+      "merchant": "Shell"
+    },
+    {
+      "date": "2025-07-17",
+      "description": "Medicine",
+      "amount": -1411,
+      "category": "healthcare",
+      "paymentMethod": "Credit Card",
+      "merchant": "1mg"
+    },
+    {
+      "date": "2025-07-16",
+      "description": "Flipkart Order",
+      "amount": -2233,
+      "category": "shopping",
+      "paymentMethod": "Credit Card",
+      "merchant": "Reliance"
+    },
+    {
+      "date": "2025-07-15",
+      "description": "Metro Card",
+      "amount": -3148,
+      "category": "transport",
+      "paymentMethod": "UPI",
+      "merchant": "Ola"
+    },
+    {
+      "date": "2025-07-14",
+      "description": "Uber Ride",
+      "amount": -1604,
+      "category": "transport",
+      "paymentMethod": "Credit Card",
+      "merchant": "DMRC"
+    },
+    {
+      "date": "2025-07-13",
+      "description": "McDonald's",
+      "amount": -586,
+      "category": "food",
+      "paymentMethod": "UPI",
+      "merchant": "BigBasket"
+    }
+  ]
+}

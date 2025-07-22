@@ -1,0 +1,129 @@
+{
+  "userId": "1717171717",
+  "profile": {
+    "name": "Sanjay Mehta",
+    "location": "Bangalore, Karnataka",
+    "profession": "VP Engineering",
+    "age": 38,
+    "avatar": 17,
+    "monthlyIncome": 350000,
+    "riskProfile": "sophisticated_aggressive",
+    "financialLiteracy": "expert",
+    "portfolioSize": 5000000
+  },
+  "bankAccounts": [
+    {
+      "accountId": "HDFC_PRIV_001",
+      "bankName": "HDFC Bank Private Banking",
+      "accountType": "Priority Banking",
+      "balance": 850000,
+      "branch": "Koramangala"
+    },
+    {
+      "accountId": "ICICI_WEALTH_001",
+      "bankName": "ICICI Wealth Management",
+      "accountType": "Wealth Account",
+      "balance": 650000,
+      "branch": "UB City Mall"
+    }
+  ],
+  "totalBankBalance": 1500000,
+  "mutualFunds": [
+    {
+      "schemeName": "Parag Parikh Flexi Cap Fund - Direct Growth",
+      "sipAmount": 25000,
+      "currentValue": 850000,
+      "investedAmount": 720000,
+      "returns": 130000,
+      "returnsPercentage": 18.06
+    },
+    {
+      "schemeName": "PPFAS Long Term Equity Fund - Direct Growth",
+      "sipAmount": 20000,
+      "currentValue": 650000,
+      "investedAmount": 580000,
+      "returns": 70000,
+      "returnsPercentage": 12.07
+    }
+  ],
+  "totalMutualFunds": 1500000,
+  "stocks": [
+    {
+      "symbol": "INFY",
+      "companyName": "Infosys Limited",
+      "quantity": 500,
+      "currentValue": 839250,
+      "investedAmount": 725000,
+      "returns": 114250
+    },
+    {
+      "symbol": "TCS",
+      "companyName": "Tata Consultancy Services",
+      "quantity": 200,
+      "currentValue": 691350,
+      "investedAmount": 640000,
+      "returns": 51350
+    }
+  ],
+  "totalStocks": 1530600,
+  "alternativeInvestments": [
+    {
+      "type": "PMS",
+      "provider": "Motilal Oswal PMS",
+      "currentValue": 1200000,
+      "investedAmount": 1000000,
+      "returns": 200000,
+      "returnsPercentage": 20
+    },
+    {
+      "type": "AIF Category II",
+      "provider": "Edelweiss Alternative Investment",
+      "currentValue": 800000,
+      "investedAmount": 750000,
+      "returns": 50000,
+      "returnsPercentage": 6.67
+    }
+  ],
+  "totalAlternatives": 2000000,
+  "realEstate": [
+    {
+      "type": "Residential Property",
+      "location": "Whitefield, Bangalore",
+      "currentValue": 12000000,
+      "purchaseValue": 8500000,
+      "rentalIncome": 45000
+    }
+  ],
+  "creditCards": [
+    {
+      "bankName": "HDFC Bank",
+      "cardType": "Infinia Credit Card",
+      "creditLimit": 2000000,
+      "outstandingAmount": 150000,
+      "minimumDue": 15000
+    }
+  ],
+  "monthlySpending": {
+    "housing": 85000,
+    "food": 35000,
+    "transport": 25000,
+    "investments": 45000,
+    "entertainment": 20000,
+    "travel": 30000,
+    "miscellaneous": 25000
+  },
+  "netWorth": {
+    "totalAssets": 18530600,
+    "totalLiabilities": 8650000,
+    "netWorth": 9880600,
+    "breakdown": {
+      "bankAccounts": 1500000,
+      "mutualFunds": 1500000,
+      "stocks": 1530600,
+      "alternatives": 2000000,
+      "realEstate": 12000000,
+      "homeLoan": -8500000,
+      "creditCardDebt": -150000
+    }
+  }
+}

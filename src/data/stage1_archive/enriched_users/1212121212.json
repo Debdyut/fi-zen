@@ -1,0 +1,34 @@
+{
+  "userId": "1212121212",
+  "profile": {
+    "name": "Rajesh Kumar",
+    "location": "Delhi, NCR",
+    "profession": "Business Analyst",
+    "age": 32,
+    "avatar": 3,
+    "income": 150000,
+    "monthlyIncome": 150000,
+    "panCard": "ABCDE1212X",
+    "aadharCard": "1212-1212-12"
+  },
+  "bankAccounts": [
+    {
+      "accountId": "PRIMARY_001",
+      "bankName": "HDFC Bank",
+      "accountType": "Salary",
+      "balance": 198543
+    },
+    {
+      "accountId": "SECONDARY_001",
+      "bankName": "SBI",
+      "accountType": "Savings",
+      "balance": 92988
+    }
+  ],
+  "totalBankBalance": 291532,
+  "netWorth": {
+    "totalAssets": 524757.6,
+    "totalLiabilities": 45000,
+    "netWorth": 437298
+  }
+}

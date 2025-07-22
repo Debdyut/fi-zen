@@ -1,0 +1,116 @@
+{
+  "userId": "1919191919",
+  "profile": {
+    "name": "Priya Entrepreneur",
+    "location": "Chennai, Tamil Nadu",
+    "profession": "Restaurant Owner",
+    "age": 35,
+    "avatar": 19,
+    "monthlyIncome": 165000,
+    "averageIncome": 165000,
+    "riskProfile": "moderate_aggressive",
+    "financialLiteracy": "medium",
+    "businessType": "F&B"
+  },
+  "bankAccounts": [
+    {
+      "accountId": "ICICI_BUS_001",
+      "bankName": "ICICI Bank Business",
+      "accountType": "Current Account",
+      "balance": 180000
+    },
+    {
+      "accountId": "SBI_PER_001",
+      "bankName": "State Bank of India",
+      "accountType": "Personal Savings",
+      "balance": 85000
+    }
+  ],
+  "totalBankBalance": 265000,
+  "mutualFunds": [
+    {
+      "schemeName": "HDFC Flexi Cap Fund - Direct Growth",
+      "sipAmount": 5000,
+      "currentValue": 125000,
+      "investedAmount": 110000,
+      "returns": 15000,
+      "returnsPercentage": 13.64
+    }
+  ],
+  "totalMutualFunds": 125000,
+  "businessAssets": [
+    {
+      "type": "Restaurant Equipment",
+      "currentValue": 800000,
+      "depreciatedValue": 650000
+    },
+    {
+      "type": "Interior & Furniture",
+      "currentValue": 400000,
+      "depreciatedValue": 320000
+    }
+  ],
+  "totalBusinessAssets": 970000,
+  "businessLoans": [
+    {
+      "type": "Business Term Loan",
+      "outstandingAmount": 1500000,
+      "monthlyEMI": 45000,
+      "interestRate": 12.5
+    },
+    {
+      "type": "Working Capital Loan",
+      "outstandingAmount": 500000,
+      "interestRate": 15
+    }
+  ],
+  "creditCards": [
+    {
+      "bankName": "ICICI Bank",
+      "cardType": "Business Credit Card",
+      "creditLimit": 300000,
+      "outstandingAmount": 120000,
+      "minimumDue": 12000
+    }
+  ],
+  "monthlySpending": {
+    "business_expenses": 450000,
+    "personal_housing": 25000,
+    "personal_food": 15000,
+    "transport": 12000,
+    "business_loan_emi": 45000,
+    "investments": 5000,
+    "miscellaneous": 18000,
+    "housing": 25000,
+    "food": 15000,
+    "entertainment": 5000
+  },
+  "businessMetrics": {
+    "monthlyRevenue": 800000,
+    "grossMargin": 0.35,
+    "seasonality": {
+      "peak_months": [
+        "Nov",
+        "Dec",
+        "Jan"
+      ],
+      "low_months": [
+        "Jun",
+        "Jul",
+        "Aug"
+      ]
+    }
+  },
+  "netWorth": {
+    "totalAssets": 1360000,
+    "totalLiabilities": 2120000,
+    "netWorth": -760000,
+    "breakdown": {
+      "bankAccounts": 265000,
+      "mutualFunds": 125000,
+      "businessAssets": 970000,
+      "businessLoans": -2000000,
+      "creditCardDebt": -120000
+    }
+  }
+}

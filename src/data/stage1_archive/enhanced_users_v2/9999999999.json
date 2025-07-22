@@ -1,0 +1,181 @@
+{
+  "userId": "9999999999",
+  "profile": {
+    "name": "Pooja Bhatt",
+    "location": "Surat, Gujarat",
+    "profession": "Pharmacist",
+    "age": 27,
+    "avatar": 16,
+    "income": 75000,
+    "monthlyIncome": 75000,
+    "panCard": "ABCDE9999X",
+    "aadharCard": "9999-9999-99"
+  },
+  "bankAccounts": [
+    {
+      "accountId": "AXIS_BANK_001",
+      "bankName": "Axis Bank",
+      "accountType": "Salary",
+      "accountNumber": "9999999999001",
+      "balance": 99551,
+      "branch": "Main Branch",
+      "ifscCode": "UTIB0001234"
+    },
+    {
+      "accountId": "HDFC_BANK_001",
+      "bankName": "HDFC Bank",
+      "accountType": "Savings",
+      "accountNumber": "9999999999002",
+      "balance": 64854,
+      "branch": "Secondary Branch",
+      "ifscCode": "HDFC0001234"
+    }
+  ],
+  "totalBankBalance": 164405,
+  "mutualFunds": [
+    {
+      "schemeCode": "120503",
+      "schemeName": "SBI Bluechip Fund - Direct Growth",
+      "folioNumber": "9991",
+      "units": 394.568,
+      "nav": 89.45,
+      "currentValue": 35294.12,
+      "investedAmount": 30000,
+      "returns": 5294.12,
+      "returnsPercentage": 17.65,
+      "sipAmount": 2000,
+      "sipDate": 5,
+      "sipStatus": "Active"
+    },
+    {
+      "schemeCode": "120716",
+      "schemeName": "HDFC Mid-Cap Opportunities Fund - Direct Growth",
+      "folioNumber": "9992",
+      "units": 516.881,
+      "nav": 145.67,
+      "currentValue": 75294.12,
+      "investedAmount": 64000,
+      "returns": 11294.12,
+      "returnsPercentage": 17.65,
+      "sipAmount": 2000,
+      "sipDate": 10,
+      "sipStatus": "Active"
+    },
+    {
+      "schemeCode": "120717",
+      "schemeName": "Axis Small Cap Fund - Direct Growth",
+      "folioNumber": "9993",
+      "units": 984.12,
+      "nav": 78.9,
+      "currentValue": 77647.06,
+      "investedAmount": 66000,
+      "returns": 11647.06,
+      "returnsPercentage": 17.65,
+      "sipAmount": 2000,
+      "sipDate": 15,
+      "sipStatus": "Active"
+    }
+  ],
+  "totalMutualFunds": 188235.3,
+  "stocks": [],
+  "totalStocks": 0,
+  "goldInvestments": [],
+  "totalGold": 0,
+  "npsAccount": null,
+  "creditCards": [],
+  "netWorth": {
+    "totalAssets": 352640.3,
+    "totalLiabilities": 0,
+    "netWorth": 352640.3,
+    "breakdown": {
+      "bankAccounts": 164405,
+      "mutualFunds": 188235.3,
+      "stocks": 0,
+      "gold": 0,
+      "nps": 0,
+      "creditCardDebt": 0
+    }
+  },
+  "recentTransactions": [
+    {
+      "date": "2025-07-21",
+      "description": "Gaming",
+      "amount": -1803,
+      "category": "entertainment",
+      "paymentMethod": "Credit Card",
+      "merchant": "BookMyShow"
+    },
+    {
+      "date": "2025-07-20",
+      "description": "Lifestyle Store",
+      "amount": -924,
+      "category": "shopping",
+      "paymentMethod": "Credit Card",
+      "merchant": "Lifestyle"
+    },
+    {
+      "date": "2025-07-19",
+      "description": "Salary Credit",
+      "amount": 75000,
+      "category": "income",
+      "paymentMethod": "NEFT",
+      "merchant": "Pharmacist Company Ltd"
+    },
+    {
+      "date": "2025-07-19",
+      "description": "Spotify",
+      "amount": -3074,
+      "category": "entertainment",
+      "paymentMethod": "UPI",
+      "merchant": "PVR"
+    },
+    {
+      "date": "2025-07-18",
+      "description": "BookMyShow",
+      "amount": -3169,
+      "category": "entertainment",
+      "paymentMethod": "UPI",
+      "merchant": "PVR"
+    },
+    {
+      "date": "2025-07-17",
+      "description": "Uber Ride",
+      "amount": -493,
+      "category": "transport",
+      "paymentMethod": "UPI",
+      "merchant": "Ola"
+    },
+    {
+      "date": "2025-07-16",
+      "description": "Local Store",
+      "amount": -2020,
+      "category": "shopping",
+      "paymentMethod": "Credit Card",
+      "merchant": "Reliance"
+    },
+    {
+      "date": "2025-07-15",
+      "description": "Spotify",
+      "amount": -1234,
+      "category": "entertainment",
+      "paymentMethod": "Credit Card",
+      "merchant": "PVR"
+    },
+    {
+      "date": "2025-07-14",
+      "description": "Gaming",
+      "amount": -2761,
+      "category": "entertainment",
+      "paymentMethod": "Credit Card",
+      "merchant": "PVR"
+    },
+    {
+      "date": "2025-07-13",
+      "description": "Uber Ride",
+      "amount": -803,
+      "category": "transport",
+      "paymentMethod": "UPI",
+      "merchant": "DMRC"
+    }
+  ]
+}

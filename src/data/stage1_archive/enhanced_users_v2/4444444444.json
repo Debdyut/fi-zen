@@ -1,0 +1,242 @@
+{
+  "userId": "4444444444",
+  "profile": {
+    "name": "Amit Verma",
+    "location": "Gurgaon, Haryana",
+    "profession": "Data Scientist",
+    "age": 33,
+    "avatar": 11,
+    "income": 160000,
+    "monthlyIncome": 160000,
+    "panCard": "ABCDE4444X",
+    "aadharCard": "4444-4444-44"
+  },
+  "bankAccounts": [
+    {
+      "accountId": "HDFC_BANK_001",
+      "bankName": "HDFC Bank",
+      "accountType": "Salary",
+      "accountNumber": "4444444444001",
+      "balance": 244956,
+      "branch": "Main Branch",
+      "ifscCode": "HDFC0001234"
+    },
+    {
+      "accountId": "STATE_BANK_OF_INDIA_001",
+      "bankName": "State Bank of India",
+      "accountType": "Savings",
+      "accountNumber": "4444444444002",
+      "balance": 28902,
+      "branch": "Secondary Branch",
+      "ifscCode": "SBIN0001234"
+    }
+  ],
+  "totalBankBalance": 273858,
+  "mutualFunds": [
+    {
+      "schemeCode": "120503",
+      "schemeName": "SBI Bluechip Fund - Direct Growth",
+      "folioNumber": "4441",
+      "units": 1388.88,
+      "nav": 89.45,
+      "currentValue": 124235.29,
+      "investedAmount": 105600,
+      "returns": 18635.29,
+      "returnsPercentage": 17.65,
+      "sipAmount": 3200,
+      "sipDate": 5,
+      "sipStatus": "Active"
+    },
+    {
+      "schemeCode": "120716",
+      "schemeName": "HDFC Mid-Cap Opportunities Fund - Direct Growth",
+      "folioNumber": "4442",
+      "units": 387.661,
+      "nav": 145.67,
+      "currentValue": 56470.59,
+      "investedAmount": 48000,
+      "returns": 8470.59,
+      "returnsPercentage": 17.65,
+      "sipAmount": 3200,
+      "sipDate": 10,
+      "sipStatus": "Active"
+    },
+    {
+      "schemeCode": "120717",
+      "schemeName": "Axis Small Cap Fund - Direct Growth",
+      "folioNumber": "4443",
+      "units": 954.298,
+      "nav": 78.9,
+      "currentValue": 75294.12,
+      "investedAmount": 64000,
+      "returns": 11294.12,
+      "returnsPercentage": 17.65,
+      "sipAmount": 3200,
+      "sipDate": 15,
+      "sipStatus": "Active"
+    },
+    {
+      "schemeCode": "120718",
+      "schemeName": "Mirae Asset Large Cap Fund - Direct Growth",
+      "folioNumber": "4444",
+      "units": 991.113,
+      "nav": 98.76,
+      "currentValue": 97882.35,
+      "investedAmount": 83200,
+      "returns": 14682.35,
+      "returnsPercentage": 17.65,
+      "sipAmount": 3200,
+      "sipDate": 20,
+      "sipStatus": "Active"
+    }
+  ],
+  "totalMutualFunds": 353882.35,
+  "stocks": [
+    {
+      "symbol": "RELIANCE",
+      "companyName": "Reliance Industries Ltd",
+      "quantity": 35,
+      "avgPrice": 2355.95,
+      "currentPrice": 2678.5,
+      "investedAmount": 82458.21,
+      "currentValue": 93747.5,
+      "returns": 11289.29,
+      "returnsPercentage": 13.69
+    },
+    {
+      "symbol": "TCS",
+      "companyName": "Tata Consultancy Services",
+      "quantity": 13,
+      "avgPrice": 2906.86,
+      "currentPrice": 3456.75,
+      "investedAmount": 37789.24,
+      "currentValue": 44937.75,
+      "returns": 7148.51,
+      "returnsPercentage": 18.92
+    },
+    {
+      "symbol": "INFY",
+      "companyName": "Infosys Limited",
+      "quantity": 37,
+      "avgPrice": 1820.15,
+      "currentPrice": 1678.5,
+      "investedAmount": 67345.63,
+      "currentValue": 62104.5,
+      "returns": -5241.13,
+      "returnsPercentage": -7.78
+    }
+  ],
+  "totalStocks": 200789.75,
+  "goldInvestments": [],
+  "totalGold": 0,
+  "npsAccount": {
+    "pranNumber": "4444444444",
+    "currentValue": 177188,
+    "monthlyContribution": 8000
+  },
+  "creditCards": [
+    {
+      "cardId": "CC_4444444444",
+      "bankName": "HDFC Bank",
+      "cardType": "Credit Card",
+      "creditLimit": 235176,
+      "outstandingAmount": 58794,
+      "minimumDue": 2939
+    }
+  ],
+  "netWorth": {
+    "totalAssets": 1005718.1,
+    "totalLiabilities": 58794,
+    "netWorth": 946924.1,
+    "breakdown": {
+      "bankAccounts": 273858,
+      "mutualFunds": 353882.35,
+      "stocks": 200789.75,
+      "gold": 0,
+      "nps": 177188,
+      "creditCardDebt": -58794
+    }
+  },
+  "recentTransactions": [
+    {
+      "date": "2025-07-21",
+      "description": "Doctor Visit",
+      "amount": -2661,
+      "category": "healthcare",
+      "paymentMethod": "Credit Card",
+      "merchant": "Practo"
+    },
+    {
+      "date": "2025-07-20",
+      "description": "Bus Ticket",
+      "amount": -2790,
+      "category": "transport",
+      "paymentMethod": "UPI",
+      "merchant": "Ola"
+    },
+    {
+      "date": "2025-07-19",
+      "description": "Salary Credit",
+      "amount": 160000,
+      "category": "income",
+      "paymentMethod": "NEFT",
+      "merchant": "Data Scientist Company Ltd"
+    },
+    {
+      "date": "2025-07-19",
+      "description": "Local Store",
+      "amount": -2960,
+      "category": "shopping",
+      "paymentMethod": "UPI",
+      "merchant": "Amazon"
+    },
+    {
+      "date": "2025-07-18",
+      "description": "McDonald's",
+      "amount": -1925,
+      "category": "food",
+      "paymentMethod": "UPI",
+      "merchant": "BigBasket"
+    },
+    {
+      "date": "2025-07-17",
+      "description": "Spotify",
+      "amount": -2471,
+      "category": "entertainment",
+      "paymentMethod": "UPI",
+      "merchant": "Spotify"
+    },
+    {
+      "date": "2025-07-16",
+      "description": "Petrol Pump",
+      "amount": -1523,
+      "category": "transport",
+      "paymentMethod": "Credit Card",
+      "merchant": "KSRTC"
+    },
+    {
+      "date": "2025-07-15",
+      "description": "Lab Test",
+      "amount": -3013,
+      "category": "healthcare",
+      "paymentMethod": "UPI",
+      "merchant": "MedPlus"
+    },
+    {
+      "date": "2025-07-14",
+      "description": "Lab Test",
+      "amount": -563,
+      "category": "healthcare",
+      "paymentMethod": "Credit Card",
+      "merchant": "Apollo"
+    },
+    {
+      "date": "2025-07-13",
+      "description": "Petrol Pump",
+      "amount": -2900,
+      "category": "transport",
+      "paymentMethod": "UPI",
+      "merchant": "Uber"
+    }
+  ]
+}
