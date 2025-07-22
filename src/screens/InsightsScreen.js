@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, StatusBar, ActivityIndicator } from 'react-native';
 import { FadeInUp } from '../components/animations/AnimatedCard';
 import { TouchableArea } from '../components/common/AccessibilityHelpers';
@@ -10,7 +10,7 @@ import PersonalizationEngine from '../utils/PersonalizationEngine';
 // Enhanced Insight Components
 import SavingsRateCard from '../components/insights/SavingsRateCard';
 import PeerComparisonCard from '../components/insights/PeerComparisonCard';
-import SmartRecommendationsCard from '../components/insights/SmartRecommendationsCard';
+import IsolatedSmartRecommendationsCard from '../components/insights/IsolatedSmartRecommendationsCard';
 import LocationInsightsCard from '../components/insights/LocationInsightsCard';
 import SpendingTrendsCard from '../components/insights/SpendingTrendsCard';
 
@@ -156,18 +156,7 @@ const InsightsScreen = ({ navigation }) => {
       </TouchableArea>
     </View>
   );
-  const SpendingCategory = ({ category, amount, percentage, icon }) => (
-    <View style={styles.categoryItem}>
-      <View style={styles.categoryLeft}>
-        <Text style={styles.categoryIcon}>{icon}</Text>
-        <Text style={styles.categoryName}>{category}</Text>
-      </View>
-      <View style={styles.categoryRight}>
-        <Text style={styles.categoryAmount}>₹{amount}</Text>
-        <Text style={styles.categoryPercentage}>{percentage}%</Text>
-      </View>
-    </View>
-  );
+
 
   const InsightsSection = () => (
     <>
@@ -199,30 +188,13 @@ const InsightsScreen = ({ navigation }) => {
 
       {/* Enhanced Smart Recommendations */}
       <View style={styles.section}>
-        <SmartRecommendationsCard 
+        <IsolatedSmartRecommendationsCard 
           userProfile={userProfile}
           spendingInsights={spendingInsights}
         />
       </View>
 
-      {/* Legacy sections for compatibility */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Where Inflation Hits You Most</Text>
-        
-        <View style={styles.spendingCard}>
-          {spendingInsights?.topCategories?.slice(0, 5).map((category, index) => (
-            <SpendingCategory
-              key={index}
-              category={category.category.charAt(0).toUpperCase() + category.category.slice(1)}
-              amount={Math.round(category.amount * 0.128).toLocaleString()}
-              percentage={Math.round(category.percentage * 0.128)}
-              icon={getCategoryIcon(category.category)}
-            />
-          )) || [
-            <SpendingCategory key="fallback" category="Food" amount="1,250" percentage="35" icon="🍽️" />
-          ]}
-        </View>
-      </View>
+
     </>
   );
 
@@ -247,6 +219,8 @@ const InsightsScreen = ({ navigation }) => {
       </View>
     </>
   );
+
+  const CalculatorsSection = () => (
     <>
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Financial Planning Tools</Text>
@@ -284,21 +258,6 @@ const InsightsScreen = ({ navigation }) => {
         {activeSection === 'insights' && <InsightsSection />}
         {activeSection === 'calculators' && <CalculatorsSection />}
         {activeSection === 'ai' && <AIFeaturesSection />}
-
-
-
-        {/* Market Overview */}
-        <View style={[styles.infoSection, { backgroundColor: isDarkMode ? '#1A1A1A' : '#E6FBF7' }]}>
-          <Text style={[styles.infoTitle, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>Market Overview</Text>
-          <View style={styles.infoItem}>
-            <Text style={[styles.infoLabel, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>Purchasing Power</Text>
-            <Text style={[styles.infoValue, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>87.3% ↘ -2.1%</Text>
-          </View>
-          <View style={styles.infoItem}>
-            <Text style={[styles.infoLabel, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>{t('insights.costOfLivingIndex')}</Text>
-            <Text style={[styles.infoValue, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>142.8 ↗ +8.7%</Text>
-          </View>
-        </View>
       </ScrollView>
     </View>
   );
@@ -581,6 +540,7 @@ const styles = StyleSheet.create({
     color: FiColors.textSecondary,
     marginBottom: 16,
   },
+  infoSection: {
     backgroundColor: '#E6FBF7',
     paddingHorizontal: 20,
     paddingVertical: 16,

@@ -59,7 +59,7 @@ const LocationInsightsCard = ({ userProfile }) => {
                 onPress={() => setShowDetails(true)}
                 style={styles.detailsButton}
               >
-                <Text style={styles.detailsIcon}>📊</Text>
+                <Text style={styles.detailsIcon}>ℹ️</Text>
               </TouchableOpacity>
             </View>
             <Text style={styles.cardDescription}>

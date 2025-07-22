@@ -295,6 +295,38 @@ class MLRecommendationEngine {
     return goalActions.length > behaviorHistory.length * 0.3 ? 'high' : 'low';
   }
 
+  // Infer user preferences from feature usage patterns
+  static inferFeaturePreferences(sortedFeatures) {
+    const preferences = {};
+    
+    sortedFeatures.forEach(([feature, count], index) => {
+      const preference = {
+        strength: count > 10 ? 'high' : count > 5 ? 'medium' : 'low',
+        rank: index + 1,
+        usage: count
+      };
+      preferences[feature] = preference;
+    });
+    
+    return preferences;
+  }
+
+  // Generate feature recommendations based on usage patterns
+  static generateFeatureRecommendations(sortedFeatures) {
+    const recommendations = [];
+    
+    sortedFeatures.forEach(([feature, count]) => {
+      if (feature.includes('calculator') && count > 5) {
+        recommendations.push('goal_tracking');
+      }
+      if (feature.includes('insights') && count > 3) {
+        recommendations.push('advanced_analytics');
+      }
+    });
+    
+    return recommendations;
+  }
+
   // Data persistence helpers (simplified for demo)
   static getUserBehaviorData(userId) {
     // In real implementation, this would fetch from database
@@ -318,6 +350,94 @@ class MLRecommendationEngine {
   static updateUserRecommendations(userId) {
     // Trigger recommendation recalculation
     console.log(`Updating recommendations for user ${userId} based on behavior`);
+  }
+
+  // Additional helper methods for collaborative filtering
+  static findSimilarUsers(userProfile, userSegment) {
+    // Simplified - in real implementation would query user database
+    return [];
+  }
+
+  static findCommonActions(similarUsers) {
+    // Simplified - would analyze similar user behaviors
+    return [];
+  }
+
+  static identifySuccessfulStrategies(similarUsers) {
+    // Simplified - would identify high-success patterns
+    return [];
+  }
+
+  static calculateCompletionRates(behaviorHistory) {
+    // Calculate how often users complete started actions
+    const startedActions = behaviorHistory.filter(b => b.action.includes('started'));
+    const completedActions = behaviorHistory.filter(b => b.action.includes('completed'));
+    
+    return startedActions.length > 0 ? completedActions.length / startedActions.length : 0;
+  }
+
+  static analyzeActionTiming(behaviorHistory) {
+    // Analyze when users are most active
+    const timingData = {};
+    behaviorHistory.forEach(b => {
+      const hour = new Date(b.timestamp).getHours();
+      timingData[hour] = (timingData[hour] || 0) + 1;
+    });
+    
+    return timingData;
+  }
+
+  static calculateConfidenceScores(behaviorInsights) {
+    // Calculate confidence in recommendations based on data quality
+    const dataPoints = behaviorInsights.engagementLevel.score;
+    return {
+      overall: Math.min(0.9, dataPoints / 50),
+      personalized: Math.min(0.85, dataPoints / 30),
+      collaborative: 0.6, // Lower without real similar users
+      adaptive: Math.min(0.8, dataPoints / 40)
+    };
+  }
+
+  static generateLearningInsights(behaviorInsights) {
+    const insights = [];
+    
+    if (behaviorInsights.engagementLevel.level === 'high') {
+      insights.push('You\'re a highly engaged user who explores many features');
+    }
+    
+    if (behaviorInsights.riskTolerance === 'conservative') {
+      insights.push('Your behavior suggests a preference for low-risk options');
+    }
+    
+    return insights.join('. ');
+  }
+
+  static getRecommendationCompletionRate(recId, behaviorInsights) {
+    // Simplified - would track specific recommendation completion
+    return Math.random() * 0.8 + 0.1; // Random for demo
+  }
+
+  static simplifyRecommendation(description) {
+    return `Start with: ${description.split('.')[0]}`;
+  }
+
+  static enhanceRecommendation(description) {
+    return `${description} Consider advanced options for better results.`;
+  }
+
+  static calculateSegmentScore(userProfile, behaviorInsights, criteria) {
+    // Simplified scoring - would be more sophisticated in real implementation
+    let score = 0;
+    
+    if (criteria.engagementLevel && behaviorInsights.engagementLevel.level === criteria.engagementLevel) {
+      score += 0.3;
+    }
+    
+    if (criteria.riskTolerance && behaviorInsights.riskTolerance === criteria.riskTolerance) {
+      score += 0.3;
+    }
+    
+    return score;
   }
 }
 

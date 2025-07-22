@@ -116,7 +116,15 @@ const SavingsRateCard = ({ savingsRate, monthlyIncome, userProfile }) => {
             onPress={() => setShowTooltip(false)}
           >
             <View style={styles.tooltipContainer}>
-              <Text style={styles.tooltipTitle}>Savings Rate Explained</Text>
+              <View style={styles.tooltipHeader}>
+                <Text style={styles.tooltipTitle}>Savings Rate Explained</Text>
+                <TouchableOpacity 
+                  onPress={() => setShowTooltip(false)}
+                  style={styles.closeButton}
+                >
+                  <Text style={styles.closeButtonText}>✕</Text>
+                </TouchableOpacity>
+              </View>
               <Text style={styles.tooltipText}>
                 Your savings rate is the percentage of your income that you save each month.
               </Text>
@@ -231,11 +239,26 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 8,
   },
+  tooltipHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
   tooltipTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: FiColors.text,
-    marginBottom: 12,
+    flex: 1,
+  },
+  closeButton: {
+    padding: 4,
+    marginLeft: 12,
+  },
+  closeButtonText: {
+    fontSize: 18,
+    color: FiColors.textSecondary,
+    fontWeight: '600',
   },
   tooltipText: {
     fontSize: 14,

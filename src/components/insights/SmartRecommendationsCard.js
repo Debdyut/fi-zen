@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { FadeInUp } from '../animations/AnimatedCard';
 import PersonalizationEngine from '../../utils/PersonalizationEngine';
@@ -15,102 +15,105 @@ const FiColors = {
   border: '#E0E0E0',
 };
 
+// Move this outside component to prevent recreation
+const getPersonalizedRecommendations = (profile, insights) => {
+  if (!profile) return [];
+  
+  // Use PersonalizationEngine for recommendations
+  const baseRecommendations = PersonalizationEngine.getRecommendations(profile, insights);
+  
+  // Convert to detailed format for UI
+  return baseRecommendations.map(rec => ({
+    id: rec.id,
+    icon: getRecommendationIcon(rec.id),
+    title: rec.title,
+    description: getRecommendationDescription(rec.id, profile),
+    impact: rec.impact,
+    difficulty: rec.priority === 'high' ? 'Easy' : 'Medium',
+    timeframe: getTimeframe(rec.id),
+    steps: getActionSteps(rec.id, profile),
+    category: rec.id
+  }));
+};
+
+const getRecommendationIcon = (id) => {
+  const icons = {
+    tax_optimization: '💰',
+    portfolio_diversification: '📈',
+    emergency_fund: '🛡️',
+    goal_planning: '🎯',
+    micro_savings: '🪙',
+    expense_tracking: '📱'
+  };
+  return icons[id] || '💡';
+};
+
+const getRecommendationDescription = (id, profile) => {
+  const descriptions = {
+    tax_optimization: 'Maximize your tax deductions and save money',
+    portfolio_diversification: 'Build wealth beyond traditional savings',
+    emergency_fund: 'Secure 6 months of expenses for peace of mind',
+    goal_planning: 'Plan and achieve your major life goals',
+    micro_savings: 'Build savings habit with small, manageable amounts',
+    expense_tracking: 'Understand where your money goes each month'
+  };
+  return descriptions[id] || 'Improve your financial health';
+};
+
+const getTimeframe = (id) => {
+  const timeframes = {
+    tax_optimization: '1 month',
+    portfolio_diversification: '3 months',
+    emergency_fund: '12 months',
+    goal_planning: '2 months',
+    micro_savings: '1 week',
+    expense_tracking: '2 weeks'
+  };
+  return timeframes[id] || '1 month';
+};
+
+const getActionSteps = (id, profile) => {
+  const income = profile?.monthlyIncome || 50000;
+  
+  const steps = {
+    tax_optimization: [
+      `Invest ₹${Math.round(150000/12).toLocaleString()}/month in ELSS mutual funds`,
+      'Consider PPF for long-term wealth building',
+      'Explore NPS for additional ₹50K deduction'
+    ],
+    portfolio_diversification: [
+      'Allocate 60% equity, 30% debt, 10% gold',
+      'Start SIP in large-cap and mid-cap funds',
+      'Consider international diversification'
+    ],
+    emergency_fund: [
+      `Save ₹${Math.round(income * 0.15).toLocaleString()}/month in liquid fund`,
+      'Automate transfer on salary day',
+      'Keep in high-yield savings account'
+    ],
+    goal_planning: [
+      'Define goals: house, car, vacation',
+      'Calculate required monthly SIP',
+      'Choose appropriate mutual funds'
+    ],
+    micro_savings: [
+      `Start with ₹${Math.round(income * 0.05).toLocaleString()}/month automatic transfer`,
+      'Use digital savings apps',
+      'Increase by ₹100 every 3 months'
+    ],
+    expense_tracking: [
+      'Use expense tracking app',
+      'Categorize all expenses',
+      'Review weekly spending patterns'
+    ]
+  };
+  
+  return steps[id] || ['Take action to improve your finances'];
+};
+
 const SmartRecommendationsCard = ({ userProfile, spendingInsights }) => {
   const [expandedRecommendation, setExpandedRecommendation] = useState(null);
 
-  // Use PersonalizationEngine for recommendations
-  const getPersonalizedRecommendations = (profile, insights) => {
-    // Get base recommendations from PersonalizationEngine
-    const baseRecommendations = PersonalizationEngine.getRecommendations(profile, insights);
-    
-    // Convert to detailed format for UI
-    return baseRecommendations.map(rec => ({
-      id: rec.id,
-      icon: getRecommendationIcon(rec.id),
-      title: rec.title,
-      description: getRecommendationDescription(rec.id, profile),
-      impact: rec.impact,
-      difficulty: rec.priority === 'high' ? 'Easy' : 'Medium',
-      timeframe: getTimeframe(rec.id),
-      steps: getActionSteps(rec.id, profile),
-      category: rec.id
-    }));
-  };
-
-  const getRecommendationIcon = (id) => {
-    const icons = {
-      tax_optimization: '💰',
-      portfolio_diversification: '📈',
-      emergency_fund: '🛡️',
-      goal_planning: '🎯',
-      micro_savings: '🪙',
-      expense_tracking: '📱'
-    };
-    return icons[id] || '💡';
-  };
-
-  const getRecommendationDescription = (id, profile) => {
-    const descriptions = {
-      tax_optimization: 'Maximize your tax deductions and save money',
-      portfolio_diversification: 'Build wealth beyond traditional savings',
-      emergency_fund: 'Secure 6 months of expenses for peace of mind',
-      goal_planning: 'Plan and achieve your major life goals',
-      micro_savings: 'Build savings habit with small, manageable amounts',
-      expense_tracking: 'Understand where your money goes each month'
-    };
-    return descriptions[id] || 'Improve your financial health';
-  };
-
-  const getTimeframe = (id) => {
-    const timeframes = {
-      tax_optimization: '1 month',
-      portfolio_diversification: '3 months',
-      emergency_fund: '12 months',
-      goal_planning: '2 months',
-      micro_savings: '1 week',
-      expense_tracking: '2 weeks'
-    };
-    return timeframes[id] || '1 month';
-  };
-
-  const getActionSteps = (id, profile) => {
-    const income = profile.monthlyIncome;
-    
-    const steps = {
-      tax_optimization: [
-        `Invest ₹${Math.round(150000/12).toLocaleString()}/month in ELSS mutual funds`,
-        'Consider PPF for long-term wealth building',
-        'Explore NPS for additional ₹50K deduction'
-      ],
-      portfolio_diversification: [
-        'Allocate 60% equity, 30% debt, 10% gold',
-        'Start SIP in large-cap and mid-cap funds',
-        'Consider international diversification'
-      ],
-      emergency_fund: [
-        `Save ₹${Math.round(income * 0.15).toLocaleString()}/month in liquid fund`,
-        'Automate transfer on salary day',
-        'Keep in high-yield savings account'
-      ],
-      goal_planning: [
-        'Define goals: house, car, vacation',
-        'Calculate required monthly SIP',
-        'Choose appropriate mutual funds'
-      ],
-      micro_savings: [
-        `Start with ₹${Math.round(income * 0.05).toLocaleString()}/month automatic transfer`,
-        'Use digital savings apps',
-        'Increase by ₹100 every 3 months'
-      ],
-      expense_tracking: [
-        'Use expense tracking app',
-        'Categorize all expenses',
-        'Review weekly spending patterns'
-      ]
-    };
-    
-    return steps[id] || ['Take action to improve your finances'];
-  };
 
   const getCategoryColor = (category) => {
     const colors = {
@@ -135,19 +138,27 @@ const SmartRecommendationsCard = ({ userProfile, spendingInsights }) => {
     }
   };
 
-  const recommendations = getPersonalizedRecommendations(userProfile, spendingInsights);
+  const recommendations = useMemo(() => 
+    getPersonalizedRecommendations(userProfile, spendingInsights),
+    [userProfile, spendingInsights]
+  );
 
   const RecommendationItem = ({ recommendation, index }) => {
     const isExpanded = expandedRecommendation === recommendation.id;
     const categoryColor = getCategoryColor(recommendation.category);
     
+    const handlePress = () => {
+      setExpandedRecommendation(prev => prev === recommendation.id ? null : recommendation.id);
+    };
+    
     return (
       <FadeInUp delay={300 + (index * 100)}>
-        <TouchableOpacity
-          style={styles.recommendationCard}
-          onPress={() => setExpandedRecommendation(isExpanded ? null : recommendation.id)}
-        >
-          <View style={styles.recommendationHeader}>
+        <View style={styles.recommendationCard}>
+          <TouchableOpacity
+            style={styles.recommendationHeader}
+            onPress={handlePress}
+            activeOpacity={0.7}
+          >
             <Text style={styles.recommendationIcon}>{recommendation.icon}</Text>
             <View style={styles.recommendationContent}>
               <View style={styles.titleRow}>
@@ -166,7 +177,10 @@ const SmartRecommendationsCard = ({ userProfile, spendingInsights }) => {
                 <Text style={styles.timeframeText}>⏱️ {recommendation.timeframe}</Text>
               </View>
             </View>
-          </View>
+            <View style={styles.expandIndicator}>
+              <Text style={styles.expandIcon}>{isExpanded ? '▲' : '▼'}</Text>
+            </View>
+          </TouchableOpacity>
           
           {isExpanded && (
             <View style={styles.expandedContent}>
@@ -182,11 +196,7 @@ const SmartRecommendationsCard = ({ userProfile, spendingInsights }) => {
               </TouchableOpacity>
             </View>
           )}
-          
-          <View style={styles.expandIndicator}>
-            <Text style={styles.expandIcon}>{isExpanded ? '▲' : '▼'}</Text>
-          </View>
-        </TouchableOpacity>
+        </View>
       </FadeInUp>
     );
   };
@@ -244,6 +254,7 @@ const styles = StyleSheet.create({
   recommendationHeader: {
     flexDirection: 'row',
     alignItems: 'flex-start',
+    paddingVertical: 4,
   },
   recommendationIcon: {
     fontSize: 24,
@@ -341,9 +352,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   expandIndicator: {
-    position: 'absolute',
-    top: 20,
-    right: 20,
+    marginLeft: 8,
+    justifyContent: 'center',
   },
   expandIcon: {
     fontSize: 12,
@@ -351,4 +361,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SmartRecommendationsCard;
+export default React.memo(SmartRecommendationsCard, (prevProps, nextProps) => {
+  return prevProps.userProfile === nextProps.userProfile && 
+         prevProps.spendingInsights === nextProps.spendingInsights;
+});
