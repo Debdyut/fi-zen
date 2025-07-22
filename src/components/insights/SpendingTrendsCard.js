@@ -15,7 +15,7 @@ const FiColors = {
 };
 
 const SpendingTrendsCard = ({ userProfile, spendingData }) => {
-  const [activeTab, setActiveTab] = useState('trends');
+  const [activeTab, setActiveTab] = useState('categories');
   
   const analytics = AnalyticsEngine.analyzeSpendingTrends(userProfile, spendingData);
   

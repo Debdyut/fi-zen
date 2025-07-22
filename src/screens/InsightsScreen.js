@@ -16,7 +16,7 @@ import SpendingTrendsCard from '../components/insights/SpendingTrendsCard';
 
 // AI Components
 import AIRecommendationsCard from '../components/ai/AIRecommendationsCard';
-import ComingSoonCard from '../components/ai/ComingSoonCard';
+import IsolatedComingSoonCard from '../components/ai/IsolatedComingSoonCard';
 
 // Interactive Calculators
 import EmergencyFundCalculator from '../components/calculators/EmergencyFundCalculator';
@@ -135,7 +135,7 @@ const InsightsScreen = ({ navigation }) => {
         onPress={() => setActiveSection('insights')}
       >
         <Text style={[styles.toggleText, activeSection === 'insights' && styles.activeToggleText]}>
-          📊 Insights
+          Analytics
         </Text>
       </TouchableArea>
       <TouchableArea
@@ -143,7 +143,7 @@ const InsightsScreen = ({ navigation }) => {
         onPress={() => setActiveSection('calculators')}
       >
         <Text style={[styles.toggleText, activeSection === 'calculators' && styles.activeToggleText]}>
-          🧮 Calculators
+          Tools
         </Text>
       </TouchableArea>
       <TouchableArea
@@ -151,7 +151,7 @@ const InsightsScreen = ({ navigation }) => {
         onPress={() => setActiveSection('ai')}
       >
         <Text style={[styles.toggleText, activeSection === 'ai' && styles.activeToggleText]}>
-          🤖 AI Features
+          Advisor
         </Text>
       </TouchableArea>
     </View>
@@ -215,7 +215,7 @@ const InsightsScreen = ({ navigation }) => {
       </View>
 
       <View style={styles.section}>
-        <ComingSoonCard />
+        <IsolatedComingSoonCard />
       </View>
     </>
   );
@@ -505,35 +505,37 @@ const styles = StyleSheet.create({
   },
   sectionToggle: {
     flexDirection: 'row',
-    backgroundColor: '#F5F5F5',
-    borderRadius: 12,
-    padding: 4,
+    backgroundColor: '#E6FBF7',
+    borderRadius: 16,
+    padding: 6,
     marginHorizontal: 16,
     marginBottom: 20,
+    borderWidth: 2,
+    borderColor: '#00D4AA20',
   },
   toggleButton: {
     flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    borderRadius: 12,
     alignItems: 'center',
   },
   activeToggle: {
-    backgroundColor: FiColors.surface,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    backgroundColor: '#00D4AA',
+    shadowColor: '#00D4AA',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
   },
   toggleText: {
-    fontSize: 14,
-    color: FiColors.textSecondary,
-    fontWeight: '500',
+    fontSize: 15,
+    color: '#00D4AA',
+    fontWeight: '700',
   },
   activeToggleText: {
-    color: FiColors.text,
-    fontWeight: '600',
+    color: '#FFFFFF',
+    fontWeight: '800',
   },
   sectionSubtitle: {
     fontSize: 14,

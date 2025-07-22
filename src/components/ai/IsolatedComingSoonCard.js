@@ -16,88 +16,91 @@ const FiColors = {
   gradient2: '#764ba2',
 };
 
-const ComingSoonCard = () => {
+const comingSoonFeatures = [
+  {
+    id: 'market_integration',
+    icon: '📈',
+    title: 'Real-time Market Integration',
+    subtitle: 'Live data feeds and market-aware recommendations',
+    description: 'Get real-time market updates, live stock prices, and recommendations that adapt to current market conditions. Your investment advice will be powered by live NSE/BSE data.',
+    benefits: [
+      'Live stock prices and market indices',
+      'Market-aware investment recommendations',
+      'Real-time portfolio performance tracking',
+      'Economic news impact analysis'
+    ],
+    timeline: 'Coming in Q2 2025',
+    status: 'In Development'
+  },
+  {
+    id: 'goal_tracking',
+    icon: '🎯',
+    title: 'Advanced Goal Tracking',
+    subtitle: 'AI-powered progress monitoring and adjustment',
+    description: 'Smart goal tracking that automatically monitors your progress, suggests adjustments, and celebrates milestones. AI will help you stay on track with dynamic goal optimization.',
+    benefits: [
+      'Automatic progress monitoring',
+      'Smart milestone celebrations',
+      'Dynamic goal adjustment suggestions',
+      'Predictive goal achievement analysis'
+    ],
+    timeline: 'Coming in Q3 2025',
+    status: 'Design Phase'
+  },
+  {
+    id: 'social_learning',
+    icon: '👥',
+    title: 'Social Learning Features',
+    subtitle: 'Community insights and peer learning',
+    description: 'Learn from a community of like-minded investors. Share achievements, get insights from successful peers, and participate in financial challenges with anonymized data.',
+    benefits: [
+      'Anonymous peer learning groups',
+      'Community financial challenges',
+      'Success story sharing',
+      'Collaborative goal achievement'
+    ],
+    timeline: 'Coming in Q4 2025',
+    status: 'Research Phase'
+  },
+  {
+    id: 'predictive_analytics',
+    icon: '🔮',
+    title: 'Predictive Analytics',
+    subtitle: 'Future financial scenario modeling',
+    description: 'Advanced AI that predicts future financial scenarios, market trends, and personal financial outcomes. Get insights into how current decisions will impact your future wealth.',
+    benefits: [
+      'Future wealth projection modeling',
+      'Market trend predictions',
+      'Scenario-based planning',
+      'Risk-adjusted forecasting'
+    ],
+    timeline: 'Coming in 2026',
+    status: 'Concept Phase'
+  }
+];
+
+const getStatusColor = (status) => {
+  switch (status) {
+    case 'In Development': return FiColors.success;
+    case 'Design Phase': return FiColors.warning;
+    case 'Research Phase': return '#3B82F6';
+    case 'Concept Phase': return FiColors.textSecondary;
+    default: return FiColors.primary;
+  }
+};
+
+const IsolatedComingSoonCard = () => {
   const [selectedFeature, setSelectedFeature] = useState(null);
 
-  const comingSoonFeatures = [
-    {
-      id: 'market_integration',
-      icon: '📈',
-      title: 'Real-time Market Integration',
-      subtitle: 'Live data feeds and market-aware recommendations',
-      description: 'Get real-time market updates, live stock prices, and recommendations that adapt to current market conditions. Your investment advice will be powered by live NSE/BSE data.',
-      benefits: [
-        'Live stock prices and market indices',
-        'Market-aware investment recommendations',
-        'Real-time portfolio performance tracking',
-        'Economic news impact analysis'
-      ],
-      timeline: 'Coming in Q2 2025',
-      status: 'In Development'
-    },
-    {
-      id: 'goal_tracking',
-      icon: '🎯',
-      title: 'Advanced Goal Tracking',
-      subtitle: 'AI-powered progress monitoring and adjustment',
-      description: 'Smart goal tracking that automatically monitors your progress, suggests adjustments, and celebrates milestones. AI will help you stay on track with dynamic goal optimization.',
-      benefits: [
-        'Automatic progress monitoring',
-        'Smart milestone celebrations',
-        'Dynamic goal adjustment suggestions',
-        'Predictive goal achievement analysis'
-      ],
-      timeline: 'Coming in Q3 2025',
-      status: 'Design Phase'
-    },
-    {
-      id: 'social_learning',
-      icon: '👥',
-      title: 'Social Learning Features',
-      subtitle: 'Community insights and peer learning',
-      description: 'Learn from a community of like-minded investors. Share achievements, get insights from successful peers, and participate in financial challenges with anonymized data.',
-      benefits: [
-        'Anonymous peer learning groups',
-        'Community financial challenges',
-        'Success story sharing',
-        'Collaborative goal achievement'
-      ],
-      timeline: 'Coming in Q4 2025',
-      status: 'Research Phase'
-    },
-    {
-      id: 'predictive_analytics',
-      icon: '🔮',
-      title: 'Predictive Analytics',
-      subtitle: 'Future financial scenario modeling',
-      description: 'Advanced AI that predicts future financial scenarios, market trends, and personal financial outcomes. Get insights into how current decisions will impact your future wealth.',
-      benefits: [
-        'Future wealth projection modeling',
-        'Market trend predictions',
-        'Scenario-based planning',
-        'Risk-adjusted forecasting'
-      ],
-      timeline: 'Coming in 2026',
-      status: 'Concept Phase'
-    }
-  ];
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'In Development': return FiColors.success;
-      case 'Design Phase': return FiColors.warning;
-      case 'Research Phase': return '#3B82F6';
-      case 'Concept Phase': return FiColors.textSecondary;
-      default: return FiColors.primary;
-    }
-  };
-
-  const FeaturePreview = ({ feature, index }) => (
-    <FadeInUp delay={100 + (index * 100)}>
-      <View style={styles.featureCard}>
+  const FeaturePreview = ({ feature, index }) => {
+    const isExpanded = selectedFeature === feature.id;
+    
+    return (
+      <FadeInUp delay={100 + (index * 100)}>
+        <View style={styles.featureCard}>
         <TouchableOpacity
           style={styles.featureHeader}
-          onPress={() => setSelectedFeature(selectedFeature === feature.id ? null : feature.id)}
+          onPress={() => setSelectedFeature(isExpanded ? null : feature.id)}
           activeOpacity={0.7}
         >
           <Text style={styles.featureIcon}>{feature.icon}</Text>
@@ -110,14 +113,10 @@ const ComingSoonCard = () => {
               {feature.status}
             </Text>
           </View>
-          <View style={styles.expandIndicator}>
-            <Text style={styles.expandIcon}>
-              {selectedFeature === feature.id ? '▲' : '▼'}
-            </Text>
-          </View>
+          <Text style={styles.expandIcon}>{isExpanded ? '▲' : '▼'}</Text>
         </TouchableOpacity>
 
-        {selectedFeature === feature.id && (
+        {isExpanded && (
           <View style={styles.expandedContent}>
             <Text style={styles.featureDescription}>{feature.description}</Text>
             
@@ -134,49 +133,49 @@ const ComingSoonCard = () => {
             </View>
           </View>
         )}
-
-      </View>
-    </FadeInUp>
-  );
+        </View>
+      </FadeInUp>
+    );
+  };
 
   return (
     <FadeInUp delay={50}>
       <View style={styles.card}>
-        <View style={styles.header}>
-          <Text style={styles.headerIcon}>🚀</Text>
-          <View>
-            <Text style={styles.title}>Coming Soon</Text>
-            <Text style={styles.subtitle}>
-              Exciting AI-powered features in development
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.announcementBanner}>
-          <Text style={styles.bannerIcon}>🎉</Text>
-          <View style={styles.bannerContent}>
-            <Text style={styles.bannerTitle}>The Future of Personal Finance</Text>
-            <Text style={styles.bannerText}>
-              We're building the next generation of AI-powered financial planning tools
-            </Text>
-          </View>
-        </View>
-
-        <ScrollView style={styles.featuresContainer} showsVerticalScrollIndicator={false}>
-          {comingSoonFeatures.map((feature, index) => (
-            <FeaturePreview key={feature.id} feature={feature} index={index} />
-          ))}
-        </ScrollView>
-
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>
-            Want early access? Keep using Fi-Zen to be first in line for beta features!
+      <View style={styles.header}>
+        <Text style={styles.headerIcon}>🚀</Text>
+        <View>
+          <Text style={styles.title}>Coming Soon</Text>
+          <Text style={styles.subtitle}>
+            Exciting AI-powered features in development
           </Text>
-          <TouchableOpacity style={styles.notifyButton}>
-            <Text style={styles.notifyButtonText}>🔔 Notify Me</Text>
-          </TouchableOpacity>
         </View>
       </View>
+
+      <View style={styles.announcementBanner}>
+        <Text style={styles.bannerIcon}>🎉</Text>
+        <View style={styles.bannerContent}>
+          <Text style={styles.bannerTitle}>The Future of Personal Finance</Text>
+          <Text style={styles.bannerText}>
+            We're building the next generation of AI-powered financial planning tools
+          </Text>
+        </View>
+      </View>
+
+      <ScrollView style={styles.featuresContainer} showsVerticalScrollIndicator={false}>
+        {comingSoonFeatures.map((feature, index) => (
+          <FeaturePreview key={feature.id} feature={feature} index={index} />
+        ))}
+      </ScrollView>
+
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>
+          Want early access? Keep using Fi-Zen to be first in line for beta features!
+        </Text>
+        <TouchableOpacity style={styles.notifyButton}>
+          <Text style={styles.notifyButtonText}>🔔 Notify Me</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
     </FadeInUp>
   );
 };
@@ -214,7 +213,6 @@ const styles = StyleSheet.create({
     color: FiColors.textSecondary,
   },
   announcementBanner: {
-    backgroundColor: `linear-gradient(135deg, ${FiColors.gradient1}, ${FiColors.gradient2})`,
     backgroundColor: FiColors.gradient1 + '10',
     borderRadius: 12,
     padding: 16,
@@ -256,7 +254,6 @@ const styles = StyleSheet.create({
   featureHeader: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginBottom: 8,
     paddingVertical: 4,
   },
   featureIcon: {
@@ -283,10 +280,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
+    marginRight: 8,
   },
   statusText: {
     fontSize: 10,
     fontWeight: '600',
+  },
+  expandIcon: {
+    fontSize: 12,
+    color: FiColors.textSecondary,
   },
   expandedContent: {
     marginTop: 12,
@@ -330,14 +332,6 @@ const styles = StyleSheet.create({
     color: FiColors.primary,
     fontWeight: '500',
   },
-  expandIndicator: {
-    marginLeft: 8,
-    justifyContent: 'center',
-  },
-  expandIcon: {
-    fontSize: 12,
-    color: FiColors.textSecondary,
-  },
   footer: {
     marginTop: 20,
     paddingTop: 16,
@@ -365,4 +359,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default React.memo(ComingSoonCard);
+export default IsolatedComingSoonCard;
