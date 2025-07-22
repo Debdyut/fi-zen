@@ -5,6 +5,24 @@ import { TouchableArea } from '../components/common/AccessibilityHelpers';
 import { useLanguage } from '../localization/LanguageContext';
 import { useTheme } from '../theme/ThemeContext';
 import DataService from '../services/DataService';
+import PersonalizationEngine from '../utils/PersonalizationEngine';
+
+// Enhanced Insight Components
+import SavingsRateCard from '../components/insights/SavingsRateCard';
+import PeerComparisonCard from '../components/insights/PeerComparisonCard';
+import SmartRecommendationsCard from '../components/insights/SmartRecommendationsCard';
+import LocationInsightsCard from '../components/insights/LocationInsightsCard';
+import SpendingTrendsCard from '../components/insights/SpendingTrendsCard';
+
+// AI Components
+import AIRecommendationsCard from '../components/ai/AIRecommendationsCard';
+import ComingSoonCard from '../components/ai/ComingSoonCard';
+
+// Interactive Calculators
+import EmergencyFundCalculator from '../components/calculators/EmergencyFundCalculator';
+import SIPCalculator from '../components/calculators/SIPCalculator';
+import RetirementCalculator from '../components/calculators/RetirementCalculator';
+import HomeLoanCalculator from '../components/calculators/HomeLoanCalculator';
 
 const FiColors = {
   background: '#1A1A1A',
@@ -26,6 +44,7 @@ const InsightsScreen = ({ navigation }) => {
   const [spendingInsights, setSpendingInsights] = useState(null);
   const [peerComparison, setPeerComparison] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
+  const [activeSection, setActiveSection] = useState('insights'); // 'insights' or 'calculators'
 
   useEffect(() => {
     loadInsightsData();
@@ -42,8 +61,12 @@ const InsightsScreen = ({ navigation }) => {
         DataService.getUserProfile(currentUser)
       ]);
       
-      setSpendingInsights(insights);
-      setPeerComparison(peer);
+      // Enhance insights with personalization
+      const enhancedInsights = PersonalizationEngine.getLocationAdjustedSavings(profile, insights);
+      const enhancedPeerComparison = PersonalizationEngine.getEnhancedPeerComparison(profile, peer);
+      
+      setSpendingInsights(enhancedInsights);
+      setPeerComparison(enhancedPeerComparison);
       setUserProfile(profile);
       
     } catch (error) {
@@ -105,6 +128,34 @@ const InsightsScreen = ({ navigation }) => {
     );
   }
 
+  const SectionToggle = () => (
+    <View style={styles.sectionToggle}>
+      <TouchableArea
+        style={[styles.toggleButton, activeSection === 'insights' && styles.activeToggle]}
+        onPress={() => setActiveSection('insights')}
+      >
+        <Text style={[styles.toggleText, activeSection === 'insights' && styles.activeToggleText]}>
+          📊 Insights
+        </Text>
+      </TouchableArea>
+      <TouchableArea
+        style={[styles.toggleButton, activeSection === 'calculators' && styles.activeToggle]}
+        onPress={() => setActiveSection('calculators')}
+      >
+        <Text style={[styles.toggleText, activeSection === 'calculators' && styles.activeToggleText]}>
+          🧮 Calculators
+        </Text>
+      </TouchableArea>
+      <TouchableArea
+        style={[styles.toggleButton, activeSection === 'ai' && styles.activeToggle]}
+        onPress={() => setActiveSection('ai')}
+      >
+        <Text style={[styles.toggleText, activeSection === 'ai' && styles.activeToggleText]}>
+          🤖 AI Features
+        </Text>
+      </TouchableArea>
+    </View>
+  );
   const SpendingCategory = ({ category, amount, percentage, icon }) => (
     <View style={styles.categoryItem}>
       <View style={styles.categoryLeft}>
@@ -118,6 +169,101 @@ const InsightsScreen = ({ navigation }) => {
     </View>
   );
 
+  const InsightsSection = () => (
+    <>
+      {/* Enhanced Financial Health Cards */}
+      <View style={styles.section}>
+        <SavingsRateCard 
+          savingsRate={spendingInsights?.savingsRate || 15}
+          monthlyIncome={userProfile?.monthlyIncome || 100000}
+          userProfile={userProfile}
+        />
+        
+        <PeerComparisonCard 
+          peerComparison={peerComparison}
+          userProfile={userProfile}
+        />
+
+        <LocationInsightsCard 
+          userProfile={userProfile}
+        />
+      </View>
+
+      {/* Advanced Analytics */}
+      <View style={styles.section}>
+        <SpendingTrendsCard 
+          userProfile={userProfile}
+          spendingData={spendingInsights}
+        />
+      </View>
+
+      {/* Enhanced Smart Recommendations */}
+      <View style={styles.section}>
+        <SmartRecommendationsCard 
+          userProfile={userProfile}
+          spendingInsights={spendingInsights}
+        />
+      </View>
+
+      {/* Legacy sections for compatibility */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Where Inflation Hits You Most</Text>
+        
+        <View style={styles.spendingCard}>
+          {spendingInsights?.topCategories?.slice(0, 5).map((category, index) => (
+            <SpendingCategory
+              key={index}
+              category={category.category.charAt(0).toUpperCase() + category.category.slice(1)}
+              amount={Math.round(category.amount * 0.128).toLocaleString()}
+              percentage={Math.round(category.percentage * 0.128)}
+              icon={getCategoryIcon(category.category)}
+            />
+          )) || [
+            <SpendingCategory key="fallback" category="Food" amount="1,250" percentage="35" icon="🍽️" />
+          ]}
+        </View>
+      </View>
+    </>
+  );
+
+  const AIFeaturesSection = () => (
+    <>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>AI-Powered Insights</Text>
+        <Text style={styles.sectionSubtitle}>
+          Machine learning recommendations based on your behavior
+        </Text>
+      </View>
+
+      <View style={styles.section}>
+        <AIRecommendationsCard 
+          userProfile={userProfile}
+          behaviorHistory={[]} // Would be populated with real behavior data
+        />
+      </View>
+
+      <View style={styles.section}>
+        <ComingSoonCard />
+      </View>
+    </>
+  );
+    <>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Financial Planning Tools</Text>
+        <Text style={styles.sectionSubtitle}>
+          Interactive calculators personalized for your financial situation
+        </Text>
+      </View>
+
+      <View style={styles.section}>
+        <EmergencyFundCalculator userProfile={userProfile} />
+        <SIPCalculator userProfile={userProfile} />
+        <RetirementCalculator userProfile={userProfile} />
+        <HomeLoanCalculator userProfile={userProfile} />
+      </View>
+    </>
+  );
+
   return (
     <View style={[styles.container, { backgroundColor: isDarkMode ? '#1A1A1A' : '#E6FBF7' }]}>
       <StatusBar barStyle="light-content" backgroundColor={FiColors.background} />
@@ -127,52 +273,19 @@ const InsightsScreen = ({ navigation }) => {
         <View style={[styles.header, { backgroundColor: isDarkMode ? '#1A1A1A' : '#E6FBF7' }]}>
           <Text style={[styles.headerTitle, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>Financial Insights</Text>
           <Text style={[styles.headerSubtitle, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>
-            {userProfile?.name}'s spending analysis
+            {userProfile?.name}'s personalized financial analysis
           </Text>
         </View>
 
-        {/* Real Spending Insights */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Your Financial Health</Text>
-          <View style={styles.metricsContainer}>
-            <View style={styles.metricRow}>
-              <Text style={styles.metricLabel}>How much you save each month</Text>
-              <Text style={[styles.metricValue, {color: spendingInsights?.savingsRate > 20 ? FiColors.success : spendingInsights?.savingsRate > 10 ? FiColors.warning : FiColors.error}]}>{spendingInsights?.savingsRate || 0}%</Text>
-            </View>
-            <View style={styles.metricRow}>
-              <Text style={styles.metricLabel}>Your total monthly expenses</Text>
-              <Text style={styles.metricValue}>₹{spendingInsights?.totalSpending?.toLocaleString() || '0'}</Text>
-            </View>
-            <View style={styles.metricRow}>
-              <Text style={styles.metricLabel}>Compared to similar earners</Text>
-              <Text style={[styles.metricValue, {color: peerComparison?.percentile > 75 ? FiColors.success : FiColors.warning}]}>Top {100 - (peerComparison?.percentile || 50)}%</Text>
-            </View>
-          </View>
-        </View>
+        {/* Section Toggle */}
+        <SectionToggle />
+
+        {/* Dynamic Content */}
+        {activeSection === 'insights' && <InsightsSection />}
+        {activeSection === 'calculators' && <CalculatorsSection />}
+        {activeSection === 'ai' && <AIFeaturesSection />}
 
 
-
-        {/* Insights & Recommendations */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Recommendations</Text>
-          <View style={styles.recommendationsCard}>
-            {spendingInsights?.insights?.map((insight, index) => (
-              <View key={index} style={styles.insightItem}>
-                <Text style={styles.insightIcon}>
-                  {insight.type === 'positive' ? '✅' : insight.type === 'warning' ? '⚠️' : '💡'}
-                </Text>
-                <Text style={styles.insightText}>{insight.message}</Text>
-              </View>
-            ))}
-            
-            {peerComparison?.insights?.map((insight, index) => (
-              <View key={`peer-${index}`} style={styles.insightItem}>
-                <Text style={styles.insightIcon}>👥</Text>
-                <Text style={styles.insightText}>{insight.message}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
 
         {/* Market Overview */}
         <View style={[styles.infoSection, { backgroundColor: isDarkMode ? '#1A1A1A' : '#E6FBF7' }]}>
@@ -185,65 +298,6 @@ const InsightsScreen = ({ navigation }) => {
             <Text style={[styles.infoLabel, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>{t('insights.costOfLivingIndex')}</Text>
             <Text style={[styles.infoValue, { color: isDarkMode ? '#FFFFFF' : '#1A1A1A' }]}>142.8 ↗ +8.7%</Text>
           </View>
-        </View>
-
-        {/* Key Metrics */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Inflation Impact</Text>
-          <View style={styles.metricsContainer}>
-            <View style={styles.metricRow}>
-              <Text style={styles.metricLabel}>Extra money needed due to rising prices</Text>
-              <Text style={[styles.metricValue, {color: FiColors.error}]}>₹{Math.round((spendingInsights?.totalSpending || 50000) * 0.05).toLocaleString()}/month</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Spending Breakdown */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Where Inflation Hits You Most</Text>
-          
-          <View style={styles.spendingCard}>
-            {spendingInsights?.topCategories?.slice(0, 5).map((category, index) => (
-              <SpendingCategory
-                key={index}
-                category={category.category.charAt(0).toUpperCase() + category.category.slice(1)}
-                amount={Math.round(category.amount * 0.128).toLocaleString()}
-                percentage={Math.round(category.percentage * 0.128)}
-                icon={getCategoryIcon(category.category)}
-              />
-            )) || [
-              <SpendingCategory key="fallback" category="Food" amount="1,250" percentage="35" icon="🍽️" />
-            ]}
-          </View>
-        </View>
-
-        {/* Recommendations */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('insights.smartRecommendations')}</Text>
-          
-          <FadeInUp delay={300}>
-            <View style={styles.recommendationCard}>
-              <Text style={styles.recommendationIcon}>💡</Text>
-              <View style={styles.recommendationContent}>
-                <Text style={styles.recommendationTitle}>{t('insights.switchToBulkBuying')}</Text>
-                <Text style={styles.recommendationText}>
-                  {t('insights.bulkBuyingSavings')}
-                </Text>
-              </View>
-            </View>
-          </FadeInUp>
-          
-          <FadeInUp delay={400}>
-            <View style={styles.recommendationCard}>
-              <Text style={styles.recommendationIcon}>🚌</Text>
-              <View style={styles.recommendationContent}>
-                <Text style={styles.recommendationTitle}>{t('insights.usePublicTransport')}</Text>
-                <Text style={styles.recommendationText}>
-                  {t('insights.publicTransportSavings')}
-                </Text>
-              </View>
-            </View>
-          </FadeInUp>
         </View>
       </ScrollView>
     </View>
@@ -490,7 +544,43 @@ const styles = StyleSheet.create({
     color: FiColors.textSecondary,
     lineHeight: 20,
   },
-  infoSection: {
+  sectionToggle: {
+    flexDirection: 'row',
+    backgroundColor: '#F5F5F5',
+    borderRadius: 12,
+    padding: 4,
+    marginHorizontal: 16,
+    marginBottom: 20,
+  },
+  toggleButton: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  activeToggle: {
+    backgroundColor: FiColors.surface,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  toggleText: {
+    fontSize: 14,
+    color: FiColors.textSecondary,
+    fontWeight: '500',
+  },
+  activeToggleText: {
+    color: FiColors.text,
+    fontWeight: '600',
+  },
+  sectionSubtitle: {
+    fontSize: 14,
+    color: FiColors.textSecondary,
+    marginBottom: 16,
+  },
     backgroundColor: '#E6FBF7',
     paddingHorizontal: 20,
     paddingVertical: 16,
