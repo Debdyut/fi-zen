@@ -141,51 +141,35 @@ const GoalsScreen = ({ navigation }) => {
   const GoalCard = ({ goal, bgColor }) => {
     const progress = (goal.currentAmount / goal.targetAmount) * 100;
     const remaining = goal.targetAmount - goal.currentAmount;
-    const monthsToTarget = Math.ceil(remaining / goal.monthlyContribution);
     
     return (
       <FadeInUp delay={100}>
         <TouchableArea style={[styles.goalCard, { backgroundColor: bgColor }]}>
           <View style={styles.goalHeader}>
-            <Text style={styles.goalIcon}>{goal.icon}</Text>
-            <View style={styles.goalInfo}>
-              <Text style={styles.goalTitle}>{goal.title}</Text>
-              <Text style={styles.goalCategory}>{goal.category}</Text>
+            <View style={styles.goalTitleSection}>
+              <Text style={styles.goalIcon}>{goal.icon}</Text>
+              <View>
+                <Text style={styles.goalTitle}>{goal.title}</Text>
+                <Text style={styles.goalCategory}>{goal.category}</Text>
+              </View>
             </View>
-            <Text style={[styles.goalPriority, { 
-              color: goal.priority === 'high' ? FiColors.error : 
-                     goal.priority === 'medium' ? FiColors.warning : FiColors.success 
-            }]}>
-              {goal.priority?.toUpperCase()}
-            </Text>
+            <Text style={styles.goalProgress}>{Math.round(progress)}%</Text>
           </View>
           
-          <View style={styles.goalProgress}>
-            <View style={styles.progressBar}>
-              <View style={[styles.progressFill, { width: `${Math.min(progress, 100)}%` }]} />
-            </View>
-            <Text style={styles.progressText}>{Math.round(progress)}%</Text>
+          <View style={styles.goalAmounts}>
+            <Text style={styles.goalCurrent}>₹{(goal.currentAmount/100000).toFixed(1)}L</Text>
+            <Text style={styles.goalTarget}>of ₹{(goal.targetAmount/100000).toFixed(1)}L</Text>
           </View>
           
-          <View style={styles.goalStats}>
-            <View style={styles.goalStat}>
-              <Text style={styles.goalStatValue}>₹{goal.currentAmount.toLocaleString()}</Text>
-              <Text style={styles.goalStatLabel}>Current</Text>
-            </View>
-            <View style={styles.goalStat}>
-              <Text style={styles.goalStatValue}>₹{goal.targetAmount.toLocaleString()}</Text>
-              <Text style={styles.goalStatLabel}>Target</Text>
-            </View>
-            <View style={styles.goalStat}>
-              <Text style={styles.goalStatValue}>{monthsToTarget}m</Text>
-              <Text style={styles.goalStatLabel}>To Go</Text>
+          <View style={styles.progressBarContainer}>
+            <View style={styles.progressBarBackground}>
+              <View style={[styles.progressBarFill, { width: `${Math.min(progress, 100)}%` }]} />
             </View>
           </View>
           
           <View style={styles.goalFooter}>
-            <Text style={styles.monthlyContribution}>
-              ₹{goal.monthlyContribution.toLocaleString()}/month
-            </Text>
+            <Text style={styles.remainingAmount}>₹{(remaining/100000).toFixed(1)}L remaining</Text>
+            <Text style={styles.monthlyTarget}>₹{(goal.monthlyContribution/1000).toFixed(0)}K/month</Text>
           </View>
         </TouchableArea>
       </FadeInUp>
