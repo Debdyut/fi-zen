@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, StatusBar, ActivityIndicator } from 'react-native';
 import { FadeInUp } from '../components/animations/AnimatedCard';
-import { TouchableArea } from '../components/common/AccessibilityHelpers';
+import { TouchableArea } from '../common/AccessibilityHelpers';
 import { useLanguage } from '../localization/LanguageContext';
 import { useTheme } from '../theme/ThemeContext';
 import DataService from '../services/DataService';
 import PersonalizationEngine from '../utils/PersonalizationEngine';
+import GoalRecommendationEngine from '../utils/GoalRecommendationEngine';
 
 // Enhanced Insight Components
 import SavingsRateCard from '../components/insights/SavingsRateCard';
@@ -13,6 +14,7 @@ import PeerComparisonCard from '../components/insights/PeerComparisonCard';
 import IsolatedSmartRecommendationsCard from '../components/insights/IsolatedSmartRecommendationsCard';
 import LocationInsightsCard from '../components/insights/LocationInsightsCard';
 import SpendingTrendsCard from '../components/insights/SpendingTrendsCard';
+import { GoalRecommendationsSection } from '../components/insights/GoalRecommendationCard';
 
 // AI Components
 import AIRecommendationsCard from '../components/ai/AIRecommendationsCard';
@@ -45,6 +47,8 @@ const InsightsScreen = ({ navigation }) => {
   const [peerComparison, setPeerComparison] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [activeSection, setActiveSection] = useState('insights'); // 'insights' or 'calculators'
+  const [goalRecommendations, setGoalRecommendations] = useState([]);
+  const [existingGoals, setExistingGoals] = useState([]);
 
   useEffect(() => {
     loadInsightsData();
@@ -55,25 +59,65 @@ const InsightsScreen = ({ navigation }) => {
       setLoading(true);
       const currentUser = DataService.getCurrentUser();
       
-      const [insights, peer, profile] = await Promise.all([
+      const [insights, peer, profile, goals] = await Promise.all([
         DataService.getUserSpendingInsights(currentUser),
         DataService.getPeerComparison(currentUser),
-        DataService.getUserProfile(currentUser)
+        DataService.getUserProfile(currentUser),
+        DataService.getUserGoals(currentUser)
       ]);
       
       // Enhance insights with personalization
       const enhancedInsights = PersonalizationEngine.getLocationAdjustedSavings(profile, insights);
       const enhancedPeerComparison = PersonalizationEngine.getEnhancedPeerComparison(profile, peer);
       
+      // Generate goal recommendations from insights
+      const recommendations = GoalRecommendationEngine.getGoalRecommendationsFromInsights(
+        insights, 
+        profile, 
+        goals
+      );
+      
       setSpendingInsights(enhancedInsights);
       setPeerComparison(enhancedPeerComparison);
       setUserProfile(profile);
+      setGoalRecommendations(recommendations);
+      setExistingGoals(goals);
       
     } catch (error) {
       console.error('Error loading insights:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  // Handle adding recommended goal
+  const handleAddGoal = async (recommendation) => {
+    try {
+      // Add goal to user's goals
+      const currentUser = DataService.getCurrentUser();
+      await DataService.addUserGoal(currentUser, recommendation);
+      
+      // Navigate to Goals screen to show the new goal
+      navigation.navigate('Goals', { 
+        newGoalAdded: recommendation.goalId,
+        source: 'insights_recommendation' 
+      });
+      
+      // Remove recommendation from list
+      setGoalRecommendations(prev => 
+        prev.filter(rec => rec.goalId !== recommendation.goalId)
+      );
+      
+    } catch (error) {
+      console.error('Error adding goal:', error);
+    }
+  };
+
+  // Handle dismissing recommendation
+  const handleDismissRecommendation = (goalId) => {
+    setGoalRecommendations(prev => 
+      prev.filter(rec => rec.goalId !== goalId)
+    );
   };
 
   // Helper function to get category icons
@@ -160,6 +204,15 @@ const InsightsScreen = ({ navigation }) => {
 
   const InsightsSection = () => (
     <>
+      {/* Goal Recommendations from Insights */}
+      {goalRecommendations.length > 0 && (
+        <GoalRecommendationsSection
+          recommendations={goalRecommendations}
+          onAddGoal={handleAddGoal}
+          onDismissRecommendation={handleDismissRecommendation}
+        />
+      )}
+
       {/* Enhanced Financial Health Cards */}
       <View style={styles.section}>
         <SavingsRateCard 

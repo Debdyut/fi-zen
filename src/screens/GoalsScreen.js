@@ -5,6 +5,11 @@ import { TouchableArea } from '../components/common/AccessibilityHelpers';
 import { useLanguage } from '../localization/LanguageContext';
 import { useTheme } from '../theme/ThemeContext';
 import DataService from '../services/DataService';
+import EnhancedPersonalizationEngine from '../utils/EnhancedPersonalizationEngine';
+import MilestoneTracker from '../components/goals/MilestoneTracker';
+import CrossScreenActions from '../components/goals/CrossScreenActions';
+import CrossScreenIntegration from '../utils/CrossScreenIntegration';
+import UpcomingFeatures from '../components/goals/UpcomingFeatures';
 
 const FiColors = {
   background: '#1A1A1A',
@@ -27,6 +32,10 @@ const GoalsScreen = ({ navigation }) => {
   const [userProfile, setUserProfile] = useState(null);
   const [portfolio, setPortfolio] = useState(null);
   const [netWorth, setNetWorth] = useState(null);
+  const [selectedGoalForMilestones, setSelectedGoalForMilestones] = useState(null);
+  const [selectedGoalForActions, setSelectedGoalForActions] = useState(null);
+  const [crossScreenInsights, setCrossScreenInsights] = useState([]);
+  const [showUpcomingFeatures, setShowUpcomingFeatures] = useState(false);
 
   useEffect(() => {
     loadGoalsData();
@@ -37,20 +46,25 @@ const GoalsScreen = ({ navigation }) => {
       setLoading(true);
       const currentUser = DataService.getCurrentUser();
       
-      const [goals, profile, portfolioData, netWorthData] = await Promise.all([
+      const [goals, profile, portfolioData, netWorthData, spendingData] = await Promise.all([
         DataService.getUserGoals(currentUser),
         DataService.getUserProfile(currentUser),
         DataService.getUserPortfolio(currentUser),
-        DataService.getUserNetWorth(currentUser)
+        DataService.getUserNetWorth(currentUser),
+        DataService.getUserSpendingInsights(currentUser)
       ]);
       
       // If no goals exist, generate realistic goals based on user profile
       const finalGoals = goals.length > 0 ? goals : generateRealisticGoals(profile, portfolioData, netWorthData);
       
+      // Generate cross-screen insights
+      const insights = CrossScreenIntegration.getGoalImpactInsights(finalGoals, spendingData, profile);
+      
       setUserGoals(finalGoals);
       setUserProfile(profile);
       setPortfolio(portfolioData);
       setNetWorth(netWorthData);
+      setCrossScreenInsights(insights);
       
     } catch (error) {
       console.error('Error loading goals data:', error);
@@ -60,82 +74,8 @@ const GoalsScreen = ({ navigation }) => {
   };
 
   const generateRealisticGoals = (profile, portfolio, netWorth) => {
-    const income = profile.monthlyIncome;
-    const age = profile.age;
-    const riskProfile = profile.riskProfile;
-    
-    const goals = [];
-    
-    // Emergency Fund Goal
-    const emergencyTarget = income * 6; // 6 months of expenses
-    const currentEmergency = Math.min(netWorth.breakdown.bankAccounts, emergencyTarget);
-    goals.push({
-      goalId: 'emergency_fund',
-      title: 'Emergency Fund',
-      targetAmount: emergencyTarget,
-      currentAmount: currentEmergency,
-      targetDate: new Date(Date.now() + 12 * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 1 year
-      monthlyContribution: Math.max(5000, (emergencyTarget - currentEmergency) / 12),
-      priority: 'high',
-      status: 'active',
-      icon: '🛡️',
-      category: 'Safety'
-    });
-
-    // House Down Payment (if age < 35 and income > 80k)
-    if (age < 35 && income > 80000) {
-      const houseTarget = income * 24; // 2 years of income for down payment
-      const currentHouse = Math.min(netWorth.breakdown.bankAccounts * 0.3, houseTarget * 0.5);
-      goals.push({
-        goalId: 'house_down_payment',
-        title: 'House Down Payment',
-        targetAmount: houseTarget,
-        currentAmount: currentHouse,
-        targetDate: new Date(Date.now() + 36 * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 3 years
-        monthlyContribution: Math.max(10000, (houseTarget - currentHouse) / 36),
-        priority: 'medium',
-        status: 'active',
-        icon: '🏠',
-        category: 'Investment'
-      });
-    }
-
-    // Retirement Goal (if age > 25)
-    if (age > 25) {
-      const retirementTarget = income * 12 * (65 - age) * 0.8; // 80% of income for remaining years
-      const currentRetirement = portfolio.totalMutualFunds + portfolio.totalStocks;
-      goals.push({
-        goalId: 'retirement_fund',
-        title: 'Retirement Fund',
-        targetAmount: retirementTarget,
-        currentAmount: currentRetirement,
-        targetDate: new Date(Date.now() + (65 - age) * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        monthlyContribution: Math.max(15000, income * 0.15),
-        priority: 'high',
-        status: 'active',
-        icon: '🏖️',
-        category: 'Retirement'
-      });
-    }
-
-    // Vacation Goal (if income > 100k)
-    if (income > 100000) {
-      const vacationTarget = income * 0.5; // 6 months of income for vacation
-      goals.push({
-        goalId: 'dream_vacation',
-        title: 'Dream Vacation',
-        targetAmount: vacationTarget,
-        currentAmount: vacationTarget * 0.1,
-        targetDate: new Date(Date.now() + 18 * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 1.5 years
-        monthlyContribution: Math.max(3000, vacationTarget / 18),
-        priority: 'low',
-        status: 'active',
-        icon: '✈️',
-        category: 'Lifestyle'
-      });
-    }
-
-    return goals;
+    // Use enhanced personalization engine
+    return EnhancedPersonalizationEngine.generateEnhancedGoals(profile, portfolio, netWorth);
   };
 
   const GoalCard = ({ goal, bgColor }) => {
@@ -144,7 +84,10 @@ const GoalsScreen = ({ navigation }) => {
     
     return (
       <FadeInUp delay={100}>
-        <TouchableArea style={[styles.goalCard, { backgroundColor: bgColor }]}>
+        <TouchableArea 
+          style={[styles.goalCard, { backgroundColor: bgColor }]}
+          onPress={() => setSelectedGoalForMilestones(goal)}
+        >
           <View style={styles.goalHeader}>
             <View style={styles.goalTitleSection}>
               <Text style={styles.goalIcon}>{goal.icon}</Text>
@@ -171,6 +114,17 @@ const GoalsScreen = ({ navigation }) => {
             <Text style={styles.remainingAmount}>₹{(remaining/100000).toFixed(1)}L remaining</Text>
             <Text style={styles.monthlyTarget}>₹{(goal.monthlyContribution/1000).toFixed(0)}K/month</Text>
           </View>
+          
+          <TouchableArea style={styles.milestonesButton}>
+            <Text style={styles.milestonesButtonText}>View Milestones 🎯</Text>
+          </TouchableArea>
+          
+          <TouchableArea 
+            style={styles.actionsButton}
+            onPress={() => setSelectedGoalForActions(goal)}
+          >
+            <Text style={styles.actionsButtonText}>Take Action 🚀</Text>
+          </TouchableArea>
         </TouchableArea>
       </FadeInUp>
     );
@@ -298,6 +252,107 @@ const GoalsScreen = ({ navigation }) => {
             />
           ))}
         </View>
+
+        {/* Upcoming Features Preview */}
+        <View style={styles.upcomingSection}>
+          <TouchableArea 
+            style={styles.upcomingPreviewCard}
+            onPress={() => setShowUpcomingFeatures(true)}
+          >
+            <View style={styles.upcomingHeader}>
+              <Text style={styles.upcomingIcon}>🚀</Text>
+              <View style={styles.upcomingInfo}>
+                <Text style={styles.upcomingTitle}>Exciting Features Coming Soon!</Text>
+                <Text style={styles.upcomingSubtitle}>
+                  AI-powered goal management, voice commands, and more
+                </Text>
+              </View>
+              <Text style={styles.upcomingArrow}>→</Text>
+            </View>
+            
+            <View style={styles.upcomingFeaturesList}>
+              <View style={styles.upcomingFeatureItem}>
+                <Text style={styles.upcomingFeatureIcon}>🤖</Text>
+                <Text style={styles.upcomingFeatureText}>AI Goal Autopilot</Text>
+                <Text style={styles.upcomingFeatureStatus}>In Development</Text>
+              </View>
+              <View style={styles.upcomingFeatureItem}>
+                <Text style={styles.upcomingFeatureIcon}>🎤</Text>
+                <Text style={styles.upcomingFeatureText}>Voice Commands</Text>
+                <Text style={styles.upcomingFeatureStatus}>Prototype</Text>
+              </View>
+              <View style={styles.upcomingFeatureItem}>
+                <Text style={styles.upcomingFeatureIcon}>👥</Text>
+                <Text style={styles.upcomingFeatureText}>Social Challenges</Text>
+                <Text style={styles.upcomingFeatureStatus}>Coming Q1 2026</Text>
+              </View>
+            </View>
+          </TouchableArea>
+        </View>
+
+        {/* Upcoming Features Full Screen */}
+        {showUpcomingFeatures && (
+          <View style={styles.fullScreenModal}>
+            <View style={styles.fullScreenHeader}>
+              <TouchableArea 
+                style={styles.backButton}
+                onPress={() => setShowUpcomingFeatures(false)}
+              >
+                <Text style={styles.backButtonText}>← Back</Text>
+              </TouchableArea>
+            </View>
+            <UpcomingFeatures navigation={navigation} />
+          </View>
+        )}
+
+        {/* Cross-Screen Actions Modal */}
+        {selectedGoalForActions && (
+          <View style={styles.milestoneModal}>
+            <View style={styles.milestoneModalContent}>
+              <View style={styles.milestoneModalHeader}>
+                <Text style={styles.milestoneModalTitle}>Goal Actions</Text>
+                <TouchableArea 
+                  style={styles.closeButton}
+                  onPress={() => setSelectedGoalForActions(null)}
+                >
+                  <Text style={styles.closeButtonText}>✕</Text>
+                </TouchableArea>
+              </View>
+              
+              <CrossScreenActions
+                goalId={selectedGoalForActions.goalId}
+                userGoals={userGoals}
+                insights={crossScreenInsights}
+                navigation={navigation}
+              />
+            </View>
+          </View>
+        )}
+
+        {/* Milestone Tracker Modal */}
+        {selectedGoalForMilestones && (
+          <View style={styles.milestoneModal}>
+            <View style={styles.milestoneModalContent}>
+              <View style={styles.milestoneModalHeader}>
+                <Text style={styles.milestoneModalTitle}>Goal Milestones</Text>
+                <TouchableArea 
+                  style={styles.closeButton}
+                  onPress={() => setSelectedGoalForMilestones(null)}
+                >
+                  <Text style={styles.closeButtonText}>✕</Text>
+                </TouchableArea>
+              </View>
+              
+              <MilestoneTracker
+                goal={selectedGoalForMilestones}
+                userProfile={userProfile}
+                onMilestoneAchieved={(milestone) => {
+                  console.log('Milestone achieved:', milestone);
+                }}
+              />
+            </View>
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -537,6 +592,187 @@ const styles = StyleSheet.create({
   },
   monthlyTarget: {
     fontSize: 14,
+    fontWeight: '600',
+    color: FiColors.primary,
+  },
+  milestonesButton: {
+    backgroundColor: FiColors.primary + '20',
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    marginTop: 12,
+    alignItems: 'center',
+  },
+  milestonesButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: FiColors.primary,
+  },
+  actionsButton: {
+    backgroundColor: FiColors.warning + '20',
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    marginTop: 8,
+    alignItems: 'center',
+  },
+  actionsButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: FiColors.warning,
+  },
+  milestoneModal: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+  },
+  milestoneModalContent: {
+    backgroundColor: FiColors.surface,
+    borderRadius: 16,
+    margin: 20,
+    maxHeight: '80%',
+    width: '90%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  milestoneModalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: FiColors.border,
+  },
+  milestoneModalTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: FiColors.text,
+  },
+  closeButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: FiColors.border + '40',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    fontSize: 18,
+    color: FiColors.textSecondary,
+    fontWeight: '600',
+  },
+  
+  // Upcoming Features Styles
+  upcomingSection: {
+    paddingHorizontal: 16,
+    paddingBottom: 20,
+  },
+  upcomingPreviewCard: {
+    backgroundColor: '#F0F9FF',
+    borderRadius: 16,
+    padding: 20,
+    borderWidth: 2,
+    borderColor: FiColors.primary + '40',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  upcomingHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  upcomingIcon: {
+    fontSize: 32,
+    marginRight: 12,
+  },
+  upcomingInfo: {
+    flex: 1,
+  },
+  upcomingTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: FiColors.text,
+    marginBottom: 4,
+  },
+  upcomingSubtitle: {
+    fontSize: 14,
+    color: FiColors.textSecondary,
+    lineHeight: 20,
+  },
+  upcomingArrow: {
+    fontSize: 24,
+    color: FiColors.primary,
+    fontWeight: '600',
+  },
+  upcomingFeaturesList: {
+    gap: 12,
+  },
+  upcomingFeatureItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: FiColors.background + '80',
+    borderRadius: 12,
+    padding: 12,
+  },
+  upcomingFeatureIcon: {
+    fontSize: 20,
+    marginRight: 12,
+  },
+  upcomingFeatureText: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '600',
+    color: FiColors.text,
+  },
+  upcomingFeatureStatus: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: FiColors.primary,
+    backgroundColor: FiColors.primary + '20',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  
+  // Full Screen Modal Styles
+  fullScreenModal: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: FiColors.background,
+    zIndex: 2000,
+  },
+  fullScreenHeader: {
+    paddingTop: 50,
+    paddingHorizontal: 20,
+    paddingBottom: 10,
+    backgroundColor: FiColors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: FiColors.border,
+  },
+  backButton: {
+    alignSelf: 'flex-start',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    backgroundColor: FiColors.primary + '20',
+  },
+  backButtonText: {
+    fontSize: 16,
     fontWeight: '600',
     color: FiColors.primary,
   },

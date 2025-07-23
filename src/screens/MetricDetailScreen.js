@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
 import DataService from '../services/DataService';
+import GoalRecommendationEngine from '../utils/GoalRecommendationEngine';
+import MetricInsightsIntegration from '../utils/MetricInsightsIntegration';
+import { GoalRecommendationCard } from '../components/insights/GoalRecommendationCard';
 
 const FiColors = {
   background: '#1A1A1A',
@@ -23,6 +26,9 @@ const MetricDetailScreen = ({ route, navigation }) => {
   const [portfolio, setPortfolio] = useState(null);
   const [assetAllocation, setAssetAllocation] = useState(null);
   const [returns, setReturns] = useState(null);
+  const [goalRecommendations, setGoalRecommendations] = useState([]);
+  const [existingGoals, setExistingGoals] = useState([]);
+  const [insightsActions, setInsightsActions] = useState([]);
 
   useEffect(() => {
     loadMetricData();
@@ -34,23 +40,95 @@ const MetricDetailScreen = ({ route, navigation }) => {
       const currentUser = DataService.getCurrentUser();
       
       // Load comprehensive data for metrics
-      const [userDataResult, portfolioResult, allocationResult, returnsResult] = await Promise.all([
+      const [userDataResult, portfolioResult, allocationResult, returnsResult, goals, profile] = await Promise.all([
         DataService.getUserData(currentUser),
         DataService.getUserPortfolio(currentUser),
         DataService.getUserAssetAllocation(currentUser),
-        DataService.getUserReturns(currentUser)
+        DataService.getUserReturns(currentUser),
+        DataService.getUserGoals(currentUser),
+        DataService.getUserProfile(currentUser)
       ]);
+      
+      // Generate goal recommendations from metrics
+      const metricData = {
+        averageReturns: returnsResult.overallReturnPercentage || 12,
+        monthlyInvestment: portfolioResult.monthlyInvestment || 0,
+        portfolioDiversification: allocationResult.diversificationScore || 0.6,
+        currentPortfolioValue: portfolioResult.totalValue || 0,
+        currentRetirementFund: portfolioResult.retirementFund || 0
+      };
+      
+      const recommendations = GoalRecommendationEngine.getGoalRecommendationsFromMetrics(
+        metricData,
+        profile,
+        goals
+      );
+      
+      // Generate insights actions for this metric
+      const actions = MetricInsightsIntegration.getInsightsActions(cardId, metricData, profile);
       
       setUserData(userDataResult);
       setPortfolio(portfolioResult);
       setAssetAllocation(allocationResult);
       setReturns(returnsResult);
+      setGoalRecommendations(recommendations);
+      setExistingGoals(goals);
+      setInsightsActions(actions);
       
     } catch (error) {
       console.error('Error loading metric data:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  // Handle adding recommended goal
+  const handleAddGoal = async (recommendation) => {
+    try {
+      const currentUser = DataService.getCurrentUser();
+      await DataService.addUserGoal(currentUser, recommendation);
+      
+      navigation.navigate('Goals', { 
+        newGoalAdded: recommendation.goalId,
+        source: 'metrics_recommendation' 
+      });
+      
+      setGoalRecommendations(prev => 
+        prev.filter(rec => rec.goalId !== recommendation.goalId)
+      );
+      
+    } catch (error) {
+      console.error('Error adding goal:', error);
+    }
+  };
+
+  // Handle dismissing recommendation
+  const handleDismissRecommendation = (goalId) => {
+    setGoalRecommendations(prev => 
+      prev.filter(rec => rec.goalId !== goalId)
+    );
+  };
+
+  // Handle navigation to Insights with context
+  const handleNavigateToInsights = (action) => {
+    const metricContext = MetricInsightsIntegration.getMetricContextForInsights(
+      cardId, 
+      { 
+        totalValue: portfolio?.totalValue,
+        overallReturnPercentage: returns?.overallReturnPercentage,
+        equityPercentage: assetAllocation?.equity,
+        cashPercentage: assetAllocation?.cash,
+        diversificationScore: assetAllocation?.diversificationScore || 0.6
+      }, 
+      userData
+    );
+    
+    navigation.navigate('Insights', {
+      ...action.params,
+      metricContext: metricContext,
+      fromMetric: cardId,
+      actionId: action.id
+    });
   };
 
   const getMetricDetails = (id) => {
@@ -237,14 +315,54 @@ const MetricDetailScreen = ({ route, navigation }) => {
         </View>
 
         <View style={styles.actionSection}>
-          <TouchableOpacity style={styles.primaryButton}>
-            <Text style={styles.primaryButtonText}>View Recommendations</Text>
-          </TouchableOpacity>
+          {insightsActions.length > 0 && (
+            <TouchableOpacity 
+              style={styles.primaryButton}
+              onPress={() => handleNavigateToInsights(insightsActions[0])}
+            >
+              <Text style={styles.primaryButtonText}>{insightsActions[0].title}</Text>
+            </TouchableOpacity>
+          )}
           
-          <TouchableOpacity style={styles.secondaryButton}>
-            <Text style={styles.secondaryButtonText}>Share Insights</Text>
-          </TouchableOpacity>
+          {insightsActions.length > 1 && (
+            <TouchableOpacity 
+              style={styles.secondaryButton}
+              onPress={() => handleNavigateToInsights(insightsActions[1])}
+            >
+              <Text style={styles.secondaryButtonText}>{insightsActions[1].title}</Text>
+            </TouchableOpacity>
+          )}
+          
+          {insightsActions.length === 0 && (
+            <>
+              <TouchableOpacity style={styles.primaryButton}>
+                <Text style={styles.primaryButtonText}>View Recommendations</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity style={styles.secondaryButton}>
+                <Text style={styles.secondaryButtonText}>Share Insights</Text>
+              </TouchableOpacity>
+            </>
+          )}
         </View>
+
+        {/* Goal Recommendations from Metrics */}
+        {goalRecommendations.length > 0 && (
+          <View style={styles.recommendationsSection}>
+            <Text style={styles.recommendationsTitle}>💡 Recommended Goals</Text>
+            <Text style={styles.recommendationsSubtitle}>
+              Based on your investment performance and metrics
+            </Text>
+            {goalRecommendations.map(recommendation => (
+              <GoalRecommendationCard
+                key={recommendation.goalId}
+                recommendation={recommendation}
+                onAddGoal={handleAddGoal}
+                onDismiss={handleDismissRecommendation}
+              />
+            ))}
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -399,6 +517,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: FiColors.primary,
+  },
+  recommendationsSection: {
+    marginTop: 24,
+    paddingHorizontal: 16,
+  },
+  recommendationsTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: FiColors.text,
+    marginBottom: 4,
+  },
+  recommendationsSubtitle: {
+    fontSize: 14,
+    color: FiColors.textSecondary,
+    marginBottom: 16,
+    lineHeight: 20,
   },
 });
 
