@@ -8,11 +8,13 @@ import { useTheme } from '../theme/ThemeContext';
 import { getThemeColors } from '../theme/consolidatedFiColors';
 import fonts from '../theme/fonts';
 import FiHomeScreenWrapper from '../components/fi-style/FiHomeScreenWrapper';
+import AIEnhancedFiHomeScreen from '../components/fi-style/AIEnhancedFiHomeScreen';
 import InflationScreen from '../screens/InflationScreen';
 import InflationSetupScreen from '../screens/InflationSetupScreen';
 import DetailedBreakdownScreen from '../components/results/DetailedBreakdownScreen';
 import InsightsScreen from '../screens/InsightsScreen';
 import GoalsScreen from '../screens/GoalsScreen';
+import AIEnhancedGoalsScreen from '../screens/AIEnhancedGoalsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import MetricDetailScreen from '../screens/MetricDetailScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -65,7 +67,7 @@ const TabNavigator = ({ navigation }) => {
       }}>
       <Tab.Screen 
         name="Home" 
-        component={FiHomeScreenWrapper}
+        component={AIEnhancedFiHomeScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <FiTabIcon emoji="🏠" focused={focused} label="Home" colors={colors} />
@@ -83,7 +85,7 @@ const TabNavigator = ({ navigation }) => {
       />
       <Tab.Screen 
         name="Goals" 
-        component={GoalsScreen}
+        component={AIEnhancedGoalsScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <FiTabIcon emoji="🎯" focused={focused} label="Goals" colors={colors} />
