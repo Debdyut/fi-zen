@@ -14,7 +14,6 @@ import { useTheme } from '../theme/ThemeContext';
 import { useLanguage } from '../localization/LanguageContext';
 import { getThemeColors } from '../theme/consolidatedFiColors';
 import { getAvatarSource } from '../utils/avatarHelper';
-import UserProfileService from '../services/UserProfileService';
 import DataService from '../services/DataService';
 import { FadeInUp } from '../components/animations/AnimatedCard';
 import { TouchableArea } from '../components/common/AccessibilityHelpers';
@@ -31,8 +30,18 @@ const LoginScreen = ({ navigation }) => {
   const [useAPI, setUseAPI] = useState(false);
   const scrollViewRef = React.useRef(null);
 
-  const userProfiles = UserProfileService.getAllUserProfiles();
-  const userIds = Object.keys(userProfiles);
+  const availableUsers = DataService.getAvailableUsers();
+  const userIds = availableUsers.map(user => user.userId);
+  const userProfiles = availableUsers.reduce((acc, user) => {
+    acc[user.userId] = {
+      name: user.name,
+      location: user.location,
+      profession: user.profession,
+      avatar: DataService.getUserAvatar(user.userId),
+      balance: 0 // Will be loaded dynamically
+    };
+    return acc;
+  }, {});
   const [selectedUser, setSelectedUser] = useState(userIds[Math.floor(Math.random() * userIds.length)]);
 
   const handleUserSelect = (userId) => {
@@ -48,9 +57,9 @@ const LoginScreen = ({ navigation }) => {
     setIsLoading(true);
     
     try {
-      // Set the selected user as current user in both services
-      const success = UserProfileService.setCurrentUser(selectedUser);
+      // Set the selected user as current user
       DataService.setCurrentUser(selectedUser);
+      const success = true;
       DataService.setDataSource(useAPI);
       
       // Test data source
@@ -177,9 +186,7 @@ const LoginScreen = ({ navigation }) => {
                   <Text style={[styles.selectedUserProfession, { color: colors.textSecondary }]}>
                     💼 {userProfiles[selectedUser].profession}
                   </Text>
-                  <Text style={[styles.selectedUserBalance, { color: colors.primary }]}>
-                    💰 Balance: ₹{userProfiles[selectedUser].balance.toLocaleString('en-IN')}
-                  </Text>
+
                 </View>
               </View>
             </View>

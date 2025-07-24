@@ -7,6 +7,7 @@ import { useTheme } from '../../theme/ThemeContext';
 import FiInflationCard from './FiInflationCard';
 import FiMetricsCards from './FiMetricsCards';
 import DataService from '../../services/DataService';
+import { getAvatarSource } from '../../utils/avatarHelper';
 
 // Fi App Colors (from screenshots)
 const FiColors = {
@@ -27,6 +28,7 @@ const FiHomeScreen = ({ navigation, inflationData, selectedUserId }) => {
   const [balance, setBalance] = useState(0);
   const [netWorth, setNetWorth] = useState(0);
   const [userData, setUserData] = useState(null);
+  const [userAvatar, setUserAvatar] = useState(1);
   
   useEffect(() => {
     loadUserData();
@@ -41,11 +43,13 @@ const FiHomeScreen = ({ navigation, inflationData, selectedUserId }) => {
       const userBalance = await DataService.getUserBalance(currentUser);
       const userNetWorth = await DataService.getUserNetWorth(currentUser);
       const fullUserData = await DataService.getUserData(currentUser);
+      const avatar = DataService.getUserAvatar(currentUser);
       
       setUserProfile(profile);
       setBalance(userBalance);
       setNetWorth(userNetWorth?.netWorth || 0);
       setUserData(fullUserData);
+      setUserAvatar(avatar);
       
       console.log('FiHomeScreen: Loaded', profile?.name, userBalance, userNetWorth?.netWorth);
     } catch (error) {
@@ -87,7 +91,7 @@ const FiHomeScreen = ({ navigation, inflationData, selectedUserId }) => {
         onPress={() => navigation.navigate('Profile')}
       >
         <Animated.Image 
-          source={require('../../../assets/avatars/avatar-1.png')} 
+          source={getAvatarSource(userAvatar)} 
           style={[styles.profileAvatar, { width: avatarSize, height: avatarSize, borderRadius: Animated.divide(avatarSize, 2) }]}
         />
       </TouchableArea>

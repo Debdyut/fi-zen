@@ -32,14 +32,15 @@ const DetailedBreakdownScreen = () => {
       setLoading(true);
       const currentUser = DataService.getCurrentUser();
       
-      const [spendingInsights, profile, inflationData] = await Promise.all([
+      const [spendingInsights, profile, inflationData, userData] = await Promise.all([
         DataService.getUserSpendingInsights(currentUser),
         DataService.getUserProfile(currentUser),
-        DataService.getUserInflationData(currentUser)
+        DataService.getUserInflationData(currentUser),
+        DataService.getUserData(currentUser)
       ]);
       
       // Generate real breakdown data from user's actual spending
-      const realBreakdownData = generateBreakdownFromUserData(spendingInsights, profile, inflationData);
+      const realBreakdownData = generateBreakdownFromUserData(spendingInsights, profile, inflationData, userData);
       
       setBreakdownData(realBreakdownData.categories);
       setUserProfile(profile);
@@ -56,8 +57,8 @@ const DetailedBreakdownScreen = () => {
     }
   };
 
-  const generateBreakdownFromUserData = (spendingInsights, profile, inflationData) => {
-    const monthlySpending = spendingInsights.monthlySpending || {};
+  const generateBreakdownFromUserData = (spendingInsights, profile, inflationData, userData) => {
+    const monthlySpending = userData.monthlySpending || {};
     const totalSpending = Object.values(monthlySpending).reduce((sum, amount) => sum + amount, 0);
     
     // Get dynamic thresholds for this user

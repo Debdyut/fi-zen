@@ -212,9 +212,9 @@ const PhaseSection = ({ phase, onFeatureSelect }) => (
     </View>
 
     <View style={styles.featuresContainer}>
-      {phase.features.map(feature => (
+      {phase.features.map((feature, index) => (
         <FeatureCard
-          key={feature.id}
+          key={`${feature.id}-${index}`}
           feature={feature}
           onLearnMore={onFeatureSelect}
         />
@@ -248,7 +248,7 @@ const BetaAccessCard = ({ onJoinBeta }) => (
   </FadeInUp>
 );
 
-const UpcomingFeatures = ({ navigation }) => {
+const UpcomingFeatures = ({ navigation, onClose }) => {
   const [selectedFeature, setSelectedFeature] = useState(null);
 
   const handleFeatureSelect = (feature) => {
@@ -263,23 +263,34 @@ const UpcomingFeatures = ({ navigation }) => {
     // navigation.navigate('BetaSignup');
   };
 
+
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>🚀 Upcoming Features</Text>
+        <View style={styles.headerTop}>
+          <Text style={styles.headerTitle}>🚀 Upcoming Features</Text>
+          <TouchableOpacity 
+            style={styles.closeButton} 
+            onPress={onClose || (() => navigation.canGoBack() ? navigation.goBack() : navigation.navigate('MainTabs'))}
+          >
+            <Text style={styles.closeButtonText}>✕</Text>
+          </TouchableOpacity>
+        </View>
         <Text style={styles.headerSubtitle}>
           Next-generation enhancements coming to Fi-Zen Goals
         </Text>
       </View>
 
       <ScrollView 
-        style={styles.content} 
+        style={[styles.content, { height: '100%' }]} 
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
+        nestedScrollEnabled={true}
       >
-        {upcomingFeatures.map((phase, index) => (
+        {upcomingFeatures.slice(0, 4).map((phase, index) => (
           <PhaseSection
-            key={phase.phase}
+            key={`${phase.phase}-${index}`}
             phase={phase}
             onFeatureSelect={handleFeatureSelect}
           />
@@ -303,53 +314,71 @@ const UpcomingFeatures = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: FiColors.background,
+    backgroundColor: '#E6FBF7',
   },
   header: {
     padding: 20,
-    backgroundColor: FiColors.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: FiColors.border,
+    marginBottom: 8,
+  },
+  headerTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  closeButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: FiColors.primary + '20',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: FiColors.text,
   },
   headerTitle: {
     fontSize: 24,
     fontWeight: '700',
     color: FiColors.text,
-    marginBottom: 4,
+    flex: 1,
   },
   headerSubtitle: {
     fontSize: 16,
-    color: FiColors.textSecondary,
+    color: FiColors.text,
     lineHeight: 22,
   },
   content: {
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 20,
+    paddingBottom: 500,
+    minHeight: '100%',
   },
   
   // Phase Section Styles
   phaseSection: {
-    marginVertical: 16,
+    marginVertical: 12,
     paddingHorizontal: 16,
   },
   phaseHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   phaseIndicator: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     backgroundColor: FiColors.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: 10,
   },
   phaseNumber: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: '700',
     color: FiColors.background,
   },
@@ -357,94 +386,95 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   phaseTitle: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: '600',
     color: FiColors.text,
     marginBottom: 2,
   },
   phaseTimeline: {
-    fontSize: 14,
+    fontSize: 12,
     color: FiColors.textSecondary,
     fontWeight: '500',
   },
   featuresContainer: {
-    gap: 12,
+    gap: 8,
   },
 
   // Feature Card Styles
   featureCard: {
     backgroundColor: FiColors.background,
-    borderRadius: 16,
-    padding: 16,
+    borderRadius: 12,
+    padding: 12,
     borderWidth: 1,
     borderColor: FiColors.border,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 3,
+    shadowRadius: 4,
+    elevation: 2,
   },
   featureHeader: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
+    alignItems: 'flex-start',
+    marginBottom: 8,
   },
   featureIconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     backgroundColor: FiColors.surface,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: 10,
+    marginTop: 2,
   },
   featureIcon: {
-    fontSize: 24,
+    fontSize: 16,
   },
   featureInfo: {
     flex: 1,
   },
   featureName: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: '600',
     color: FiColors.text,
     marginBottom: 4,
   },
   statusBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 8,
     alignSelf: 'flex-start',
   },
   statusText: {
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: '600',
   },
   featureDescription: {
-    fontSize: 14,
+    fontSize: 12,
     color: FiColors.textSecondary,
-    lineHeight: 20,
-    marginBottom: 12,
+    lineHeight: 16,
+    marginBottom: 8,
   },
   benefitsList: {
-    marginBottom: 16,
+    marginBottom: 10,
   },
   benefitItem: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginBottom: 4,
+    marginBottom: 2,
   },
   benefitBullet: {
-    fontSize: 14,
+    fontSize: 12,
     color: FiColors.primary,
-    marginRight: 8,
-    marginTop: 2,
+    marginRight: 6,
+    marginTop: 1,
   },
   benefitText: {
-    fontSize: 14,
+    fontSize: 11,
     color: FiColors.text,
     flex: 1,
-    lineHeight: 20,
+    lineHeight: 14,
   },
   featureFooter: {
     flexDirection: 'row',
@@ -455,23 +485,23 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   impactLabel: {
-    fontSize: 12,
+    fontSize: 10,
     color: FiColors.textSecondary,
-    marginBottom: 2,
+    marginBottom: 1,
   },
   impactValue: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '600',
     color: FiColors.primary,
   },
   learnMoreButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
     backgroundColor: FiColors.primary + '20',
   },
   learnMoreText: {
-    fontSize: 14,
+    fontSize: 11,
     fontWeight: '600',
     color: FiColors.primary,
   },
@@ -479,8 +509,8 @@ const styles = StyleSheet.create({
   // Beta Card Styles
   betaCard: {
     backgroundColor: '#E6FBF7',
-    borderRadius: 16,
-    padding: 20,
+    borderRadius: 12,
+    padding: 16,
     margin: 16,
     borderWidth: 1,
     borderColor: FiColors.primary + '40',
@@ -488,44 +518,44 @@ const styles = StyleSheet.create({
   betaHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   betaIcon: {
-    fontSize: 32,
-    marginRight: 12,
+    fontSize: 24,
+    marginRight: 10,
   },
   betaTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
     color: FiColors.text,
     marginBottom: 2,
   },
   betaSubtitle: {
-    fontSize: 14,
+    fontSize: 12,
     color: FiColors.textSecondary,
   },
   betaFeatures: {
-    marginBottom: 16,
+    marginBottom: 12,
   },
   betaFeaturesTitle: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
     color: FiColors.text,
-    marginBottom: 8,
+    marginBottom: 6,
   },
   betaFeatureItem: {
-    fontSize: 14,
+    fontSize: 12,
     color: FiColors.textSecondary,
-    marginBottom: 4,
+    marginBottom: 2,
   },
   betaButton: {
     backgroundColor: FiColors.primary,
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderRadius: 8,
+    paddingVertical: 10,
     alignItems: 'center',
   },
   betaButtonText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
     color: FiColors.background,
   },

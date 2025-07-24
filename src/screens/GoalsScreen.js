@@ -84,19 +84,16 @@ const GoalsScreen = ({ navigation }) => {
     
     return (
       <FadeInUp delay={100}>
-        <TouchableArea 
-          style={[styles.goalCard, { backgroundColor: bgColor }]}
-          onPress={() => setSelectedGoalForMilestones(goal)}
-        >
+        <View style={[styles.goalCard, { backgroundColor: bgColor }]}>
           <View style={styles.goalHeader}>
             <View style={styles.goalTitleSection}>
               <Text style={styles.goalIcon}>{goal.icon}</Text>
-              <View>
-                <Text style={styles.goalTitle}>{goal.title}</Text>
-                <Text style={styles.goalCategory}>{goal.category}</Text>
+              <View style={styles.goalTitleContainer}>
+                <Text style={styles.goalTitle} numberOfLines={1}>{goal.title}</Text>
+                <Text style={styles.goalCategory} numberOfLines={1}>{goal.category}</Text>
               </View>
             </View>
-            <Text style={styles.goalProgress}>{Math.round(progress)}%</Text>
+            <Text style={styles.goalProgressText}>{Math.round(progress)}%</Text>
           </View>
           
           <View style={styles.goalAmounts}>
@@ -115,17 +112,22 @@ const GoalsScreen = ({ navigation }) => {
             <Text style={styles.monthlyTarget}>₹{(goal.monthlyContribution/1000).toFixed(0)}K/month</Text>
           </View>
           
-          <TouchableArea style={styles.milestonesButton}>
-            <Text style={styles.milestonesButtonText}>View Milestones 🎯</Text>
-          </TouchableArea>
-          
-          <TouchableArea 
-            style={styles.actionsButton}
-            onPress={() => setSelectedGoalForActions(goal)}
-          >
-            <Text style={styles.actionsButtonText}>Take Action 🚀</Text>
-          </TouchableArea>
-        </TouchableArea>
+          <View style={styles.buttonContainer}>
+            <TouchableArea 
+              style={styles.primaryButton}
+              onPress={() => setSelectedGoalForMilestones(goal)}
+            >
+              <Text style={styles.primaryButtonText}>View Milestones</Text>
+            </TouchableArea>
+            
+            <TouchableArea 
+              style={styles.secondaryButton}
+              onPress={() => setSelectedGoalForActions(goal)}
+            >
+              <Text style={styles.secondaryButtonText}>Take Action</Text>
+            </TouchableArea>
+          </View>
+        </View>
       </FadeInUp>
     );
   };
@@ -272,19 +274,16 @@ const GoalsScreen = ({ navigation }) => {
             
             <View style={styles.upcomingFeaturesList}>
               <View style={styles.upcomingFeatureItem}>
-                <Text style={styles.upcomingFeatureIcon}>🤖</Text>
-                <Text style={styles.upcomingFeatureText}>AI Goal Autopilot</Text>
-                <Text style={styles.upcomingFeatureStatus}>In Development</Text>
+                <Text>🤖 AI Goal Autopilot</Text>
+                <Text style={styles.upcomingFeatureStatus}>Dev</Text>
               </View>
               <View style={styles.upcomingFeatureItem}>
-                <Text style={styles.upcomingFeatureIcon}>🎤</Text>
-                <Text style={styles.upcomingFeatureText}>Voice Commands</Text>
-                <Text style={styles.upcomingFeatureStatus}>Prototype</Text>
+                <Text>🎤 Voice Commands</Text>
+                <Text style={styles.upcomingFeatureStatus}>Beta</Text>
               </View>
               <View style={styles.upcomingFeatureItem}>
-                <Text style={styles.upcomingFeatureIcon}>👥</Text>
-                <Text style={styles.upcomingFeatureText}>Social Challenges</Text>
-                <Text style={styles.upcomingFeatureStatus}>Coming Q1 2026</Text>
+                <Text>👥 Social Challenges</Text>
+                <Text style={styles.upcomingFeatureStatus}>2026</Text>
               </View>
             </View>
           </TouchableArea>
@@ -293,15 +292,7 @@ const GoalsScreen = ({ navigation }) => {
         {/* Upcoming Features Full Screen */}
         {showUpcomingFeatures && (
           <View style={styles.fullScreenModal}>
-            <View style={styles.fullScreenHeader}>
-              <TouchableArea 
-                style={styles.backButton}
-                onPress={() => setShowUpcomingFeatures(false)}
-              >
-                <Text style={styles.backButtonText}>← Back</Text>
-              </TouchableArea>
-            </View>
-            <UpcomingFeatures navigation={navigation} />
+            <UpcomingFeatures navigation={navigation} onClose={() => setShowUpcomingFeatures(false)} />
           </View>
         )}
 
@@ -472,13 +463,13 @@ const styles = StyleSheet.create({
   overviewCard: {
     backgroundColor: '#F0F9FF',
     margin: 16,
-    borderRadius: 16,
-    padding: 20,
+    borderRadius: 12,
+    padding: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
   },
   overviewTitle: {
     fontSize: 18,
@@ -513,44 +504,51 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   goalCard: {
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 8,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
   },
   goalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
+    alignItems: 'flex-start',
+    marginBottom: 16,
   },
   goalTitleSection: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
-  },
-  goalIcon: {
-    fontSize: 24,
     marginRight: 12,
   },
+  goalIcon: {
+    fontSize: 20,
+    marginRight: 10,
+    marginTop: 2,
+  },
+  goalTitleContainer: {
+    flex: 1,
+  },
   goalTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
     color: FiColors.text,
     marginBottom: 2,
   },
   goalCategory: {
-    fontSize: 14,
+    fontSize: 12,
     color: FiColors.textSecondary,
   },
-  goalProgress: {
-    fontSize: 18,
+  goalProgressText: {
+    fontSize: 16,
     fontWeight: '700',
     color: FiColors.primary,
+    minWidth: 40,
+    textAlign: 'right',
   },
   goalAmounts: {
     flexDirection: 'row',
@@ -558,68 +556,71 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   goalCurrent: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: '700',
     color: FiColors.text,
-    marginRight: 8,
+    marginRight: 6,
   },
   goalTarget: {
-    fontSize: 16,
+    fontSize: 14,
     color: FiColors.textSecondary,
   },
   progressBarContainer: {
     marginBottom: 12,
   },
   progressBarBackground: {
-    height: 8,
-    backgroundColor: FiColors.border + '40',
-    borderRadius: 4,
+    height: 6,
+    backgroundColor: FiColors.border + '60',
+    borderRadius: 3,
     overflow: 'hidden',
   },
   progressBarFill: {
     height: '100%',
     backgroundColor: FiColors.primary,
-    borderRadius: 4,
+    borderRadius: 3,
   },
   goalFooter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 16,
   },
   remainingAmount: {
-    fontSize: 14,
+    fontSize: 12,
     color: FiColors.textSecondary,
   },
   monthlyTarget: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '600',
     color: FiColors.primary,
   },
-  milestonesButton: {
+  buttonContainer: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  primaryButton: {
+    flex: 1,
+    backgroundColor: FiColors.primary,
+    borderRadius: 8,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  primaryButtonText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  secondaryButton: {
+    flex: 1,
     backgroundColor: FiColors.primary + '20',
     borderRadius: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    marginTop: 12,
+    paddingVertical: 10,
     alignItems: 'center',
   },
-  milestonesButtonText: {
-    fontSize: 14,
+  secondaryButtonText: {
+    fontSize: 13,
     fontWeight: '600',
     color: FiColors.primary,
-  },
-  actionsButton: {
-    backgroundColor: FiColors.warning + '20',
-    borderRadius: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    marginTop: 8,
-    alignItems: 'center',
-  },
-  actionsButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: FiColors.warning,
   },
   milestoneModal: {
     position: 'absolute',
@@ -678,15 +679,15 @@ const styles = StyleSheet.create({
   },
   upcomingPreviewCard: {
     backgroundColor: '#F0F9FF',
-    borderRadius: 16,
-    padding: 20,
-    borderWidth: 2,
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
     borderColor: FiColors.primary + '40',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
   },
   upcomingHeader: {
     flexDirection: 'row',
@@ -717,33 +718,28 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   upcomingFeaturesList: {
-    gap: 12,
+    gap: 8,
   },
   upcomingFeatureItem: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: FiColors.background + '80',
-    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
     padding: 12,
-  },
-  upcomingFeatureIcon: {
-    fontSize: 20,
-    marginRight: 12,
-  },
-  upcomingFeatureText: {
-    flex: 1,
-    fontSize: 16,
-    fontWeight: '600',
-    color: FiColors.text,
+    borderWidth: 1,
+    borderColor: FiColors.border + '40',
   },
   upcomingFeatureStatus: {
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: '600',
     color: FiColors.primary,
     backgroundColor: FiColors.primary + '20',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 8,
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 6,
+    minWidth: 35,
+    textAlign: 'center',
   },
   
   // Full Screen Modal Styles

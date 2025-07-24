@@ -8,7 +8,7 @@ import { getThemeColors } from '../theme/consolidatedFiColors';
 import { getAvatarSource } from '../utils/avatarHelper';
 import ThemeToggle from '../components/common/ThemeToggle';
 import LanguageSelector from '../components/common/LanguageSelector';
-import UserProfileService from '../services/UserProfileService';
+import DataService from '../services/DataService';
 
 const ProfileScreen = ({ navigation }) => {
   const { isDarkMode } = useTheme();
@@ -17,8 +17,14 @@ const ProfileScreen = ({ navigation }) => {
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    const userProfile = UserProfileService.getCurrentUserProfile();
-    setCurrentUser(userProfile);
+    const loadCurrentUser = async () => {
+      const userId = DataService.getCurrentUser();
+      if (userId) {
+        const userProfile = await DataService.getUserProfile(userId);
+        setCurrentUser(userProfile);
+      }
+    };
+    loadCurrentUser();
   }, []);
 
   const handleLogout = () => {
@@ -34,7 +40,7 @@ const ProfileScreen = ({ navigation }) => {
           text: 'Logout',
           style: 'destructive',
           onPress: () => {
-            UserProfileService.logout();
+            // UserProfileService.logout();
             navigation.navigate('Login');
           },
         },
