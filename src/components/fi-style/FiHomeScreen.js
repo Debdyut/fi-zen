@@ -306,7 +306,10 @@ const FiHomeScreen = ({ navigation, inflationData, selectedUserId }) => {
           inflationData={inflationData}
           userData={userData}
           userProfile={userProfile}
-          onCardPress={(cardId) => navigation.navigate('MetricDetail', { cardId })}
+          onCardPress={(cardId) => navigation.navigate('MetricDetail', { 
+            cardId, 
+            userId: selectedUserId || DataService.getCurrentUser() 
+          })}
         />
         
 

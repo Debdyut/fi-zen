@@ -35,7 +35,7 @@ const ProfileScreen = ({ navigation }) => {
           style: 'destructive',
           onPress: () => {
             UserProfileService.logout();
-            navigation.replace('Login');
+            navigation.navigate('Login');
           },
         },
       ]

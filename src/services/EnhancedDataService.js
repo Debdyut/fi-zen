@@ -334,6 +334,40 @@ class EnhancedDataService {
   // ==================== PEER COMPARISON ====================
 
   /**
+   * Get user's inflation data
+   * @param {string} userId - User ID
+   * @returns {Object} Inflation data
+   */
+  async getUserInflationData(userId) {
+    const userData = await this.getUserById(userId);
+    const profile = userData.profile;
+    
+    // Generate inflation data based on user's location and spending patterns
+    const baseInflation = 6.5; // National average
+    let personalRate = baseInflation;
+    
+    // Location-based adjustments
+    const location = profile?.location?.toLowerCase() || '';
+    if (location.includes('mumbai') || location.includes('delhi')) {
+      personalRate += 1.5; // Metro cities
+    } else if (location.includes('bangalore') || location.includes('pune')) {
+      personalRate += 1.0; // Tier 1 cities
+    }
+    
+    return {
+      personalInflationRate: Math.round(personalRate * 10) / 10,
+      categories: {
+        food: { rate: personalRate + 1.5, weight: 30 },
+        housing: { rate: personalRate - 0.5, weight: 25 },
+        transport: { rate: personalRate + 1.0, weight: 20 },
+        healthcare: { rate: personalRate - 1.0, weight: 10 },
+        entertainment: { rate: personalRate + 0.5, weight: 10 },
+        miscellaneous: { rate: personalRate, weight: 5 }
+      }
+    };
+  }
+
+  /**
    * Get peer comparison data
    * @param {string} userId - User ID
    * @param {Object} filters - Comparison filters

@@ -51,7 +51,7 @@ class MilestoneEngine {
         const timeToReach = Math.ceil((milestoneAmount - currentAmount) / goal.monthlyContribution);
         
         milestones.push({
-          id: `${goal.goalId}_milestone_${milestoneAmount}`,
+          id: `${goal.goalId}_milestone_${milestoneAmount}_${index}`,
           goalId: goal.goalId,
           amount: milestoneAmount,
           currentAmount: currentAmount,

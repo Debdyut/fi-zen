@@ -149,6 +149,7 @@ const CrossScreenActions = ({
   userGoals, 
   insights, 
   navigation,
+  userId,
   showOptimizations = true,
   showRisks = true 
 }) => {
@@ -160,11 +161,18 @@ const CrossScreenActions = ({
   const riskInsight = goalInsights.find(i => i.type === 'goal_risk');
 
   const handleNavigation = (screenName, params = {}) => {
-    navigation.navigate(screenName, {
+    const navigationParams = {
       ...params,
       fromGoals: true,
       goalContext: goalId
-    });
+    };
+    
+    // Add userId for MetricDetail navigation
+    if (screenName === 'MetricDetail' && userId) {
+      navigationParams.userId = userId;
+    }
+    
+    navigation.navigate(screenName, navigationParams);
   };
 
   const quickActions = [

@@ -2,8 +2,8 @@
 // Based on 20 user persona feedback analysis
 // Now uses dynamic goal amounts instead of hard-coded values
 
-const LocationCostEngine = require('./LocationCostEngine');
-const DynamicThresholdEngine = require('./DynamicThresholdEngine');
+import LocationCostEngine from './LocationCostEngine';
+import DynamicThresholdEngine from './DynamicThresholdEngine';
 
 class EnhancedPersonalizationEngine {
   

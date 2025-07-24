@@ -149,6 +149,26 @@ class DataService {
     return await this.enhancedService.getPeerComparison(userId, filters);
   }
 
+  // Get user's inflation data
+  async getUserInflationData(userId) {
+    try {
+      return await this.enhancedService.getUserInflationData(userId);
+    } catch (error) {
+      // Return fallback inflation data
+      return {
+        personalInflationRate: 8.2,
+        categories: {
+          food: { rate: 9.1, weight: 30 },
+          housing: { rate: 7.8, weight: 25 },
+          transport: { rate: 8.5, weight: 20 },
+          healthcare: { rate: 6.2, weight: 10 },
+          entertainment: { rate: 7.5, weight: 10 },
+          miscellaneous: { rate: 6.8, weight: 5 }
+        }
+      };
+    }
+  }
+
   // ==================== LEGACY COMPATIBILITY ====================
 
   // Enhanced methods with legacy compatibility

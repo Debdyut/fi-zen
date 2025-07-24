@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, StatusBar, ActivityIndicator } from 'react-native';
 import { FadeInUp } from '../components/animations/AnimatedCard';
-import { TouchableArea } from '../common/AccessibilityHelpers';
+import { TouchableArea } from '../components/common/AccessibilityHelpers';
 import { useLanguage } from '../localization/LanguageContext';
 import { useTheme } from '../theme/ThemeContext';
 import DataService from '../services/DataService';

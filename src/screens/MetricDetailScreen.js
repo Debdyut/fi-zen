@@ -19,7 +19,7 @@ const FiColors = {
 };
 
 const MetricDetailScreen = ({ route, navigation }) => {
-  const { cardId } = route.params;
+  const { cardId, userId } = route.params;
   const { isDarkMode } = useTheme();
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState(null);
@@ -29,15 +29,42 @@ const MetricDetailScreen = ({ route, navigation }) => {
   const [goalRecommendations, setGoalRecommendations] = useState([]);
   const [existingGoals, setExistingGoals] = useState([]);
   const [insightsActions, setInsightsActions] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    loadMetricData();
-  }, []);
+    // Set the current user from params or fallback to DataService
+    const user = userId || DataService.getCurrentUser() || '1010101010';
+    console.log('MetricDetailScreen: Setting user to', user);
+    setCurrentUser(user);
+    DataService.setCurrentUser(user);
+  }, [userId]);
+
+  useEffect(() => {
+    if (currentUser) {
+      loadMetricData();
+    }
+  }, [currentUser]);
+
+  // Reload data when screen comes into focus
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      console.log('MetricDetailScreen: Screen focused, reloading data');
+      if (currentUser) {
+        loadMetricData();
+      }
+    });
+    return unsubscribe;
+  }, [navigation, currentUser]);
 
   const loadMetricData = async () => {
     try {
       setLoading(true);
-      const currentUser = DataService.getCurrentUser();
+      console.log('MetricDetailScreen: Loading data for user', currentUser);
+      
+      if (!currentUser) {
+        console.error('MetricDetailScreen: No current user set');
+        return;
+      }
       
       // Load comprehensive data for metrics
       const [userDataResult, portfolioResult, allocationResult, returnsResult, goals, profile] = await Promise.all([
@@ -49,6 +76,15 @@ const MetricDetailScreen = ({ route, navigation }) => {
         DataService.getUserProfile(currentUser)
       ]);
       
+      console.log('MetricDetailScreen: Loaded data for', profile?.name, 'Portfolio:', portfolioResult?.totalValue);
+      console.log('MetricDetailScreen: Full data loaded:', {
+        user: currentUser,
+        profile: profile?.name,
+        portfolioValue: portfolioResult?.totalValue,
+        netWorth: userDataResult?.netWorth?.netWorth,
+        returns: returnsResult?.overallReturnPercentage
+      });
+      
       // Generate goal recommendations from metrics
       const metricData = {
         averageReturns: returnsResult.overallReturnPercentage || 12,
@@ -58,11 +94,37 @@ const MetricDetailScreen = ({ route, navigation }) => {
         currentRetirementFund: portfolioResult.retirementFund || 0
       };
       
-      const recommendations = GoalRecommendationEngine.getGoalRecommendationsFromMetrics(
+      let recommendations = GoalRecommendationEngine.getGoalRecommendationsFromMetrics(
         metricData,
         profile,
         goals
       );
+      
+      // Fallback recommendations if none generated
+      if (!recommendations || recommendations.length === 0) {
+        recommendations = [
+          {
+            goalId: 'emergency_fund_' + Date.now(),
+            title: 'Build Emergency Fund',
+            description: 'Create a safety net of 6 months expenses',
+            targetAmount: 300000,
+            currentAmount: 0,
+            monthlyContribution: 25000,
+            timeToComplete: 12,
+            priority: 'high',
+            category: 'emergency',
+            confidence: 0.9,
+            reasoning: 'Based on your current expenses',
+            icon: '🛡️',
+            status: 'pending',
+            type: 'emergency_fund',
+            impact: 'Improved financial security and peace of mind',
+            source: 'spending_analysis'
+          }
+        ];
+      }
+      
+      console.log('Generated recommendations:', recommendations.length);
       
       // Generate insights actions for this metric
       const actions = MetricInsightsIntegration.getInsightsActions(cardId, metricData, profile);
@@ -75,8 +137,17 @@ const MetricDetailScreen = ({ route, navigation }) => {
       setExistingGoals(goals);
       setInsightsActions(actions);
       
+      console.log('✅ MetricDetailScreen: All data loaded successfully');
+      
     } catch (error) {
-      console.error('Error loading metric data:', error);
+      console.error('❌ MetricDetailScreen: Error loading metric data:', error);
+      // Set fallback data to prevent blank screen
+      if (!userData) {
+        setUserData({ netWorth: { netWorth: 0 } });
+      }
+      if (!portfolio) {
+        setPortfolio({ totalValue: 0, mutualFunds: [], stocks: [], goldInvestments: [] });
+      }
     } finally {
       setLoading(false);
     }
@@ -85,7 +156,6 @@ const MetricDetailScreen = ({ route, navigation }) => {
   // Handle adding recommended goal
   const handleAddGoal = async (recommendation) => {
     try {
-      const currentUser = DataService.getCurrentUser();
       await DataService.addUserGoal(currentUser, recommendation);
       
       navigation.navigate('Goals', { 
@@ -123,11 +193,14 @@ const MetricDetailScreen = ({ route, navigation }) => {
       userData
     );
     
-    navigation.navigate('Insights', {
-      ...action.params,
-      metricContext: metricContext,
-      fromMetric: cardId,
-      actionId: action.id
+    navigation.navigate('MainTabs', {
+      screen: 'Insights',
+      params: {
+        ...action.params,
+        metricContext: metricContext,
+        fromMetric: cardId,
+        actionId: action.id
+      }
     });
   };
 
@@ -191,65 +264,143 @@ const MetricDetailScreen = ({ route, navigation }) => {
       },
       inflation_rate: {
         title: 'Your Inflation Rate',
-        value: '8.2%',
-        description: 'Your personal inflation rate is higher than the government rate of 6.5%',
+        value: `${(() => {
+          if (!userData?.monthlySpending) return '8.5';
+          const spending = userData.monthlySpending;
+          const totalSpending = Object.values(spending).reduce((a, b) => a + b, 0);
+          const categoryInflation = { housing: 6.2, food: 12.8, transport: 9.4, entertainment: 8.1, miscellaneous: 7.3, investments: 0 };
+          let weightedInflation = 0;
+          Object.entries(spending).forEach(([category, amount]) => {
+            const weight = amount / totalSpending;
+            const rate = categoryInflation[category] || 8.0;
+            weightedInflation += weight * rate;
+          });
+          return (Math.round(weightedInflation * 10) / 10).toFixed(1);
+        })()}%`,
+        description: 'Your personal inflation rate based on spending patterns',
         details: [
-          { label: 'Food & Beverages', value: '9.1%', impact: 'High' },
-          { label: 'Housing', value: '7.8%', impact: 'Medium' },
-          { label: 'Transportation', value: '8.5%', impact: 'High' },
-          { label: 'Healthcare', value: '6.2%', impact: 'Low' },
+          { label: 'Food & Beverages', value: '12.8%', impact: 'High' },
+          { label: 'Housing', value: '6.2%', impact: 'Medium' },
+          { label: 'Transportation', value: '9.4%', impact: 'High' },
+          { label: 'Entertainment', value: '8.1%', impact: 'Medium' },
         ],
         color: FiColors.error,
         icon: '📈'
       },
       salary_impact: {
         title: 'Salary Impact',
-        value: '₹11,800',
+        value: `₹${Math.round((userData.monthlySpending ? Object.values(userData.monthlySpending).reduce((a,b) => a+b, 0) : 45000) * (userData.personalInflationRate || 8.2) / 100).toLocaleString()}`,
         description: 'Additional monthly income needed to maintain your current lifestyle',
         details: [
-          { label: 'Current Monthly Expenses', value: '₹45,000' },
-          { label: 'Inflation Adjusted', value: '₹56,800' },
-          { label: 'Additional Required', value: '₹11,800' },
-          { label: 'Annual Impact', value: '₹1,41,600' },
+          { label: 'Current Monthly Expenses', value: `₹${(userData.monthlySpending ? Object.values(userData.monthlySpending).reduce((a,b) => a+b, 0) : 45000).toLocaleString()}` },
+          { label: 'Inflation Adjusted', value: `₹${Math.round((userData.monthlySpending ? Object.values(userData.monthlySpending).reduce((a,b) => a+b, 0) : 45000) * (1 + (userData.personalInflationRate || 8.2)/100)).toLocaleString()}` },
+          { label: 'Additional Required', value: `₹${Math.round((userData.monthlySpending ? Object.values(userData.monthlySpending).reduce((a,b) => a+b, 0) : 45000) * (userData.personalInflationRate || 8.2) / 100).toLocaleString()}` },
+          { label: 'Annual Impact', value: `₹${Math.round((userData.monthlySpending ? Object.values(userData.monthlySpending).reduce((a,b) => a+b, 0) : 45000) * (userData.personalInflationRate || 8.2) / 100 * 12).toLocaleString()}` },
         ],
         color: FiColors.warning,
         icon: '💼'
       },
       investment_target: {
         title: 'Investment Target',
-        value: '16.8%',
+        value: `${(() => {
+          let personalInflation = 8.5;
+          if (userData?.monthlySpending) {
+            const spending = userData.monthlySpending;
+            const totalSpending = Object.values(spending).reduce((a, b) => a + b, 0);
+            const categoryInflation = { housing: 6.2, food: 12.8, transport: 9.4, entertainment: 8.1, miscellaneous: 7.3, investments: 0 };
+            let weightedInflation = 0;
+            Object.entries(spending).forEach(([category, amount]) => {
+              const weight = amount / totalSpending;
+              const rate = categoryInflation[category] || 8.0;
+              weightedInflation += weight * rate;
+            });
+            personalInflation = Math.round(weightedInflation * 10) / 10;
+          }
+          return (personalInflation + 4).toFixed(1);
+        })()}%`,
         description: 'Minimum returns needed to beat your personal inflation rate',
         details: [
-          { label: 'Your Inflation Rate', value: '8.2%' },
+          { label: 'Your Inflation Rate', value: `${(() => {
+            let personalInflation = 8.5;
+            if (userData?.monthlySpending) {
+              const spending = userData.monthlySpending;
+              const totalSpending = Object.values(spending).reduce((a, b) => a + b, 0);
+              const categoryInflation = { housing: 6.2, food: 12.8, transport: 9.4, entertainment: 8.1, miscellaneous: 7.3, investments: 0 };
+              let weightedInflation = 0;
+              Object.entries(spending).forEach(([category, amount]) => {
+                const weight = amount / totalSpending;
+                const rate = categoryInflation[category] || 8.0;
+                weightedInflation += weight * rate;
+              });
+              personalInflation = Math.round(weightedInflation * 10) / 10;
+            }
+            return personalInflation.toFixed(1);
+          })()}%` },
           { label: 'Tax Impact (30%)', value: '2.5%' },
-          { label: 'Real Return Buffer', value: '6.1%' },
-          { label: 'Target Return', value: '16.8%' },
+          { label: 'Real Return Buffer', value: '4.0%' },
+          { label: 'Target Return', value: `${(() => {
+            let personalInflation = 8.5;
+            if (userData?.monthlySpending) {
+              const spending = userData.monthlySpending;
+              const totalSpending = Object.values(spending).reduce((a, b) => a + b, 0);
+              const categoryInflation = { housing: 6.2, food: 12.8, transport: 9.4, entertainment: 8.1, miscellaneous: 7.3, investments: 0 };
+              let weightedInflation = 0;
+              Object.entries(spending).forEach(([category, amount]) => {
+                const weight = amount / totalSpending;
+                const rate = categoryInflation[category] || 8.0;
+                weightedInflation += weight * rate;
+              });
+              personalInflation = Math.round(weightedInflation * 10) / 10;
+            }
+            return (personalInflation + 4).toFixed(1);
+          })()}%` },
         ],
         color: FiColors.success,
         icon: '🎯'
       },
       city_rank: {
         title: 'City Ranking',
-        value: '#2',
-        description: 'Your city ranks as the 2nd most expensive for your lifestyle',
-        details: [
-          { label: 'Mumbai', value: '#1', impact: 'Most Expensive' },
-          { label: 'Your City', value: '#2', impact: 'Very Expensive' },
-          { label: 'Bangalore', value: '#3', impact: 'Expensive' },
-          { label: 'Delhi', value: '#4', impact: 'Moderate' },
-        ],
+        value: `#${(() => {
+          const location = userData.profile?.location || 'Mumbai';
+          const city = location.split(',')[0].trim();
+          const cityRanks = { 'Mumbai': 1, 'Delhi': 2, 'Bangalore': 3, 'Chennai': 4, 'Pune': 5, 'Hyderabad': 6, 'Kolkata': 7, 'Ahmedabad': 8 };
+          return cityRanks[city] || 9;
+        })()}`,
+        description: `${userData.profile?.location?.split(',')[0] || 'Your city'} ranks among major Indian cities by cost of living`,
+        details: (() => {
+          const location = userData.profile?.location || 'Mumbai';
+          const userCity = location.split(',')[0].trim();
+          const cityData = [
+            { name: 'Mumbai', rank: 1, impact: 'Most Expensive', cost: '₹65,000/month' },
+            { name: 'Delhi', rank: 2, impact: 'Very Expensive', cost: '₹58,000/month' },
+            { name: 'Bangalore', rank: 3, impact: 'Expensive', cost: '₹52,000/month' },
+            { name: 'Chennai', rank: 4, impact: 'Expensive', cost: '₹48,000/month' },
+            { name: 'Pune', rank: 5, impact: 'Moderate', cost: '₹45,000/month' },
+            { name: 'Hyderabad', rank: 6, impact: 'Moderate', cost: '₹42,000/month' },
+            { name: 'Kolkata', rank: 7, impact: 'Affordable', cost: '₹38,000/month' },
+            { name: 'Ahmedabad', rank: 8, impact: 'Affordable', cost: '₹35,000/month' }
+          ];
+          
+          // Sort by rank and highlight user's city
+          return cityData.map(city => ({
+            label: city.name === userCity ? `🏠 ${city.name} (Your City)` : city.name,
+            value: `#${city.rank}`,
+            impact: city.name === userCity ? `${city.impact} • ${city.cost}` : city.impact,
+            isUserCity: city.name === userCity
+          }));
+        })(),
         color: FiColors.primary,
         icon: '🏙️'
       },
       weekly_insight: {
         title: 'Weekly Insight',
-        value: '+2.3%',
-        description: 'Your food costs increased this week due to vegetable price surge in Mumbai markets',
+        value: `+${((userData.monthlySpending?.food || 15000) / 50000 * 2.3).toFixed(1)}%`,
+        description: 'Your food costs trend based on recent spending patterns',
         details: [
-          { label: 'Vegetables', value: '+4.2%', impact: 'High' },
-          { label: 'Fruits', value: '+1.8%', impact: 'Medium' },
-          { label: 'Dairy', value: '+0.5%', impact: 'Low' },
-          { label: 'Grains', value: '-0.2%', impact: 'Low' },
+          { label: 'Vegetables', value: `+${((userData.monthlySpending?.food || 15000) / 15000 * 4.2).toFixed(1)}%`, impact: 'High' },
+          { label: 'Fruits', value: `+${((userData.monthlySpending?.food || 15000) / 15000 * 1.8).toFixed(1)}%`, impact: 'Medium' },
+          { label: 'Dairy', value: `+${((userData.monthlySpending?.food || 15000) / 15000 * 0.5).toFixed(1)}%`, impact: 'Low' },
+          { label: 'Grains', value: `-${((userData.monthlySpending?.food || 15000) / 15000 * 0.2).toFixed(1)}%`, impact: 'Low' },
         ],
         color: FiColors.warning,
         icon: '📊'
@@ -262,7 +413,7 @@ const MetricDetailScreen = ({ route, navigation }) => {
     return (
       <View style={[styles.container, { backgroundColor: isDarkMode ? '#1A1A1A' : '#F5F5F5' }]}>
         <View style={[styles.header, { backgroundColor: isDarkMode ? '#1A1A1A' : FiColors.surface }]}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <TouchableOpacity onPress={() => navigation.canGoBack() ? navigation.goBack() : navigation.navigate('MainTabs')} style={styles.backButton}>
             <Text style={[styles.backIcon, { color: isDarkMode ? '#FFFFFF' : FiColors.text }]}>←</Text>
           </TouchableOpacity>
           <Text style={[styles.headerTitle, { color: isDarkMode ? '#FFFFFF' : FiColors.text }]}>Loading...</Text>
@@ -284,7 +435,10 @@ const MetricDetailScreen = ({ route, navigation }) => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Text style={[styles.backIcon, { color: isDarkMode ? '#FFFFFF' : FiColors.text }]}>←</Text>
         </TouchableOpacity>
-        <Text style={[styles.headerTitle, { color: isDarkMode ? '#FFFFFF' : FiColors.text }]}>{metric.title}</Text>
+        <View style={styles.headerCenter}>
+          <Text style={[styles.headerTitle, { color: isDarkMode ? '#FFFFFF' : FiColors.text }]}>{metric.title}</Text>
+          <Text style={[styles.headerSubtitle, { color: isDarkMode ? '#CCCCCC' : FiColors.textSecondary }]}>User: {currentUser}</Text>
+        </View>
         <View style={styles.placeholder} />
       </View>
 
@@ -297,21 +451,33 @@ const MetricDetailScreen = ({ route, navigation }) => {
 
         <View style={styles.detailsSection}>
           <Text style={styles.sectionTitle}>Breakdown</Text>
-          {metric.details.map((detail, index) => (
-            <View key={index} style={styles.detailItem}>
-              <Text style={styles.detailLabel}>{detail.label}</Text>
-              <Text style={styles.detailValue}>{detail.value}</Text>
-              {detail.impact && (
-                <Text style={[styles.detailImpact, { 
-                  color: detail.impact === 'High' || detail.impact === 'Positive' || detail.impact === 'Excellent' ? FiColors.success :
-                        detail.impact === 'Medium' || detail.impact === 'Good' || detail.impact === 'Active' ? FiColors.warning :
-                        detail.impact === 'Low' || detail.impact === 'Negative' || detail.impact === 'None' ? FiColors.error : FiColors.textSecondary
-                }]}>
-                  {detail.impact}
-                </Text>
-              )}
-            </View>
-          ))}
+          <ScrollView 
+            style={styles.detailsScrollView}
+            showsVerticalScrollIndicator={true}
+            nestedScrollEnabled={true}
+          >
+            {metric.details.map((detail, index) => (
+              <View key={index} style={styles.detailItem}>
+                <Text style={styles.detailLabel}>{detail.label}</Text>
+                <Text style={styles.detailValue}>{detail.value}</Text>
+                {detail.impact && (
+                  <Text style={[styles.detailImpact, { 
+                    color: detail.impact === 'High' || detail.impact === 'Positive' || detail.impact === 'Excellent' ? FiColors.success :
+                          detail.impact === 'Medium' || detail.impact === 'Good' || detail.impact === 'Active' ? FiColors.warning :
+                          detail.impact === 'Low' || detail.impact === 'Negative' || detail.impact === 'None' ? FiColors.error : 
+                          detail.impact.includes('Most Expensive') || detail.impact.includes('Very Expensive') ? FiColors.error :
+                          detail.impact.includes('Expensive') ? FiColors.warning :
+                          detail.impact.includes('Moderate') ? FiColors.primary :
+                          detail.impact.includes('Affordable') ? FiColors.success : FiColors.textSecondary,
+                    backgroundColor: detail.isUserCity ? FiColors.primary + '20' : 'rgba(0,0,0,0.05)',
+                    fontWeight: detail.isUserCity ? '700' : '600'
+                  }]}>
+                    {detail.impact}
+                  </Text>
+                )}
+              </View>
+            ))}
+          </ScrollView>
         </View>
 
         <View style={styles.actionSection}>
@@ -346,23 +512,28 @@ const MetricDetailScreen = ({ route, navigation }) => {
           )}
         </View>
 
-        {/* Goal Recommendations from Metrics */}
-        {goalRecommendations.length > 0 && (
-          <View style={styles.recommendationsSection}>
-            <Text style={styles.recommendationsTitle}>💡 Recommended Goals</Text>
-            <Text style={styles.recommendationsSubtitle}>
-              Based on your investment performance and metrics
-            </Text>
-            {goalRecommendations.map(recommendation => (
+        {/* Goal Recommendations from Metrics - Updated */}
+        <View style={styles.recommendationsSection}>
+          <View style={styles.recommendationsTitleContainer}>
+            <Text style={styles.recommendationsEmoji}>💡</Text>
+            <Text style={[styles.recommendationsTitle, { color: isDarkMode ? '#FFFFFF' : FiColors.text }]}>Recommended Goals</Text>
+          </View>
+          <Text style={styles.recommendationsSubtitle}>
+            Based on your metrics
+          </Text>
+          {goalRecommendations.length > 0 ? (
+            goalRecommendations.map(recommendation => (
               <GoalRecommendationCard
                 key={recommendation.goalId}
                 recommendation={recommendation}
                 onAddGoal={handleAddGoal}
                 onDismiss={handleDismissRecommendation}
               />
-            ))}
-          </View>
-        )}
+            ))
+          ) : (
+            <Text style={styles.noRecommendationsText}>No recommendations available for this metric</Text>
+          )}
+        </View>
       </ScrollView>
     </View>
   );
@@ -397,10 +568,19 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: FiColors.text,
   },
+  headerCenter: {
+    flex: 1,
+    alignItems: 'center',
+  },
   headerTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: FiColors.text,
+  },
+  headerSubtitle: {
+    fontSize: 12,
+    color: FiColors.textSecondary,
+    marginTop: 2,
   },
   placeholder: {
     width: 40,
@@ -458,6 +638,9 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
   },
+  detailsScrollView: {
+    maxHeight: 300,
+  },
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
@@ -468,20 +651,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,
+    paddingVertical: 14,
     borderBottomWidth: 1,
     borderBottomColor: '#F0F0F0',
+    minHeight: 56,
   },
   detailLabel: {
     fontSize: 14,
     color: FiColors.textSecondary,
     flex: 1,
+    fontWeight: '500',
   },
   detailValue: {
     fontSize: 14,
     fontWeight: '600',
     color: FiColors.text,
     marginRight: 8,
+    minWidth: 40,
+    textAlign: 'right',
   },
   detailImpact: {
     fontSize: 12,
@@ -520,19 +707,34 @@ const styles = StyleSheet.create({
   },
   recommendationsSection: {
     marginTop: 24,
-    paddingHorizontal: 16,
+    marginBottom: 24,
+  },
+  recommendationsTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  recommendationsEmoji: {
+    fontSize: 20,
+    marginRight: 8,
   },
   recommendationsTitle: {
     fontSize: 20,
     fontWeight: '600',
     color: FiColors.text,
-    marginBottom: 4,
   },
   recommendationsSubtitle: {
     fontSize: 14,
     color: FiColors.textSecondary,
     marginBottom: 16,
     lineHeight: 20,
+  },
+  noRecommendationsText: {
+    fontSize: 14,
+    color: FiColors.textSecondary,
+    fontStyle: 'italic',
+    textAlign: 'center',
+    padding: 20,
   },
 });
 

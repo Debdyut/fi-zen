@@ -48,7 +48,9 @@ const DetailedBreakdownScreen = () => {
     } catch (error) {
       console.error('Error loading breakdown data:', error);
       // Fallback to basic data if loading fails
-      setBreakdownData(generateFallbackData());
+      const fallbackData = generateFallbackData();
+      setBreakdownData(fallbackData);
+      setTotalPersonalInflation(8.2); // Set fallback total inflation
     } finally {
       setLoading(false);
     }
@@ -242,14 +244,6 @@ const DetailedBreakdownScreen = () => {
       }
     };
   };
-      monthlySpend: 15000,
-      subcategories: {
-        'Fuel': { amount: 8000, inflation: 9.2 },
-        'Uber/Ola': { amount: 4000, inflation: 7.8 },
-        'Public Transport': { amount: 3000, inflation: 6.5 }
-      }
-    }
-  };
 
   const CategoryCard = ({ categoryKey, data }) => {
     const getStatusColor = (status) => {
@@ -376,7 +370,7 @@ const DetailedBreakdownScreen = () => {
             <AccessibleHeading level={1} style={[styles.title, { color: colors.text }]}>
               {t('insights.inflationImpactByCategory')}
             </AccessibleHeading>
-            <TouchableOpacity style={[styles.closeButton, { backgroundColor: colors.primary + '20' }]} onPress={() => navigation.goBack()}>
+            <TouchableOpacity style={[styles.closeButton, { backgroundColor: colors.primary + '20' }]} onPress={() => navigation.canGoBack() ? navigation.goBack() : navigation.navigate('MainTabs')}>
               <Text style={[styles.closeButtonText, { color: colors.text }]}>✕</Text>
             </TouchableOpacity>
           </View>

@@ -107,6 +107,7 @@ const AppNavigator = () => {
   const { isDarkMode } = useTheme();
   const colors = getThemeColors(isDarkMode);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigationRef = React.useRef();
 
   useEffect(() => {
     // Check if user is already logged in
@@ -116,11 +117,17 @@ const AppNavigator = () => {
     };
 
     checkLoginStatus();
+    
+    // Set up interval to check login status
+    const interval = setInterval(checkLoginStatus, 1000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   return (
     <SafeAreaProvider>
       <NavigationContainer
+      ref={navigationRef}
       theme={{
         dark: isDarkMode,
         colors: {
@@ -134,7 +141,7 @@ const AppNavigator = () => {
         fonts: fonts,
       }}
     >
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={isLoggedIn ? "MainTabs" : "Login"}>
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="MainTabs">
           {(props) => <TabNavigator {...props} />}
