@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ActivityIndicator,
+  StatusBar,
 } from 'react-native';
 import { CardProvider, DynamicCardGrid } from '../components/common/DynamicCardSystem';
 import SmartChatInterface from '../components/ai/SmartChatInterface';
@@ -20,7 +21,8 @@ const EnhancedInsightsScreen = ({ navigation, route }) => {
   const [chatVisible, setChatVisible] = useState(false);
   const [chatInitialMessage, setChatInitialMessage] = useState(null);
   const [journeyGuideVisible, setJourneyGuideVisible] = useState(false);
-  const styles = useThemedStyles(createStyles);
+  const { colors, isDarkMode } = useThemedStyles();
+  const styles = createStyles(colors, isDarkMode);
   
   // Use shared user context
   const { 
@@ -104,6 +106,7 @@ const EnhancedInsightsScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       <ConversationContinuity
         currentScreen="insights"
         onContinueConversation={handleChatRequest}
@@ -115,12 +118,20 @@ const EnhancedInsightsScreen = ({ navigation, route }) => {
           <Text style={styles.title}>Financial Insights</Text>
           <Text style={styles.subtitle}>{user.name}'s personalized analysis</Text>
         </View>
-        <TouchableOpacity 
-          style={styles.guideButton}
-          onPress={showJourneyGuide}
-        >
-          <Text style={styles.guideIcon}>🧭</Text>
-        </TouchableOpacity>
+        <View style={styles.headerActions}>
+          <TouchableOpacity 
+            style={styles.refreshButton}
+            onPress={refreshUserData}
+          >
+            <Text style={styles.refreshIcon}>↻</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.guideButton}
+            onPress={showJourneyGuide}
+          >
+            <Text style={styles.guideIcon}>🧭</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <CardProvider screenType="insights" user={user}>
@@ -183,32 +194,32 @@ const EnhancedInsightsScreen = ({ navigation, route }) => {
   );
 };
 
-const createStyles = (theme) => StyleSheet.create({
+const createStyles = (colors, isDarkMode) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: colors.background,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: theme.colors.background,
+    backgroundColor: colors.background,
   },
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: theme.colors.text,
+    color: colors.text,
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: theme.colors.background,
+    backgroundColor: colors.background,
     padding: 20,
   },
   errorText: {
     fontSize: 16,
-    color: theme.colors.error,
+    color: colors.error,
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -227,21 +238,47 @@ const createStyles = (theme) => StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
-    paddingBottom: 10,
+    paddingHorizontal: 20,
+    paddingTop: 50,
+    paddingBottom: 16,
+    backgroundColor: '#00D4AA',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
+    zIndex: 100,
   },
   title: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: theme.colors.text,
-    marginBottom: 4,
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 2,
   },
   subtitle: {
     fontSize: 14,
-    color: theme.colors.textSecondary,
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontWeight: '400',
+  },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  refreshButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 20,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  refreshIcon: {
+    fontSize: 18,
+    color: '#FFFFFF',
   },
   guideButton: {
-    backgroundColor: theme.colors.primary,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
     borderRadius: 20,
     width: 40,
     height: 40,
@@ -261,7 +298,7 @@ const createStyles = (theme) => StyleSheet.create({
   navTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: theme.colors.text,
+    color: colors.text,
     marginBottom: 12,
   },
   navButtons: {
@@ -270,12 +307,12 @@ const createStyles = (theme) => StyleSheet.create({
   },
   navButton: {
     flex: 1,
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: theme.colors.border,
+    borderColor: colors.border,
   },
   navIcon: {
     fontSize: 24,
@@ -284,12 +321,12 @@ const createStyles = (theme) => StyleSheet.create({
   navLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: theme.colors.text,
+    color: colors.text,
     marginBottom: 4,
   },
   navSubtext: {
     fontSize: 12,
-    color: theme.colors.textSecondary,
+    color: colors.textSecondary,
     textAlign: 'center',
   },
 });

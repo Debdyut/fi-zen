@@ -19,28 +19,34 @@ const PersonalizedCard = ({
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     loadPersonalizedContent();
   }, [cardType, user.userId, screenType]);
 
-  const loadPersonalizedContent = async () => {
+  const loadPersonalizedContent = async (isRefresh = false) => {
     try {
-      setLoading(true);
+      if (isRefresh) {
+        setRefreshing(true);
+      } else {
+        setLoading(true);
+      }
       setError(false);
       const personalizedContent = await PersonalizedCardService.getPersonalizedCardContent(
         cardType, 
         user, 
-        screenType
+        screenType,
+        isRefresh
       );
       setContent(personalizedContent);
     } catch (err) {
       console.error('Error loading personalized content:', err);
       setError(true);
-      // Use fallback content
       setContent(PersonalizedCardService.getFallbackContent(cardType, user));
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
@@ -87,23 +93,23 @@ const PersonalizedCard = ({
 
     switch (cardType) {
       case 'spending':
-        return <SpendingCardContent content={content} onChatRequest={handleChatPress} />;
+        return <SpendingCardContent content={content} onChatRequest={handleChatPress} onRefresh={() => loadPersonalizedContent(true)} refreshing={refreshing} />;
       case 'recommendations':
-        return <RecommendationsCardContent content={content} onChatRequest={handleChatPress} />;
+        return <RecommendationsCardContent content={content} onChatRequest={handleChatPress} onRefresh={() => loadPersonalizedContent(true)} refreshing={refreshing} />;
       case 'categoryBreakdown':
-        return <CategoryBreakdownCardContent content={content} onChatRequest={handleChatPress} />;
+        return <CategoryBreakdownCardContent content={content} onChatRequest={handleChatPress} onRefresh={() => loadPersonalizedContent(true)} refreshing={refreshing} />;
       case 'optimization':
-        return <OptimizationCardContent content={content} onChatRequest={handleChatPress} />;
+        return <OptimizationCardContent content={content} onChatRequest={handleChatPress} onRefresh={() => loadPersonalizedContent(true)} refreshing={refreshing} />;
       case 'smartInsights':
-        return <SmartInsightsCardContent content={content} onChatRequest={handleChatPress} />;
+        return <SmartInsightsCardContent content={content} onChatRequest={handleChatPress} onRefresh={() => loadPersonalizedContent(true)} refreshing={refreshing} />;
       case 'goalProgress':
-        return <GoalProgressCardContent content={content} onChatRequest={handleChatPress} />;
+        return <GoalProgressCardContent content={content} onChatRequest={handleChatPress} onRefresh={() => loadPersonalizedContent(true)} refreshing={refreshing} />;
       case 'riskAssessment':
-        return <RiskAssessmentCardContent content={content} onChatRequest={handleChatPress} />;
+        return <RiskAssessmentCardContent content={content} onChatRequest={handleChatPress} onRefresh={() => loadPersonalizedContent(true)} refreshing={refreshing} />;
       case 'opportunity':
-        return <OpportunityCardContent content={content} onChatRequest={handleChatPress} />;
+        return <OpportunityCardContent content={content} onChatRequest={handleChatPress} onRefresh={() => loadPersonalizedContent(true)} refreshing={refreshing} />;
       default:
-        return <DefaultCardContent cardType={cardType} content={content} onChatRequest={handleChatPress} />;
+        return <DefaultCardContent cardType={cardType} content={content} onChatRequest={handleChatPress} onRefresh={() => loadPersonalizedContent(true)} refreshing={refreshing} />;
     }
   };
 
@@ -115,13 +121,22 @@ const PersonalizedCard = ({
 };
 
 // Specific card content components
-const SpendingCardContent = ({ content, onChatRequest }) => (
+const SpendingCardContent = ({ content, onChatRequest, onRefresh, refreshing }) => (
   <View style={styles.cardContent}>
     <View style={styles.header}>
       <Text style={styles.title}>Spending Analysis</Text>
-      <TouchableOpacity style={styles.chatButton} onPress={onChatRequest}>
-        <Text style={styles.chatIcon}>💬</Text>
-      </TouchableOpacity>
+      <View style={styles.headerActions}>
+        <TouchableOpacity 
+          style={styles.refreshButton} 
+          onPress={onRefresh}
+          disabled={refreshing}
+        >
+          <Text style={styles.refreshIcon}>{refreshing ? '⟳' : '↻'}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.chatButton} onPress={onChatRequest}>
+          <Text style={styles.chatIcon}>💬</Text>
+        </TouchableOpacity>
+      </View>
     </View>
     
     <Text style={styles.insight}>💡 {content.insight}</Text>
@@ -133,13 +148,22 @@ const SpendingCardContent = ({ content, onChatRequest }) => (
   </View>
 );
 
-const RecommendationsCardContent = ({ content, onChatRequest }) => (
+const RecommendationsCardContent = ({ content, onChatRequest, onRefresh, refreshing }) => (
   <View style={styles.cardContent}>
     <View style={styles.header}>
       <Text style={styles.title}>Fi Recommendations</Text>
-      <TouchableOpacity style={styles.chatButton} onPress={onChatRequest}>
-        <Text style={styles.chatIcon}>🎯</Text>
-      </TouchableOpacity>
+      <View style={styles.headerActions}>
+        <TouchableOpacity 
+          style={styles.refreshButton} 
+          onPress={onRefresh}
+          disabled={refreshing}
+        >
+          <Text style={styles.refreshIcon}>{refreshing ? '⟳' : '↻'}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.chatButton} onPress={onChatRequest}>
+          <Text style={styles.chatIcon}>🎯</Text>
+        </TouchableOpacity>
+      </View>
     </View>
     
     <Text style={styles.productName}>{content.product}</Text>
@@ -152,13 +176,22 @@ const RecommendationsCardContent = ({ content, onChatRequest }) => (
   </View>
 );
 
-const CategoryBreakdownCardContent = ({ content, onChatRequest }) => (
+const CategoryBreakdownCardContent = ({ content, onChatRequest, onRefresh, refreshing }) => (
   <View style={styles.cardContent}>
     <View style={styles.header}>
       <Text style={styles.title}>Category Breakdown</Text>
-      <TouchableOpacity style={styles.chatButton} onPress={onChatRequest}>
-        <Text style={styles.chatIcon}>📊</Text>
-      </TouchableOpacity>
+      <View style={styles.headerActions}>
+        <TouchableOpacity 
+          style={styles.refreshButton} 
+          onPress={onRefresh}
+          disabled={refreshing}
+        >
+          <Text style={styles.refreshIcon}>{refreshing ? '⟳' : '↻'}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.chatButton} onPress={onChatRequest}>
+          <Text style={styles.chatIcon}>📊</Text>
+        </TouchableOpacity>
+      </View>
     </View>
     
     <Text style={styles.insight}>{content.topInsight}</Text>
@@ -171,13 +204,22 @@ const CategoryBreakdownCardContent = ({ content, onChatRequest }) => (
   </View>
 );
 
-const OptimizationCardContent = ({ content, onChatRequest }) => (
+const OptimizationCardContent = ({ content, onChatRequest, onRefresh, refreshing }) => (
   <View style={styles.cardContent}>
     <View style={styles.header}>
       <Text style={styles.title}>Optimization</Text>
-      <TouchableOpacity style={styles.chatButton} onPress={onChatRequest}>
-        <Text style={styles.chatIcon}>⚡</Text>
-      </TouchableOpacity>
+      <View style={styles.headerActions}>
+        <TouchableOpacity 
+          style={styles.refreshButton} 
+          onPress={onRefresh}
+          disabled={refreshing}
+        >
+          <Text style={styles.refreshIcon}>{refreshing ? '⟳' : '↻'}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.chatButton} onPress={onChatRequest}>
+          <Text style={styles.chatIcon}>⚡</Text>
+        </TouchableOpacity>
+      </View>
     </View>
     
     <Text style={styles.opportunity}>{content.opportunity}</Text>
@@ -191,13 +233,22 @@ const OptimizationCardContent = ({ content, onChatRequest }) => (
   </View>
 );
 
-const SmartInsightsCardContent = ({ content, onChatRequest }) => (
+const SmartInsightsCardContent = ({ content, onChatRequest, onRefresh, refreshing }) => (
   <View style={styles.cardContent}>
     <View style={styles.header}>
       <Text style={styles.title}>Smart Insights</Text>
-      <TouchableOpacity style={styles.chatButton} onPress={onChatRequest}>
-        <Text style={styles.chatIcon}>🧠</Text>
-      </TouchableOpacity>
+      <View style={styles.headerActions}>
+        <TouchableOpacity 
+          style={styles.refreshButton} 
+          onPress={onRefresh}
+          disabled={refreshing}
+        >
+          <Text style={styles.refreshIcon}>{refreshing ? '⟳' : '↻'}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.chatButton} onPress={onChatRequest}>
+          <Text style={styles.chatIcon}>🧠</Text>
+        </TouchableOpacity>
+      </View>
     </View>
     
     <Text style={styles.strength}>💪 {content.strength}</Text>
@@ -210,13 +261,22 @@ const SmartInsightsCardContent = ({ content, onChatRequest }) => (
   </View>
 );
 
-const GoalProgressCardContent = ({ content, onChatRequest }) => (
+const GoalProgressCardContent = ({ content, onChatRequest, onRefresh, refreshing }) => (
   <View style={styles.cardContent}>
     <View style={styles.header}>
       <Text style={styles.title}>Goal Progress</Text>
-      <TouchableOpacity style={styles.chatButton} onPress={onChatRequest}>
-        <Text style={styles.chatIcon}>🎯</Text>
-      </TouchableOpacity>
+      <View style={styles.headerActions}>
+        <TouchableOpacity 
+          style={styles.refreshButton} 
+          onPress={onRefresh}
+          disabled={refreshing}
+        >
+          <Text style={styles.refreshIcon}>{refreshing ? '⟳' : '↻'}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.chatButton} onPress={onChatRequest}>
+          <Text style={styles.chatIcon}>🎯</Text>
+        </TouchableOpacity>
+      </View>
     </View>
     
     <Text style={styles.assessment}>{content.assessment}</Text>
@@ -229,13 +289,22 @@ const GoalProgressCardContent = ({ content, onChatRequest }) => (
   </View>
 );
 
-const RiskAssessmentCardContent = ({ content, onChatRequest }) => (
+const RiskAssessmentCardContent = ({ content, onChatRequest, onRefresh, refreshing }) => (
   <View style={styles.cardContent}>
     <View style={styles.header}>
       <Text style={styles.title}>Risk Assessment</Text>
-      <TouchableOpacity style={styles.chatButton} onPress={onChatRequest}>
-        <Text style={styles.chatIcon}>🛡️</Text>
-      </TouchableOpacity>
+      <View style={styles.headerActions}>
+        <TouchableOpacity 
+          style={styles.refreshButton} 
+          onPress={onRefresh}
+          disabled={refreshing}
+        >
+          <Text style={styles.refreshIcon}>{refreshing ? '⟳' : '↻'}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.chatButton} onPress={onChatRequest}>
+          <Text style={styles.chatIcon}>🛡️</Text>
+        </TouchableOpacity>
+      </View>
     </View>
     
     <Text style={styles.riskLevel}>Risk: {content.riskLevel}</Text>
@@ -248,13 +317,22 @@ const RiskAssessmentCardContent = ({ content, onChatRequest }) => (
   </View>
 );
 
-const OpportunityCardContent = ({ content, onChatRequest }) => (
+const OpportunityCardContent = ({ content, onChatRequest, onRefresh, refreshing }) => (
   <View style={styles.cardContent}>
     <View style={styles.header}>
       <Text style={styles.title}>Growth Opportunity</Text>
-      <TouchableOpacity style={styles.chatButton} onPress={onChatRequest}>
-        <Text style={styles.chatIcon}>🚀</Text>
-      </TouchableOpacity>
+      <View style={styles.headerActions}>
+        <TouchableOpacity 
+          style={styles.refreshButton} 
+          onPress={onRefresh}
+          disabled={refreshing}
+        >
+          <Text style={styles.refreshIcon}>{refreshing ? '⟳' : '↻'}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.chatButton} onPress={onChatRequest}>
+          <Text style={styles.chatIcon}>🚀</Text>
+        </TouchableOpacity>
+      </View>
     </View>
     
     <Text style={styles.opportunity}>{content.opportunity}</Text>
@@ -267,13 +345,22 @@ const OpportunityCardContent = ({ content, onChatRequest }) => (
   </View>
 );
 
-const DefaultCardContent = ({ cardType, content, onChatRequest }) => (
+const DefaultCardContent = ({ cardType, content, onChatRequest, onRefresh, refreshing }) => (
   <View style={styles.cardContent}>
     <View style={styles.header}>
       <Text style={styles.title}>{cardType.charAt(0).toUpperCase() + cardType.slice(1)}</Text>
-      <TouchableOpacity style={styles.chatButton} onPress={onChatRequest}>
-        <Text style={styles.chatIcon}>💬</Text>
-      </TouchableOpacity>
+      <View style={styles.headerActions}>
+        <TouchableOpacity 
+          style={styles.refreshButton} 
+          onPress={onRefresh}
+          disabled={refreshing}
+        >
+          <Text style={styles.refreshIcon}>{refreshing ? '⟳' : '↻'}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.chatButton} onPress={onChatRequest}>
+          <Text style={styles.chatIcon}>💬</Text>
+        </TouchableOpacity>
+      </View>
     </View>
     
     <Text style={styles.content}>{content.content || content.title}</Text>
@@ -287,16 +374,17 @@ const DefaultCardContent = ({ cardType, content, onChatRequest }) => (
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    padding: 20,
-    marginHorizontal: 4,
+    borderRadius: 16,
+    padding: 16,
+    marginHorizontal: 8,
+    marginVertical: 6,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.12,
-    shadowRadius: 12,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 4,
     borderWidth: 1,
-    borderColor: '#F0F0F0',
+    borderColor: '#F5F5F5',
   },
   smallCard: {
     minHeight: 160,
@@ -314,30 +402,43 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 16,
-    paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F5F5F5',
+    alignItems: 'center',
+    marginBottom: 12,
+    paddingBottom: 8,
+  },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  refreshButton: {
+    backgroundColor: '#F0F9FF',
+    borderRadius: 16,
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#00D4AA',
+  },
+  refreshIcon: {
+    fontSize: 14,
+    color: '#00D4AA',
   },
   title: {
-    fontSize: 18,
-    fontWeight: '700',
+    fontSize: 16,
+    fontWeight: '600',
     color: '#1A1A1A',
-    marginBottom: 4,
+    flex: 1,
+    marginRight: 8,
   },
   chatButton: {
     backgroundColor: '#00D4AA',
-    borderRadius: 20,
-    width: 36,
-    height: 36,
+    borderRadius: 16,
+    width: 32,
+    height: 32,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#00D4AA',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 3,
   },
   chatIcon: {
     fontSize: 16,
@@ -381,37 +482,37 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   insight: {
-    fontSize: 15,
+    fontSize: 14,
     color: '#1A1A1A',
-    marginBottom: 10,
-    lineHeight: 22,
+    marginBottom: 8,
+    lineHeight: 20,
     fontWeight: '500',
   },
   tip: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#4A4A4A',
-    marginBottom: 14,
-    lineHeight: 20,
+    marginBottom: 10,
+    lineHeight: 18,
     fontWeight: '400',
   },
   productName: {
-    fontSize: 16,
-    fontWeight: '700',
+    fontSize: 15,
+    fontWeight: '600',
     color: '#00D4AA',
-    marginBottom: 6,
+    marginBottom: 4,
   },
   reason: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#4A4A4A',
-    marginBottom: 10,
-    lineHeight: 20,
+    marginBottom: 8,
+    lineHeight: 18,
   },
   benefit: {
-    fontSize: 15,
+    fontSize: 14,
     color: '#1A1A1A',
-    marginBottom: 14,
+    marginBottom: 10,
     fontWeight: '500',
-    lineHeight: 22,
+    lineHeight: 20,
   },
   attention: {
     fontSize: 14,
@@ -457,15 +558,15 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   professionTip: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#1A1A1A',
-    marginBottom: 14,
+    marginBottom: 10,
     fontStyle: 'italic',
-    lineHeight: 20,
+    lineHeight: 18,
     backgroundColor: '#F8F9FA',
-    padding: 12,
-    borderRadius: 8,
-    borderLeftWidth: 3,
+    padding: 10,
+    borderRadius: 6,
+    borderLeftWidth: 2,
     borderLeftColor: '#00D4AA',
   },
   assessment: {
@@ -522,25 +623,18 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     backgroundColor: '#00D4AA',
-    borderRadius: 12,
-    paddingVertical: 16,
-    paddingHorizontal: 20,
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 48,
-    shadowColor: '#00D4AA',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 4,
+    marginTop: 8,
   },
   actionText: {
     color: '#FFFFFF',
-    fontSize: 15,
-    fontWeight: '700',
-    letterSpacing: 0.5,
-    textAlign: 'left',
-    lineHeight: 20,
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
   },
 });
 

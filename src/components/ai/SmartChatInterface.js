@@ -38,13 +38,38 @@ const SmartChatInterface = ({
       borderBottomWidth: 1,
       borderBottomColor: '#E0E0E0',
     },
+    headerActions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
+    },
+    refreshButton: {
+      backgroundColor: '#F0F9FF',
+      borderRadius: 20,
+      width: 36,
+      height: 36,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderWidth: 1,
+      borderColor: '#00D4AA',
+    },
+    refreshButtonText: {
+      fontSize: 16,
+      color: '#00D4AA',
+      fontWeight: '600',
+    },
     headerTitle: {
       fontSize: 18,
       fontWeight: '600',
       color: colors.text || '#1A1A1A',
     },
     closeButton: {
-      padding: 8,
+      backgroundColor: '#F5F5F5',
+      borderRadius: 20,
+      width: 36,
+      height: 36,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     closeButtonText: {
       fontSize: 18,
@@ -468,9 +493,34 @@ Response:`;
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Fi Financial Assistant</Text>
-          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-            <Text style={styles.closeButtonText}>✕</Text>
-          </TouchableOpacity>
+          <View style={styles.headerActions}>
+            <TouchableOpacity 
+              onPress={() => {
+                setMessages([]);
+                const greeting = generateContextualGreeting(user, currentScreen);
+                const aiMessage = {
+                  id: Date.now(),
+                  type: 'ai',
+                  content: greeting,
+                  timestamp: new Date()
+                };
+                setMessages([aiMessage]);
+                const starters = getConversationStarters(user, currentScreen);
+                setMessages(prev => [...prev, {
+                  id: Date.now() + 1,
+                  type: 'suggestions',
+                  content: starters,
+                  timestamp: new Date()
+                }]);
+              }} 
+              style={styles.refreshButton}
+            >
+              <Text style={styles.refreshButtonText}>↻</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+              <Text style={styles.closeButtonText}>✕</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Messages */}

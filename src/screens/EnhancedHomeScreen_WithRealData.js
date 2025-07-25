@@ -165,7 +165,7 @@ const EnhancedHomeScreen = ({ navigation, route }) => {
   // Fi-style Sticky Header
   const StickyHeader = () => (
     <Animated.View style={[styles.stickyHeader, { height: headerHeight }]}>
-      <StatusBar barStyle="light-content" backgroundColor={FiColors.background} />
+      <StatusBar barStyle="light-content" backgroundColor="#00D4AA" />
       
       <TouchableArea 
         style={styles.profileButton}
@@ -413,7 +413,7 @@ const createStyles = () => StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: FiColors.textInverse + '10',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
     justifyContent: 'center',
     alignItems: 'center',
   },

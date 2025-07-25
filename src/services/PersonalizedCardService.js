@@ -12,11 +12,11 @@ class PersonalizedCardService {
   }
 
   // Generate personalized content for a specific card type
-  async getPersonalizedCardContent(cardType, user, screenType) {
+  async getPersonalizedCardContent(cardType, user, screenType, forceRefresh = false) {
     const cacheKey = `${cardType}-${user.userId}-${screenType}`;
     
-    // Check cache first
-    if (this.cache.has(cacheKey)) {
+    // Check cache first (skip if force refresh)
+    if (!forceRefresh && this.cache.has(cacheKey)) {
       const cached = this.cache.get(cacheKey);
       if (Date.now() - cached.timestamp < this.cacheTimeout) {
         return cached.data;

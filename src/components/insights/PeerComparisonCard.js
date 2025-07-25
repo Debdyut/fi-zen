@@ -1,21 +1,16 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { FadeInUp } from '../animations/AnimatedCard';
+import { useTheme } from '../../theme/ThemeContext';
+import { getThemeColors } from '../../theme/consolidatedFiColors';
 
-const FiColors = {
-  background: '#1A1A1A',
-  surface: '#FFFFFF',
-  primary: '#00D4AA',
-  text: '#1A1A1A',
-  textSecondary: '#666666',
-  success: '#00D4AA',
-  warning: '#FFB800',
-  error: '#FF6B6B',
-  border: '#E0E0E0',
-};
+// Remove hardcoded colors - will use theme colors instead
 
 const PeerComparisonCard = ({ peerComparison, userProfile }) => {
   const [showDetails, setShowDetails] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const { isDarkMode } = useTheme();
+  const colors = getThemeColors(isDarkMode);
 
   // Generate specific peer group description
   const getPeerGroupDescription = (profile) => {
@@ -97,55 +92,142 @@ const PeerComparisonCard = ({ peerComparison, userProfile }) => {
   const peerGroup = getPeerGroupDescription(userProfile);
   const insight = getPerformanceInsight(peerComparison?.percentile || 50);
   const metrics = getComparisonMetrics(peerComparison, userProfile);
+  const percentile = peerComparison?.percentile || 50;
+  const previousPercentile = percentile - 5; // Mock previous data
+  const percentileChange = percentile - previousPercentile;
+
+  // Percentile Visualization Component (simplified)
+  const PercentileChart = () => {
+    const position = percentile;
+    
+    return (
+      <View style={styles.percentileChart}>
+        <View style={styles.percentileTrack}>
+          <View 
+            style={[
+              styles.percentileFill, 
+              { 
+                width: `${position}%`,
+                backgroundColor: insight.color
+              }
+            ]} 
+          />
+        </View>
+        <Text style={[styles.percentileText, { color: insight.color }]}>
+          {position}%
+        </Text>
+      </View>
+    );
+  };
+
+  const handleQuickAction = (action) => {
+    console.log('Quick action:', action);
+  };
 
   return (
     <FadeInUp delay={200}>
-      <View style={styles.card}>
+      <View style={[styles.card, { backgroundColor: insight.color + '05' }]}>
         <View style={styles.cardHeader}>
-          <Text style={styles.cardIcon}>{insight.icon}</Text>
+          <View style={styles.iconContainer}>
+            <View style={[styles.iconGradient, { backgroundColor: insight.color + '15' }]}>
+              <Text style={styles.cardIcon}>{insight.icon}</Text>
+            </View>
+          </View>
           <View style={styles.cardTitleContainer}>
             <View style={styles.titleRow}>
               <Text style={styles.cardTitle}>Peer Comparison</Text>
-              <TouchableOpacity 
-                onPress={() => setShowDetails(true)}
-                style={styles.detailsButton}
-              >
-                <Text style={styles.detailsIcon}>ℹ️</Text>
-              </TouchableOpacity>
+              <View style={styles.headerActions}>
+                <TouchableOpacity 
+                  onPress={() => setIsBookmarked(!isBookmarked)}
+                  style={styles.bookmarkButton}
+                >
+                  <Text style={styles.bookmarkIcon}>
+                    {isBookmarked ? '🔖' : '📌'}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  onPress={() => setShowDetails(true)}
+                  style={styles.detailsButton}
+                >
+                  <Text style={styles.detailsIcon}>ℹ️</Text>
+                </TouchableOpacity>
+              </View>
             </View>
             <Text style={styles.cardDescription}>vs. {peerGroup}</Text>
           </View>
         </View>
         
         <View style={styles.cardContent}>
-          <View style={styles.mainMetric}>
-            <Text style={[styles.cardValue, { color: insight.color }]}>
-              {insight.rank}
-            </Text>
-            <Text style={[styles.statusText, { color: insight.color }]}>
-              {insight.status}
-            </Text>
+          <View style={styles.metricsRow}>
+            <View style={styles.mainMetric}>
+              <View style={styles.valueWithTrend}>
+                <Text style={[styles.cardValue, { color: insight.color }]}>
+                  {insight.rank}
+                </Text>
+                <View style={styles.trendIndicator}>
+                  <Text style={[
+                    styles.trendArrow,
+                    { color: percentileChange >= 0 ? colors.success : colors.error }
+                  ]}>
+                    {percentileChange >= 0 ? '↗' : '↘'}
+                  </Text>
+                  <Text style={styles.trendValue}>
+                    {Math.abs(percentileChange)}%
+                  </Text>
+                </View>
+              </View>
+              <Text style={[styles.statusText, { color: insight.color }]}>
+                {insight.status}
+              </Text>
+            </View>
+            <View style={styles.chartContainer}>
+              <PercentileChart />
+              <Text style={styles.chartLabel}>Percentile</Text>
+            </View>
+          </View>
+          
+          <View style={styles.benchmarkSection}>
+            <Text style={styles.benchmarkTitle}>📊 Savings Comparison</Text>
+            <View style={styles.comparisonRow}>
+              <Text style={styles.comparisonLabel}>You save:</Text>
+              <Text style={[styles.comparisonValue, { color: metrics.isAbove ? colors.success : colors.warning }]}>
+                ₹{metrics.userSavings.toLocaleString()}/month
+              </Text>
+            </View>
+            <View style={styles.comparisonRow}>
+              <Text style={styles.comparisonLabel}>Peer average:</Text>
+              <Text style={styles.comparisonValue}>₹{metrics.avgSavings.toLocaleString()}/month</Text>
+            </View>
+            {metrics.difference !== 0 && (
+              <Text style={[styles.differenceText, { color: metrics.isAbove ? colors.success : colors.warning }]}>
+                {metrics.isAbove ? '+' : ''}₹{metrics.difference.toLocaleString()} vs. peers
+              </Text>
+            )}
           </View>
           
           <Text style={styles.insightMessage}>{insight.message}</Text>
           
-          <View style={styles.comparisonRow}>
-            <Text style={styles.comparisonLabel}>You save:</Text>
-            <Text style={[styles.comparisonValue, { color: metrics.isAbove ? FiColors.success : FiColors.warning }]}>
-              ₹{metrics.userSavings.toLocaleString()}/month
-            </Text>
+          <View style={styles.quickActions}>
+            <Text style={styles.quickActionsTitle}>⚡ Quick Actions</Text>
+            <View style={styles.actionButtons}>
+              <TouchableOpacity 
+                style={[styles.actionButton, { backgroundColor: insight.color + '15' }]}
+                onPress={() => handleQuickAction('improve')}
+              >
+                <Text style={[styles.actionButtonText, { color: insight.color }]}>
+                  📈 Improve Rank
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.actionButton, { backgroundColor: colors.primary + '15' }]}
+                onPress={() => handleQuickAction('compare')}
+              >
+                <Text style={[styles.actionButtonText, { color: colors.primary }]}>
+                  🔍 View Details
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          
-          <View style={styles.comparisonRow}>
-            <Text style={styles.comparisonLabel}>Peer average:</Text>
-            <Text style={styles.comparisonValue}>₹{metrics.avgSavings.toLocaleString()}/month</Text>
-          </View>
-          
-          {metrics.difference !== 0 && (
-            <Text style={[styles.differenceText, { color: metrics.isAbove ? FiColors.success : FiColors.warning }]}>
-              {metrics.isAbove ? '+' : ''}₹{metrics.difference.toLocaleString()} vs. peers
-            </Text>
-          )}
         </View>
 
         {/* Details Modal */}
@@ -208,24 +290,35 @@ const PeerComparisonCard = ({ peerComparison, userProfile }) => {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: FiColors.surface,
-    borderRadius: 16,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
     padding: 20,
-    marginBottom: 12,
+    marginBottom: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 212, 170, 0.1)',
   },
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginBottom: 16,
   },
+  iconContainer: {
+    marginRight: 12,
+  },
+  iconGradient: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   cardIcon: {
     fontSize: 24,
-    marginRight: 12,
   },
   cardTitleContainer: {
     flex: 1,
@@ -234,6 +327,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  headerActions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  bookmarkButton: {
+    padding: 4,
+  },
+  bookmarkIcon: {
+    fontSize: 16,
   },
   cardTitle: {
     fontSize: 18,
@@ -254,10 +357,42 @@ const styles = StyleSheet.create({
   cardContent: {
     alignItems: 'flex-start',
   },
+  metricsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    width: '100%',
+    marginBottom: 16,
+  },
   mainMetric: {
+    flex: 1,
+  },
+  valueWithTrend: {
     flexDirection: 'row',
     alignItems: 'baseline',
-    marginBottom: 12,
+    marginBottom: 8,
+  },
+  trendIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 12,
+  },
+  trendArrow: {
+    fontSize: 16,
+    marginRight: 4,
+  },
+  trendValue: {
+    fontSize: 12,
+    color: FiColors.textSecondary,
+    fontWeight: '600',
+  },
+  chartContainer: {
+    alignItems: 'center',
+  },
+  chartLabel: {
+    fontSize: 10,
+    color: FiColors.textSecondary,
+    marginTop: 4,
   },
   cardValue: {
     fontSize: 28,
@@ -273,6 +408,19 @@ const styles = StyleSheet.create({
     color: FiColors.text,
     lineHeight: 20,
     marginBottom: 16,
+  },
+  benchmarkSection: {
+    width: '100%',
+    marginBottom: 16,
+    backgroundColor: '#F8F9FA',
+    borderRadius: 12,
+    padding: 12,
+  },
+  benchmarkTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: FiColors.text,
+    marginBottom: 8,
   },
   comparisonRow: {
     flexDirection: 'row',
@@ -295,6 +443,51 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginTop: 8,
     alignSelf: 'flex-end',
+  },
+  quickActions: {
+    width: '100%',
+    marginTop: 8,
+  },
+  quickActionsTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: FiColors.text,
+    marginBottom: 8,
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  actionButton: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  actionButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  percentileChart: {
+    width: 100,
+    alignItems: 'center',
+  },
+  percentileTrack: {
+    width: '100%',
+    height: 4,
+    backgroundColor: '#E0E0E0',
+    borderRadius: 2,
+    overflow: 'hidden',
+    marginBottom: 4,
+  },
+  percentileFill: {
+    height: '100%',
+    borderRadius: 2,
+  },
+  percentileText: {
+    fontSize: 12,
+    fontWeight: '600',
   },
   modalOverlay: {
     flex: 1,

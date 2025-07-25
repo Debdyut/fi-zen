@@ -2,44 +2,69 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { FadeInUp } from '../animations/AnimatedCard';
 import AnalyticsEngine from '../../utils/AnalyticsEngine';
-
-const FiColors = {
-  surface: '#FFFFFF',
-  primary: '#00D4AA',
-  text: '#1A1A1A',
-  textSecondary: '#666666',
-  success: '#00D4AA',
-  warning: '#FFB800',
-  error: '#FF6B6B',
-  border: '#E0E0E0',
-};
+import { useTheme } from '../../theme/ThemeContext';
+import { getThemeColors } from '../../theme/consolidatedFiColors';
 
 const SpendingTrendsCard = ({ userProfile, spendingData }) => {
   const [activeTab, setActiveTab] = useState('categories');
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const { isDarkMode } = useTheme();
+  const colors = getThemeColors(isDarkMode);
   
   const analytics = AnalyticsEngine.analyzeSpendingTrends(userProfile, spendingData);
   
   // Get trend color and icon
   const getTrendDisplay = (trend) => {
     const displays = {
-      increasing: { color: FiColors.error, icon: '📈', text: 'Increasing' },
-      decreasing: { color: FiColors.success, icon: '📉', text: 'Decreasing' },
-      stable: { color: FiColors.primary, icon: '➡️', text: 'Stable' }
+      increasing: { color: colors.error, icon: '📈', text: 'Increasing' },
+      decreasing: { color: colors.success, icon: '📉', text: 'Decreasing' },
+      stable: { color: colors.primary, icon: '➡️', text: 'Stable' }
     };
     return displays[trend.direction] || displays.stable;
   };
 
   // Get volatility color
   const getVolatilityColor = (level) => {
-    const colors = {
-      high: FiColors.error,
-      moderate: FiColors.warning,
-      low: FiColors.success
+    const volatilityColors = {
+      high: colors.error,
+      moderate: colors.warning,
+      low: colors.success
     };
-    return colors[level] || FiColors.primary;
+    return volatilityColors[level] || colors.primary;
   };
 
   const trendDisplay = getTrendDisplay(analytics.trend);
+
+  // Enhanced Mini Trend Chart (simplified)
+  const TrendChart = () => {
+    const data = [65, 70, 68, 75, 72, 78]; // Mock 6-month data
+    const maxValue = Math.max(...data);
+    
+    return (
+      <View style={styles.trendChart}>
+        {data.map((value, index) => {
+          const height = (value / maxValue) * 40; // Max height 40
+          return (
+            <View key={index} style={styles.trendColumn}>
+              <View 
+                style={[
+                  styles.trendBar, 
+                  { 
+                    height: height,
+                    backgroundColor: trendDisplay.color
+                  }
+                ]} 
+              />
+            </View>
+          );
+        })}
+      </View>
+    );
+  };
+
+  const handleQuickAction = (action) => {
+    console.log('Quick action:', action);
+  };
 
   const TabButton = ({ id, title, active, onPress }) => (
     <TouchableOpacity
@@ -99,8 +124,8 @@ const SpendingTrendsCard = ({ userProfile, spendingData }) => {
           <View style={styles.categoryTrend}>
             <Text style={[
               styles.categoryTrendText,
-              { color: data.trend === 'increasing' ? FiColors.error : 
-                       data.trend === 'decreasing' ? FiColors.success : FiColors.primary }
+              { color: data.trend === 'increasing' ? colors.error : 
+                       data.trend === 'decreasing' ? colors.success : colors.primary }
             ]}>
               {data.trend === 'increasing' ? '↗️' : data.trend === 'decreasing' ? '↘️' : '➡️'} 
               {data.change.toFixed(1)}%
@@ -125,8 +150,8 @@ const SpendingTrendsCard = ({ userProfile, spendingData }) => {
             <Text style={styles.confidenceLabel}>Confidence:</Text>
             <Text style={[
               styles.confidenceValue,
-              { color: analytics.predictions.confidence === 'high' ? FiColors.success :
-                       analytics.predictions.confidence === 'medium' ? FiColors.warning : FiColors.error }
+              { color: analytics.predictions.confidence === 'high' ? colors.success :
+                       analytics.predictions.confidence === 'medium' ? colors.warning : colors.error }
             ]}>
               {analytics.predictions.confidence.toUpperCase()}
             </Text>
@@ -149,14 +174,31 @@ const SpendingTrendsCard = ({ userProfile, spendingData }) => {
 
   return (
     <FadeInUp delay={200}>
-      <View style={styles.card}>
+      <View style={[styles.card, { backgroundColor: trendDisplay.color + '05' }]}>
         <View style={styles.cardHeader}>
-          <Text style={styles.cardIcon}>📊</Text>
+          <View style={styles.iconContainer}>
+            <View style={[styles.iconGradient, { backgroundColor: trendDisplay.color + '15' }]}>
+              <Text style={styles.cardIcon}>📊</Text>
+            </View>
+          </View>
           <View style={styles.cardTitleContainer}>
-            <Text style={styles.cardTitle}>Spending Analytics</Text>
+            <View style={styles.titleRow}>
+              <Text style={styles.cardTitle}>Spending Analytics</Text>
+              <TouchableOpacity 
+                onPress={() => setIsBookmarked(!isBookmarked)}
+                style={styles.bookmarkButton}
+              >
+                <Text style={styles.bookmarkIcon}>
+                  {isBookmarked ? '🔖' : '📌'}
+                </Text>
+              </TouchableOpacity>
+            </View>
             <Text style={styles.cardDescription}>
               6-month spending analysis and predictions
             </Text>
+          </View>
+          <View style={styles.headerChart}>
+            <TrendChart />
           </View>
         </View>
         
@@ -184,6 +226,28 @@ const SpendingTrendsCard = ({ userProfile, spendingData }) => {
         {activeTab === 'trends' && <TrendsTab />}
         {activeTab === 'categories' && <CategoriesTab />}
         {activeTab === 'predictions' && <PredictionsTab />}
+        
+        <View style={styles.quickActions}>
+          <Text style={styles.quickActionsTitle}>⚡ Quick Actions</Text>
+          <View style={styles.actionButtons}>
+            <TouchableOpacity 
+              style={[styles.actionButton, { backgroundColor: trendDisplay.color + '15' }]}
+              onPress={() => handleQuickAction('optimize')}
+            >
+              <Text style={[styles.actionButtonText, { color: trendDisplay.color }]}>
+                🎯 Optimize Spending
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[styles.actionButton, { backgroundColor: colors.primary + '15' }]}
+              onPress={() => handleQuickAction('budget')}
+            >
+              <Text style={[styles.actionButtonText, { color: colors.primary }]}>
+                💰 Set Budget
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
     </FadeInUp>
   );
@@ -191,37 +255,61 @@ const SpendingTrendsCard = ({ userProfile, spendingData }) => {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: FiColors.surface,
-    borderRadius: 16,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
     padding: 20,
-    marginBottom: 12,
+    marginBottom: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 212, 170, 0.1)',
   },
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginBottom: 16,
   },
+  iconContainer: {
+    marginRight: 12,
+  },
+  iconGradient: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   cardIcon: {
     fontSize: 24,
-    marginRight: 12,
   },
   cardTitleContainer: {
     flex: 1,
   },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  bookmarkButton: {
+    padding: 4,
+  },
+  bookmarkIcon: {
+    fontSize: 16,
+  },
+  headerChart: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   cardTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: FiColors.text,
     marginBottom: 4,
   },
   cardDescription: {
     fontSize: 14,
-    color: FiColors.textSecondary,
   },
   tabContainer: {
     flexDirection: 'row',
@@ -238,7 +326,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   activeTab: {
-    backgroundColor: FiColors.surface,
+    backgroundColor: '#FFFFFF',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
@@ -247,11 +335,9 @@ const styles = StyleSheet.create({
   },
   tabText: {
     fontSize: 14,
-    color: FiColors.textSecondary,
     fontWeight: '500',
   },
   activeTabText: {
-    color: FiColors.text,
     fontWeight: '600',
   },
   tabContent: {
@@ -265,7 +351,6 @@ const styles = StyleSheet.create({
   },
   metricLabel: {
     fontSize: 14,
-    color: FiColors.textSecondary,
   },
   metricValue: {
     fontSize: 14,
@@ -285,7 +370,6 @@ const styles = StyleSheet.create({
   },
   insightText: {
     fontSize: 13,
-    color: FiColors.textSecondary,
     marginBottom: 8,
     lineHeight: 18,
   },
@@ -293,19 +377,18 @@ const styles = StyleSheet.create({
     marginTop: 12,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: FiColors.border + '30',
+    borderTopColor: '#E0E0E030',
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: FiColors.text,
     marginBottom: 12,
   },
   categoryItem: {
     marginBottom: 16,
     paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: FiColors.border + '20',
+    borderBottomColor: '#E0E0E020',
   },
   categoryHeader: {
     flexDirection: 'row',
@@ -316,12 +399,10 @@ const styles = StyleSheet.create({
   categoryName: {
     fontSize: 15,
     fontWeight: '500',
-    color: FiColors.text,
   },
   categoryAmount: {
     fontSize: 15,
     fontWeight: '600',
-    color: FiColors.text,
   },
   categoryTrend: {
     marginBottom: 4,
@@ -332,7 +413,6 @@ const styles = StyleSheet.create({
   },
   categoryInsight: {
     fontSize: 12,
-    color: FiColors.textSecondary,
   },
   predictionCard: {
     backgroundColor: '#F8FAFC',
@@ -348,7 +428,6 @@ const styles = StyleSheet.create({
   predictionAmount: {
     fontSize: 24,
     fontWeight: '700',
-    color: FiColors.text,
   },
   confidenceContainer: {
     flexDirection: 'row',
@@ -356,7 +435,6 @@ const styles = StyleSheet.create({
   },
   confidenceLabel: {
     fontSize: 12,
-    color: FiColors.textSecondary,
     marginRight: 4,
   },
   confidenceValue: {
@@ -365,7 +443,6 @@ const styles = StyleSheet.create({
   },
   predictionSubtext: {
     fontSize: 14,
-    color: FiColors.textSecondary,
     marginBottom: 12,
   },
   factorsSection: {
@@ -374,13 +451,53 @@ const styles = StyleSheet.create({
   factorsTitle: {
     fontSize: 13,
     fontWeight: '600',
-    color: FiColors.text,
     marginBottom: 4,
   },
   factorItem: {
     fontSize: 12,
-    color: FiColors.textSecondary,
     marginBottom: 2,
+  },
+  quickActions: {
+    width: '100%',
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#F0F0F0',
+  },
+  quickActionsTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  actionButton: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  actionButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  trendChart: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    height: 40,
+    width: 120,
+    gap: 3,
+  },
+  trendColumn: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  trendBar: {
+    borderRadius: 2,
+    minHeight: 3,
   },
 });
 

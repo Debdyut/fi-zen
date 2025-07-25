@@ -238,7 +238,7 @@ export const DynamicCardGrid = ({ screenType, user, onChatRequest, children }) =
   const renderCard = (cardType, config) => {
     const cardStyle = {
       width: '100%',
-      marginBottom: 16
+      marginBottom: 12
     };
 
     return (
@@ -311,7 +311,8 @@ const DynamicCard = ({ type, config, user, screenType, onChatRequest }) => {
 const styles = StyleSheet.create({
   gridContainer: {
     flex: 1,
-    padding: 16,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
   },
 });
 
