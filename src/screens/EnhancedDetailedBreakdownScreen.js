@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ActivityIndicator,
+  StatusBar,
 } from 'react-native';
 import { CardProvider, DynamicCardGrid } from '../components/common/DynamicCardSystem';
 import SmartChatInterface from '../components/ai/SmartChatInterface';
@@ -16,7 +17,8 @@ import { useSharedUser } from '../context/SharedUserContext';
 const EnhancedDetailedBreakdownScreen = ({ route, navigation }) => {
   const [chatVisible, setChatVisible] = useState(false);
   const [chatInitialMessage, setChatInitialMessage] = useState(null);
-  const styles = useThemedStyles(createStyles);
+  const { colors } = useThemedStyles();
+  const styles = createStyles(colors);
 
   // Get user from route params if available
   const { userId } = route.params || {};
@@ -84,7 +86,8 @@ const EnhancedDetailedBreakdownScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
+      <StatusBar barStyle="light-content" backgroundColor="#00D4AA" />
+      
       <View style={styles.header}>
         <TouchableOpacity 
           onPress={() => navigation.goBack()}
@@ -93,10 +96,18 @@ const EnhancedDetailedBreakdownScreen = ({ route, navigation }) => {
           <Text style={styles.backButtonText}>←</Text>
         </TouchableOpacity>
         <View style={styles.headerContent}>
-          <Text style={styles.headerTitle}>Spending Breakdown</Text>
-          <Text style={styles.headerSubtitle}>
+          <Text style={styles.title}>Spending Breakdown</Text>
+          <Text style={styles.subtitle}>
             ₹{totalSpending.toLocaleString()} total this month
           </Text>
+        </View>
+        <View style={styles.headerActions}>
+          <TouchableOpacity 
+            style={styles.refreshButton}
+            onPress={refreshUserData}
+          >
+            <Text style={styles.refreshIcon}>↻</Text>
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -145,32 +156,32 @@ const EnhancedDetailedBreakdownScreen = ({ route, navigation }) => {
   );
 };
 
-const createStyles = (theme) => StyleSheet.create({
+const createStyles = (colors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: colors.background,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: theme.colors.background,
+    backgroundColor: colors.background,
   },
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: theme.colors.text,
+    color: colors.text,
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: theme.colors.background,
+    backgroundColor: colors.background,
     padding: 20,
   },
   errorText: {
     fontSize: 16,
-    color: theme.colors.error,
+    color: colors.error,
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -188,43 +199,75 @@ const createStyles = (theme) => StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 20,
-    paddingBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.border,
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: 50,
+    paddingBottom: 16,
+    backgroundColor: '#00D4AA',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
+    zIndex: 100,
   },
   backButton: {
-    marginRight: 16,
-    padding: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 20,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
   },
   backButtonText: {
-    fontSize: 24,
-    color: theme.colors.text,
+    fontSize: 18,
+    color: '#FFFFFF',
+    fontWeight: '600',
   },
   headerContent: {
     flex: 1,
   },
-  headerTitle: {
+  title: {
     fontSize: 20,
     fontWeight: '600',
-    color: theme.colors.text,
-    marginBottom: 4,
+    color: '#FFFFFF',
+    marginBottom: 2,
   },
-  headerSubtitle: {
+  subtitle: {
     fontSize: 14,
-    color: theme.colors.textSecondary,
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontWeight: '400',
+  },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  refreshButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 20,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  refreshIcon: {
+    fontSize: 18,
+    color: '#FFFFFF',
   },
   content: {
     flex: 1,
   },
   contextualNavigation: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
     marginBottom: 8,
   },
   navTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: theme.colors.text,
+    color: colors.text,
     marginBottom: 12,
   },
   navButtons: {
@@ -233,12 +276,12 @@ const createStyles = (theme) => StyleSheet.create({
   },
   navButton: {
     flex: 1,
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: theme.colors.border,
+    borderColor: colors.border,
   },
   navIcon: {
     fontSize: 24,
@@ -247,12 +290,12 @@ const createStyles = (theme) => StyleSheet.create({
   navLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: theme.colors.text,
+    color: colors.text,
     marginBottom: 4,
   },
   navSubtext: {
     fontSize: 12,
-    color: theme.colors.textSecondary,
+    color: colors.textSecondary,
     textAlign: 'center',
   },
 });

@@ -43,7 +43,7 @@ class PersonalizedCardService {
       
       const response = await this.callMessageEndpoint(contextualPrompt, user);
       
-      const personalizedContent = this.parseCardResponse(response, cardType);
+      const personalizedContent = this.parseCardResponse(response, cardType, user);
       
       // Cache the result
       this.cache.set(cacheKey, {
@@ -93,13 +93,9 @@ Analyze their spending categories and provide:
 Format as JSON: {"topInsight": "...", "attentionCategory": "...", "opportunity": "...", "savingsAmount": "..."}`,
 
       optimization: `${baseContext}
-Generate spending optimization suggestions:
-1. Biggest optimization opportunity
-2. Specific action to take
-3. Expected monthly savings
-4. Difficulty level (Easy/Medium/Hard)
+Monthly Spending: ${JSON.stringify(user.monthlySpending || {})}
 
-Format as JSON: {"opportunity": "...", "action": "...", "savings": "...", "difficulty": "..."}`,
+Provide a brief spending optimization suggestion for this user (max 60 words). Focus on their biggest opportunity to save money based on their spending pattern and income level.`,
 
       smartInsights: `${baseContext}
 Financial Health: ${JSON.stringify(user.financialHealth || {})}
@@ -207,48 +203,21 @@ Analyze spending trends and provide:
 
 Format as JSON: {"significantTrend": "...", "driver": "...", "assessment": "...", "action": "..."}`,
 
-      optimization: `${baseContext}
-Monthly Spending: ${JSON.stringify(user.monthlySpending || {})}
 
-Generate spending optimization suggestions:
-1. Biggest optimization opportunity
-2. Specific action to take
-3. Expected monthly savings
-4. Difficulty level (Easy/Medium/Hard)
-
-Format as JSON: {"opportunity": "...", "action": "...", "savings": "...", "difficulty": "..."}`,
 
       savingsOpportunity: `${baseContext}
 Monthly Spending: ${JSON.stringify(user.monthlySpending || {})}
 Monthly Income: ₹${user.profile?.monthlyIncome || user.monthlyIncome}
 
-Identify savings opportunities:
-1. Potential monthly savings amount
-2. Easiest category to optimize
-3. Specific strategy to implement
-4. Timeline to see results
-
-Format as JSON: {"potentialSavings": "...", "easiestCategory": "...", "strategy": "...", "timeline": "..."}`,
+Provide a brief savings opportunity suggestion for this user (max 60 words). Focus on the easiest way they can save money based on their spending pattern.`,
 
       riskAssessment: `${baseContext}
 Financial Health Score: ${user.financialHealth?.score || 'Unknown'}
 
-Provide risk assessment:
-1. Current risk level interpretation
-2. Main risk factor to address
-3. Protection strategy
-4. Confidence booster
-
-Format as JSON: {"riskLevel": "...", "mainRisk": "...", "strategy": "...", "booster": "..."}`,
+Provide a brief risk assessment for this user (max 40 words):`,
 
       opportunity: `${baseContext}
-Generate growth opportunities:
-1. Biggest growth opportunity for their profile
-2. Specific steps to capitalize
-3. Timeline for results
-4. Expected outcome
-
-Format as JSON: {"opportunity": "...", "steps": "...", "timeline": "...", "outcome": "..."}`
+Identify the biggest growth opportunity for this user (max 40 words):`
     };
 
     return cardPrompts[cardType] || cardPrompts.recommendations;
@@ -277,9 +246,28 @@ Format as JSON: {"opportunity": "...", "steps": "...", "timeline": "...", "outco
   }
 
   // Parse the AI response into structured card content
-  parseCardResponse(response, cardType) {
+  parseCardResponse(response, cardType, user) {
     // Clean and use the response directly
     const cleanResponse = response.trim();
+    
+    // Try to parse JSON responses first
+    try {
+      // Clean up common JSON formatting issues
+      let jsonString = cleanResponse;
+      if (jsonString.includes('```json')) {
+        jsonString = jsonString.replace(/```json\s*|```/g, '').trim();
+      }
+      if (jsonString.includes('```')) {
+        jsonString = jsonString.replace(/```/g, '').trim();
+      }
+      
+      const jsonResponse = JSON.parse(jsonString);
+      if (typeof jsonResponse === 'object') {
+        return jsonResponse;
+      }
+    } catch (e) {
+      // Not JSON, continue with text parsing
+    }
     
     switch (cardType) {
       case 'spending':
@@ -287,11 +275,41 @@ Format as JSON: {"opportunity": "...", "steps": "...", "timeline": "...", "outco
       case 'recommendations':
         return { product: 'Fi Federal Bank', reason: cleanResponse, cta: 'Learn More' };
       case 'smartInsights':
-        return { strength: cleanResponse, improvement: 'Consider diversifying investments' };
+        return { 
+          strength: cleanResponse, 
+          improvement: 'Consider diversifying investments',
+          professionTip: `As a ${user.profile?.profession || 'professional'}, focus on skill development investments`
+        };
       case 'strategy':
         return { strategy: cleanResponse, optimization: 'Review monthly progress' };
       case 'nextSteps':
         return { weeklyAction: cleanResponse, monthlyReview: 'Track goal progress' };
+      case 'riskAssessment':
+        return { 
+          riskLevel: 'Moderate', 
+          mainRisk: cleanResponse || 'Limited emergency fund coverage', 
+          strategy: 'Build 6-month emergency fund and diversify investments' 
+        };
+      case 'optimization':
+        return { 
+          opportunity: cleanResponse || 'Review your highest spending category for potential savings', 
+          action: 'Analyze spending patterns and set category budgets', 
+          savings: 'Up to ₹5,000 monthly', 
+          difficulty: 'Easy' 
+        };
+      case 'savingsOpportunity':
+        return { 
+          potentialSavings: 'Up to ₹3,000 monthly', 
+          easiestCategory: 'Food & Dining', 
+          strategy: cleanResponse || 'Cook more meals at home and limit dining out to weekends', 
+          timeline: '2-4 weeks to see results' 
+        };
+      case 'opportunity':
+        return { 
+          opportunity: cleanResponse || 'Increase investment allocation for long-term growth', 
+          steps: 'Start with SIP investments and gradually increase allocation', 
+          timeline: '3-6 months to see initial results' 
+        };
       default:
         return { content: cleanResponse, action: 'Learn More' };
     }
@@ -349,6 +367,32 @@ Format as JSON: {"opportunity": "...", "steps": "...", "timeline": "...", "outco
         improvement: 'Consider increasing your investment allocation',
         professionTip: `As a ${user.profile?.profession || user.profession}, focus on skill development investments`,
         milestone: 'Build a 6-month emergency fund'
+      },
+      
+      riskAssessment: {
+        riskLevel: 'Moderate',
+        mainRisk: 'Limited emergency fund coverage',
+        strategy: 'Build 6-month emergency fund and diversify investments'
+      },
+      
+      optimization: {
+        opportunity: 'Review your highest spending category for potential savings',
+        action: 'Analyze spending patterns and set category budgets',
+        savings: 'Up to ₹5,000 monthly',
+        difficulty: 'Easy'
+      },
+      
+      savingsOpportunity: {
+        potentialSavings: 'Up to ₹3,000 monthly',
+        easiestCategory: 'Food & Dining',
+        strategy: 'Cook more meals at home and limit dining out to weekends',
+        timeline: '2-4 weeks to see results'
+      },
+      
+      opportunity: {
+        opportunity: 'Increase investment allocation for long-term growth',
+        steps: 'Start with SIP investments and gradually increase allocation',
+        timeline: '3-6 months to see initial results'
       }
     };
 

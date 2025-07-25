@@ -63,8 +63,8 @@ const TrendAnalysisCard = ({ user, onChatRequest, size = 'medium' }) => {
         </View>
         <View style={styles.emptyState}>
           <Text style={styles.emptyIcon}>📊</Text>
-          <Text style={styles.emptyText}>No trend data available</Text>
-          <Text style={styles.emptySubtext}>Spend for a few months to see trends</Text>
+          <Text style={styles.emptyText}>Building your trends</Text>
+          <Text style={styles.emptySubtext}>Keep spending to see patterns</Text>
         </View>
       </View>
     );
@@ -74,8 +74,8 @@ const TrendAnalysisCard = ({ user, onChatRequest, size = 'medium' }) => {
     <View style={[styles.card, styles[`${size}Card`]]}>
       <View style={styles.header}>
         <View>
-          <Text style={styles.title}>Trend Analysis</Text>
-          <Text style={styles.subtitle}>Month-over-month changes</Text>
+          <Text style={styles.title}>Spending Trends</Text>
+          <Text style={styles.subtitle}>How your spending changed</Text>
         </View>
         <TouchableOpacity 
           style={styles.chatButton}
@@ -150,12 +150,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
     padding: 16,
+    marginHorizontal: 16,
+    marginBottom: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
-    marginBottom: 16,
   },
   mediumCard: {
     minHeight: 280,

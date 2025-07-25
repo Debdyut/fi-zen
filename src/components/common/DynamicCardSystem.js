@@ -311,7 +311,6 @@ const DynamicCard = ({ type, config, user, screenType, onChatRequest }) => {
 const styles = StyleSheet.create({
   gridContainer: {
     flex: 1,
-    paddingHorizontal: 8,
     paddingVertical: 4,
   },
 });

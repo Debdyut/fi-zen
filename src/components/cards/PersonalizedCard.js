@@ -61,6 +61,7 @@ const PersonalizedCard = ({
       recommendations: `What Fi products are best for a ${user.profile?.profession} earning ₹${user.profile?.monthlyIncome || user.monthlyIncome} in ${user.location}?`,
       categoryBreakdown: `Analyze my spending categories and suggest optimizations: ${JSON.stringify(user.monthlySpending)}`,
       optimization: `Give me specific ways to optimize my monthly spending of ₹${Object.values(user.monthlySpending || {}).reduce((a, b) => a + b, 0)}`,
+      savingsOpportunity: `Help me identify the easiest savings opportunities in my monthly spending of ₹${Object.values(user.monthlySpending || {}).reduce((a, b) => a + b, 0)}`,
       smartInsights: `Provide financial insights for a ${user.profile?.profession} with ₹${user.profile?.monthlyIncome || user.monthlyIncome} income`,
       goalProgress: `Help me improve my financial goal progress: ${JSON.stringify(user.goals)}`,
       riskAssessment: `Assess my financial risks and suggest protection strategies`,
@@ -108,6 +109,8 @@ const PersonalizedCard = ({
         return <RiskAssessmentCardContent content={content} onChatRequest={handleChatPress} onRefresh={() => loadPersonalizedContent(true)} refreshing={refreshing} />;
       case 'opportunity':
         return <OpportunityCardContent content={content} onChatRequest={handleChatPress} onRefresh={() => loadPersonalizedContent(true)} refreshing={refreshing} />;
+      case 'savingsOpportunity':
+        return <SavingsOpportunityCardContent content={content} onChatRequest={handleChatPress} onRefresh={() => loadPersonalizedContent(true)} refreshing={refreshing} />;
       case 'strategy':
         return <StrategyCardContent content={content} onChatRequest={handleChatPress} onRefresh={() => loadPersonalizedContent(true)} refreshing={refreshing} />;
       case 'nextSteps':
@@ -211,7 +214,7 @@ const CategoryBreakdownCardContent = ({ content, onChatRequest, onRefresh, refre
 const OptimizationCardContent = ({ content, onChatRequest, onRefresh, refreshing }) => (
   <View style={styles.cardContent}>
     <View style={styles.header}>
-      <Text style={styles.title}>Optimization</Text>
+      <Text style={styles.title}>Save Money</Text>
       <View style={styles.headerActions}>
         <TouchableOpacity 
           style={styles.refreshButton} 
@@ -232,7 +235,7 @@ const OptimizationCardContent = ({ content, onChatRequest, onRefresh, refreshing
     <Text style={styles.difficulty}>Difficulty: {content.difficulty}</Text>
     
     <TouchableOpacity style={styles.actionButton} onPress={onChatRequest}>
-      <Text style={styles.actionText}>Get Strategy</Text>
+      <Text style={styles.actionText}>Show Me How</Text>
     </TouchableOpacity>
   </View>
 );
@@ -376,6 +379,35 @@ const StrategyCardContent = ({ content, onChatRequest, onRefresh, refreshing }) 
   </View>
 );
 
+const SavingsOpportunityCardContent = ({ content, onChatRequest, onRefresh, refreshing }) => (
+  <View style={styles.cardContent}>
+    <View style={styles.header}>
+      <Text style={styles.title}>Easy Savings</Text>
+      <View style={styles.headerActions}>
+        <TouchableOpacity 
+          style={styles.refreshButton} 
+          onPress={onRefresh}
+          disabled={refreshing}
+        >
+          <Text style={styles.refreshIcon}>{refreshing ? '⟳' : '↻'}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.chatButton} onPress={onChatRequest}>
+          <Text style={styles.chatIcon}>💰</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+    
+    <Text style={styles.savings}>💰 {content.potentialSavings}</Text>
+    <Text style={styles.action}>📋 Focus: {content.easiestCategory}</Text>
+    <Text style={styles.strategy}>{content.strategy}</Text>
+    <Text style={styles.timeline}>⏰ {content.timeline}</Text>
+    
+    <TouchableOpacity style={styles.actionButton} onPress={onChatRequest}>
+      <Text style={styles.actionText}>Try This</Text>
+    </TouchableOpacity>
+  </View>
+);
+
 const NextStepsCardContent = ({ content, onChatRequest, onRefresh, refreshing }) => (
   <View style={styles.cardContent}>
     <View style={styles.header}>
@@ -434,8 +466,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
     padding: 16,
-    marginHorizontal: 8,
-    marginVertical: 6,
+    marginHorizontal: 16,
+    marginBottom: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,

@@ -115,9 +115,9 @@ const BudgetAlertCard = ({ user, onChatRequest, size = 'small' }) => {
     <View style={[styles.card, styles[`${size}Card`]]}>
       <View style={styles.header}>
         <View>
-          <Text style={styles.title}>Budget Alerts</Text>
+          <Text style={styles.title}>Budget Check</Text>
           <Text style={styles.subtitle}>
-            {hasAlerts ? `${alerts.length} alert${alerts.length > 1 ? 's' : ''}` : 'All good!'}
+            {hasAlerts ? `${alerts.length} thing${alerts.length > 1 ? 's' : ''} to review` : 'Looking good!'}
           </Text>
         </View>
         <TouchableOpacity 
@@ -158,9 +158,9 @@ const BudgetAlertCard = ({ user, onChatRequest, size = 'small' }) => {
       ) : (
         <View style={styles.goodStatusContainer}>
           <Text style={styles.goodStatusIcon}>✅</Text>
-          <Text style={styles.goodStatusText}>Budget on track!</Text>
+          <Text style={styles.goodStatusText}>You're doing great!</Text>
           <Text style={styles.goodStatusSubtext}>
-            Spending {((Object.values(spending).reduce((a, b) => a + b, 0) / income) * 100).toFixed(0)}% of income
+            Using {((Object.values(spending).reduce((a, b) => a + b, 0) / income) * 100).toFixed(0)}% of your income
           </Text>
         </View>
       )}
@@ -170,7 +170,7 @@ const BudgetAlertCard = ({ user, onChatRequest, size = 'small' }) => {
         onPress={() => onChatRequest?.(hasAlerts ? 'Help me create a budget recovery plan' : 'Help me optimize my budget further')}
       >
         <Text style={styles.actionText}>
-          {hasAlerts ? 'Fix Budget' : 'Optimize More'}
+          {hasAlerts ? 'Get Help' : 'Find More Savings'}
         </Text>
       </TouchableOpacity>
     </View>
@@ -182,12 +182,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
     padding: 16,
+    marginHorizontal: 16,
+    marginBottom: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
-    marginBottom: 16,
   },
   smallCard: {
     minHeight: 180,
