@@ -15,8 +15,13 @@ class PersonalizedCardService {
   async getPersonalizedCardContent(cardType, user, screenType, forceRefresh = false) {
     const cacheKey = `${cardType}-${user.userId}-${screenType}`;
     
-    // Check cache first (skip if force refresh)
-    if (!forceRefresh && this.cache.has(cacheKey)) {
+    // Clear cache if force refresh
+    if (forceRefresh) {
+      this.cache.delete(cacheKey);
+    }
+    
+    // Check cache first
+    if (this.cache.has(cacheKey)) {
       const cached = this.cache.get(cacheKey);
       if (Date.now() - cached.timestamp < this.cacheTimeout) {
         return cached.data;
@@ -30,8 +35,11 @@ class PersonalizedCardService {
       
       const basePrompt = this.buildCardPrompt(cardType, user, screenType);
       
+      // Add timestamp to make each request unique
+      const uniquePrompt = `${basePrompt}\n\nTimestamp: ${Date.now()}`;
+      
       // Use AI context manager to generate contextual prompt
-      const contextualPrompt = aiContextManager.generateContextualPrompt(basePrompt, cardType);
+      const contextualPrompt = aiContextManager.generateContextualPrompt(uniquePrompt, cardType);
       
       const response = await this.callMessageEndpoint(contextualPrompt, user);
       
@@ -68,22 +76,10 @@ User Profile:
       spending: `${baseContext}
 Monthly Spending: ${JSON.stringify(user.monthlySpending || {})}
 
-Generate a personalized spending analysis card with:
-1. Key insight about their spending pattern
-2. One specific optimization tip
-3. Comparison to their income level
-4. Action they can take this month
-
-Format as JSON: {"insight": "...", "tip": "...", "comparison": "...", "action": "..."}`,
+Generate a brief spending insight (max 50 words) for their spending pattern:`,
 
       recommendations: `${baseContext}
-Generate personalized Fi product recommendations with:
-1. Most relevant Fi product for their profile
-2. Why it's perfect for their profession/income
-3. Specific benefit they'll get
-4. Call-to-action
-
-Format as JSON: {"product": "...", "reason": "...", "benefit": "...", "cta": "..."}`,
+Recommend the best Fi product for this user (max 40 words):`,
 
       categoryBreakdown: `${baseContext}
 Monthly Spending: ${JSON.stringify(user.monthlySpending || {})}
@@ -108,13 +104,7 @@ Format as JSON: {"opportunity": "...", "action": "...", "savings": "...", "diffi
       smartInsights: `${baseContext}
 Financial Health: ${JSON.stringify(user.financialHealth || {})}
 
-Generate smart financial insights:
-1. Key strength in their financial profile
-2. Most important area for improvement
-3. Personalized tip for their profession
-4. Next milestone to achieve
-
-Format as JSON: {"strength": "...", "improvement": "...", "professionTip": "...", "milestone": "..."}`,
+Provide one key financial insight for this user (max 50 words):`,
 
       goalProgress: `${baseContext}
 Goals: ${JSON.stringify(user.goals || [])}
@@ -129,15 +119,8 @@ Format as JSON: {"assessment": "...", "attentionGoal": "...", "motivation": "...
 
       strategy: `${baseContext}
 Goals: ${JSON.stringify(user.goals || [])}
-Monthly Income: ₹${user.profile?.monthlyIncome || user.monthlyIncome}
 
-Generate goal achievement strategy:
-1. Best strategy for their income level
-2. Specific optimization tip
-3. Timeline adjustment suggestion
-4. Risk mitigation advice
-
-Format as JSON: {"strategy": "...", "optimization": "...", "timeline": "...", "riskMitigation": "..."}`,
+Provide a goal achievement strategy for this user (max 50 words):`,
 
       motivation: `${baseContext}
 Goals: ${JSON.stringify(user.goals || [])}
@@ -153,13 +136,7 @@ Format as JSON: {"encouragement": "...", "inspiration": "...", "reminder": "..."
       nextSteps: `${baseContext}
 Goals: ${JSON.stringify(user.goals || [])}
 
-Provide actionable next steps:
-1. Most important action this week
-2. Monthly review suggestion
-3. Long-term planning tip
-4. Accountability measure
-
-Format as JSON: {"weeklyAction": "...", "monthlyReview": "...", "longTermTip": "...", "accountability": "..."}`,
+Suggest the most important next step this user should take (max 40 words):`,
 
       comparison: `${baseContext}
 Current Metric: ${JSON.stringify(user.currentMetric || {})}
@@ -301,18 +278,22 @@ Format as JSON: {"opportunity": "...", "steps": "...", "timeline": "...", "outco
 
   // Parse the AI response into structured card content
   parseCardResponse(response, cardType) {
-    try {
-      // Try to extract JSON from the response
-      const jsonMatch = response.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
-      }
-      
-      // Fallback: parse as plain text
-      return this.parseTextResponse(response, cardType);
-    } catch (error) {
-      console.error('Error parsing card response:', error);
-      return this.parseTextResponse(response, cardType);
+    // Clean and use the response directly
+    const cleanResponse = response.trim();
+    
+    switch (cardType) {
+      case 'spending':
+        return { insight: cleanResponse, tip: 'Track expenses daily', action: 'Review spending' };
+      case 'recommendations':
+        return { product: 'Fi Federal Bank', reason: cleanResponse, cta: 'Learn More' };
+      case 'smartInsights':
+        return { strength: cleanResponse, improvement: 'Consider diversifying investments' };
+      case 'strategy':
+        return { strategy: cleanResponse, optimization: 'Review monthly progress' };
+      case 'nextSteps':
+        return { weeklyAction: cleanResponse, monthlyReview: 'Track goal progress' };
+      default:
+        return { content: cleanResponse, action: 'Learn More' };
     }
   }
 

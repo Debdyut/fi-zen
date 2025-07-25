@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ActivityIndicator,
+  StatusBar,
 } from 'react-native';
 import { CardProvider, DynamicCardGrid } from '../components/common/DynamicCardSystem';
 import SmartChatInterface from '../components/ai/SmartChatInterface';
@@ -23,7 +24,8 @@ const EnhancedGoalsScreen = ({ navigation, route }) => {
   const [chatVisible, setChatVisible] = useState(false);
   const [chatInitialMessage, setChatInitialMessage] = useState(null);
   const [journeyGuideVisible, setJourneyGuideVisible] = useState(false);
-  const styles = useThemedStyles(createStyles);
+  const { colors } = useThemedStyles();
+  const styles = createStyles(colors);
   
   // Use shared user context instead of local state
   const { 
@@ -131,6 +133,7 @@ const EnhancedGoalsScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#00D4AA" />
       <ConversationContinuity
         currentScreen="goals"
         onContinueConversation={handleChatRequest}
@@ -142,12 +145,20 @@ const EnhancedGoalsScreen = ({ navigation, route }) => {
           <Text style={styles.title}>Financial Goals</Text>
           <Text style={styles.subtitle}>{user.name}'s goal tracking</Text>
         </View>
-        <TouchableOpacity 
-          style={styles.guideButton}
-          onPress={showJourneyGuide}
-        >
-          <Text style={styles.guideIcon}>🧭</Text>
-        </TouchableOpacity>
+        <View style={styles.headerActions}>
+          <TouchableOpacity 
+            style={styles.refreshButton}
+            onPress={refreshUserData}
+          >
+            <Text style={styles.refreshIcon}>↻</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.guideButton}
+            onPress={showJourneyGuide}
+          >
+            <Text style={styles.guideIcon}>🧭</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <CardProvider screenType="goals" user={user}>
@@ -232,7 +243,8 @@ const EnhancedGoalsScreen = ({ navigation, route }) => {
 };
 
 const GoalCard = ({ goal, onPress }) => {
-  const styles = useThemedStyles(createStyles);
+  const { colors } = useThemedStyles();
+  const styles = createStyles(colors);
   
   const formatCurrency = (amount) => {
     if (amount >= 100000) return `₹${(amount / 100000).toFixed(1)}L`;
@@ -288,7 +300,8 @@ const GoalCard = ({ goal, onPress }) => {
 };
 
 const MilestoneItem = ({ milestone }) => {
-  const styles = useThemedStyles(createStyles);
+  const { colors } = useThemedStyles();
+  const styles = createStyles(colors);
   
   return (
     <View style={styles.milestoneItem}>
@@ -314,33 +327,33 @@ const MilestoneItem = ({ milestone }) => {
   );
 };
 
-const createStyles = (theme) => StyleSheet.create({
+const createStyles = (colors) => StyleSheet.create({
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: theme.colors.background,
+    backgroundColor: colors.background,
   },
   loadingText: {
     marginTop: 12,
     fontSize: 16,
-    color: theme.colors.textSecondary,
+    color: colors.textSecondary,
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: theme.colors.background,
+    backgroundColor: colors.background,
     padding: 20,
   },
   errorText: {
     fontSize: 16,
-    color: theme.colors.error,
+    color: colors.error,
     textAlign: 'center',
     marginBottom: 20,
   },
   retryButton: {
-    backgroundColor: theme.colors.primary,
+    backgroundColor: colors.primary,
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 8,
@@ -353,29 +366,52 @@ const createStyles = (theme) => StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: '600',
-    color: theme.colors.text,
+    color: '#FFFFFF',
+    marginBottom: 2,
   },
   subtitle: {
     fontSize: 14,
-    color: theme.colors.textSecondary,
-    marginTop: 2,
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontWeight: '400',
   },
   content: {
     flex: 1,
   },
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: colors.background,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: theme.colors.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.border,
+    paddingTop: 50,
+    paddingBottom: 16,
+    backgroundColor: '#00D4AA',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
+    zIndex: 100,
+  },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  refreshButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 20,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  refreshIcon: {
+    fontSize: 18,
+    color: '#FFFFFF',
   },
   headerContent: {
     flex: 1,
@@ -383,11 +419,11 @@ const createStyles = (theme) => StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: theme.colors.text,
+    color: colors.text,
   },
   headerSubtitle: {
     fontSize: 14,
-    color: theme.colors.textSecondary,
+    color: colors.textSecondary,
     marginTop: 2,
   },
   addGoalButton: {
@@ -410,11 +446,11 @@ const createStyles = (theme) => StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: theme.colors.text,
+    color: colors.text,
     marginBottom: 16,
   },
   goalCard: {
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
@@ -433,7 +469,7 @@ const createStyles = (theme) => StyleSheet.create({
   goalTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: theme.colors.text,
+    color: colors.text,
     flex: 1,
   },
   statusBadge: {
@@ -465,7 +501,7 @@ const createStyles = (theme) => StyleSheet.create({
   progressText: {
     fontSize: 12,
     fontWeight: '600',
-    color: theme.colors.text,
+    color: colors.text,
     minWidth: 35,
   },
   goalDetails: {
@@ -476,11 +512,11 @@ const createStyles = (theme) => StyleSheet.create({
   goalAmount: {
     fontSize: 14,
     fontWeight: '500',
-    color: theme.colors.text,
+    color: colors.text,
   },
   goalDeadline: {
     fontSize: 12,
-    color: theme.colors.textSecondary,
+    color: colors.textSecondary,
   },
   milestonesContainer: {
     padding: 20,
@@ -510,23 +546,23 @@ const createStyles = (theme) => StyleSheet.create({
   milestoneTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: theme.colors.text,
+    color: colors.text,
   },
   milestoneGoal: {
     fontSize: 12,
-    color: theme.colors.textSecondary,
+    color: colors.textSecondary,
     marginTop: 2,
   },
   milestoneDate: {
     fontSize: 11,
-    color: theme.colors.textSecondary,
+    color: colors.textSecondary,
     marginTop: 2,
   },
   floatingChatButton: {
     position: 'absolute',
     bottom: 30,
     right: 20,
-    backgroundColor: theme.colors.primary,
+    backgroundColor: colors.primary,
     borderRadius: 28,
     width: 56,
     height: 56,
@@ -554,7 +590,7 @@ const createStyles = (theme) => StyleSheet.create({
   navTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: theme.colors.text,
+    color: colors.text,
     marginBottom: 12,
   },
   navButtons: {
@@ -563,12 +599,12 @@ const createStyles = (theme) => StyleSheet.create({
   },
   navButton: {
     flex: 1,
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: theme.colors.border,
+    borderColor: colors.border,
   },
   navIcon: {
     fontSize: 24,
@@ -577,16 +613,16 @@ const createStyles = (theme) => StyleSheet.create({
   navLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: theme.colors.text,
+    color: colors.text,
     marginBottom: 4,
   },
   navSubtext: {
     fontSize: 12,
-    color: theme.colors.textSecondary,
+    color: colors.textSecondary,
     textAlign: 'center',
   },
   guideButton: {
-    backgroundColor: theme.colors.primary,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
     borderRadius: 20,
     width: 40,
     height: 40,

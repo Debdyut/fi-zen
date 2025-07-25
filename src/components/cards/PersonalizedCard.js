@@ -108,6 +108,10 @@ const PersonalizedCard = ({
         return <RiskAssessmentCardContent content={content} onChatRequest={handleChatPress} onRefresh={() => loadPersonalizedContent(true)} refreshing={refreshing} />;
       case 'opportunity':
         return <OpportunityCardContent content={content} onChatRequest={handleChatPress} onRefresh={() => loadPersonalizedContent(true)} refreshing={refreshing} />;
+      case 'strategy':
+        return <StrategyCardContent content={content} onChatRequest={handleChatPress} onRefresh={() => loadPersonalizedContent(true)} refreshing={refreshing} />;
+      case 'nextSteps':
+        return <NextStepsCardContent content={content} onChatRequest={handleChatPress} onRefresh={() => loadPersonalizedContent(true)} refreshing={refreshing} />;
       default:
         return <DefaultCardContent cardType={cardType} content={content} onChatRequest={handleChatPress} onRefresh={() => loadPersonalizedContent(true)} refreshing={refreshing} />;
     }
@@ -341,6 +345,60 @@ const OpportunityCardContent = ({ content, onChatRequest, onRefresh, refreshing 
     
     <TouchableOpacity style={styles.actionButton} onPress={onChatRequest}>
       <Text style={styles.actionText}>Start Growing</Text>
+    </TouchableOpacity>
+  </View>
+);
+
+const StrategyCardContent = ({ content, onChatRequest, onRefresh, refreshing }) => (
+  <View style={styles.cardContent}>
+    <View style={styles.header}>
+      <Text style={styles.title}>Strategy</Text>
+      <View style={styles.headerActions}>
+        <TouchableOpacity 
+          style={styles.refreshButton} 
+          onPress={onRefresh}
+          disabled={refreshing}
+        >
+          <Text style={styles.refreshIcon}>{refreshing ? '⟳' : '↻'}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.chatButton} onPress={onChatRequest}>
+          <Text style={styles.chatIcon}>📋</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+    
+    <Text style={styles.strategy}>🎯 {content.strategy}</Text>
+    <Text style={styles.action}>📋 {content.optimization}</Text>
+    
+    <TouchableOpacity style={styles.actionButton} onPress={onChatRequest}>
+      <Text style={styles.actionText}>Get Details</Text>
+    </TouchableOpacity>
+  </View>
+);
+
+const NextStepsCardContent = ({ content, onChatRequest, onRefresh, refreshing }) => (
+  <View style={styles.cardContent}>
+    <View style={styles.header}>
+      <Text style={styles.title}>Next Steps</Text>
+      <View style={styles.headerActions}>
+        <TouchableOpacity 
+          style={styles.refreshButton} 
+          onPress={onRefresh}
+          disabled={refreshing}
+        >
+          <Text style={styles.refreshIcon}>{refreshing ? '⟳' : '↻'}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.chatButton} onPress={onChatRequest}>
+          <Text style={styles.chatIcon}>⏭️</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+    
+    <Text style={styles.action}>📋 {content.weeklyAction}</Text>
+    <Text style={styles.tip}>📅 {content.monthlyReview}</Text>
+    
+    <TouchableOpacity style={styles.actionButton} onPress={onChatRequest}>
+      <Text style={styles.actionText}>Start Now</Text>
     </TouchableOpacity>
   </View>
 );
