@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import {
   View,
   Text,
@@ -24,6 +24,7 @@ const SmartChatInterface = ({
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const scrollViewRef = useRef(null);
 
   const styles = StyleSheet.create({
     container: {
@@ -231,6 +232,15 @@ const SmartChatInterface = ({
       aiContextManager.setCurrentScreen(currentScreen);
     }
   }, [user, currentScreen]);
+
+  // Auto-scroll when chat opens
+  useEffect(() => {
+    if (visible) {
+      setTimeout(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+      }, 100);
+    }
+  }, [visible]);
 
   // Initialize chat with context-aware greeting
   useEffect(() => {
@@ -561,13 +571,18 @@ Response:`;
         </View>
 
         {/* Messages */}
-        <ScrollView style={styles.messagesContainer}>
+        <ScrollView 
+          ref={scrollViewRef}
+          style={styles.messagesContainer}
+          onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
+        >
           {messages.map(renderMessage)}
           {isLoading && (
             <View style={styles.loadingContainer}>
               <Text style={styles.loadingText}>AI is thinking...</Text>
             </View>
           )}
+          <View style={{ height: 20 }} />
         </ScrollView>
 
         {/* Input */}
