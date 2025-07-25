@@ -6,12 +6,12 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from 'react-native';
-import { useThemedStyles } from '../../theme/useThemedStyles';
+
 
 const SmartNetWorthCard = ({ user, onChatRequest, size = 'medium' }) => {
   const [aiInsight, setAiInsight] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
 
   useEffect(() => {
     loadAIInsight();
@@ -81,9 +81,11 @@ Focus on actionable advice for their age and profession.
 
   const getAssetBreakdown = () => {
     const netWorth = user.netWorth || {};
-    const total = netWorth.totalAssets || 0;
+    const totalNetWorth = netWorth.netWorth || 0;
+    const total = netWorth.totalAssets || totalNetWorth;
     
-    return [
+    // If we have actual breakdown data, use it
+    const breakdown = [
       { 
         label: 'Bank', 
         value: netWorth.bankAccounts || 0, 
@@ -103,6 +105,33 @@ Focus on actionable advice for their age and profession.
         color: '#FFD43B'
       }
     ].filter(item => item.value > 0);
+    
+    // If no breakdown available but we have net worth, create estimated breakdown
+    if (breakdown.length === 0 && totalNetWorth > 0) {
+      const monthlyIncome = user.profile?.monthlyIncome || user.monthlyIncome || 50000;
+      return [
+        { 
+          label: 'Bank', 
+          value: Math.floor(totalNetWorth * 0.4), 
+          percentage: '40',
+          color: '#4DABF7'
+        },
+        { 
+          label: 'Investments', 
+          value: Math.floor(totalNetWorth * 0.45), 
+          percentage: '45',
+          color: '#51CF66'
+        },
+        { 
+          label: 'Other', 
+          value: Math.floor(totalNetWorth * 0.15), 
+          percentage: '15',
+          color: '#FFD43B'
+        }
+      ];
+    }
+    
+    return breakdown;
   };
 
   const assetBreakdown = getAssetBreakdown();
@@ -134,35 +163,63 @@ Focus on actionable advice for their age and profession.
           {formatCurrency(user.netWorth?.netWorth || 0)}
         </Text>
         <Text style={styles.valueLabel}>Total Net Worth</Text>
+        <Text style={styles.valueExplanation}>Assets minus liabilities</Text>
+        <View style={styles.contextIndicator}>
+          <Text style={styles.contextText}>
+            {user.netWorth?.netWorth > (user.profile?.monthlyIncome * 12 * 2) 
+              ? '🎯 Great progress!' 
+              : '💪 Building wealth'}
+          </Text>
+        </View>
       </View>
 
       {/* Asset Breakdown */}
       {size !== 'small' && (
         <View style={styles.breakdownContainer}>
+          <Text style={styles.breakdownTitle}>Your Wealth Distribution</Text>
           <View style={styles.breakdownBar}>
-            {assetBreakdown.map((asset, index) => (
-              <View
-                key={asset.label}
-                style={[
-                  styles.breakdownSegment,
-                  {
-                    backgroundColor: asset.color,
-                    flex: parseInt(asset.percentage) || 1
-                  }
-                ]}
-              />
-            ))}
+            {assetBreakdown.length > 0 ? (
+              assetBreakdown.map((asset, index) => (
+                <View
+                  key={asset.label}
+                  style={[
+                    styles.breakdownSegment,
+                    {
+                      backgroundColor: asset.color,
+                      flex: parseInt(asset.percentage) || 1
+                    }
+                  ]}
+                />
+              ))
+            ) : (
+              <View style={[styles.breakdownSegment, { backgroundColor: '#E0E0E0', flex: 1 }]} />
+            )}
           </View>
           
           <View style={styles.breakdownLegend}>
-            {assetBreakdown.map((asset, index) => (
-              <View key={asset.label} style={styles.legendItem}>
-                <View style={[styles.legendDot, { backgroundColor: asset.color }]} />
-                <Text style={styles.legendText}>
-                  {asset.label} {asset.percentage}%
-                </Text>
+            {assetBreakdown.length > 0 ? (
+              assetBreakdown.map((asset, index) => (
+                <View key={asset.label} style={styles.legendItem}>
+                  <View style={[styles.legendDot, { backgroundColor: asset.color }]} />
+                  <View style={styles.legendTextContainer}>
+                    <Text style={styles.legendText}>
+                      {asset.label} {asset.percentage}%
+                    </Text>
+                    <Text style={styles.legendValue}>
+                      {formatCurrency(asset.value)}
+                    </Text>
+                  </View>
+                </View>
+              ))
+            ) : (
+              <View style={styles.legendItem}>
+                <View style={[styles.legendDot, { backgroundColor: '#E0E0E0' }]} />
+                <View style={styles.legendTextContainer}>
+                  <Text style={styles.legendText}>No data available</Text>
+                  <Text style={styles.legendValue}>Connect accounts to see breakdown</Text>
+                </View>
               </View>
-            ))}
+            )}
           </View>
         </View>
       )}
@@ -209,16 +266,19 @@ Focus on actionable advice for their age and profession.
   );
 };
 
-const createStyles = (theme) => StyleSheet.create({
+const createStyles = () => StyleSheet.create({
   card: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: 16,
-    padding: 20,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 24,
+    marginHorizontal: 4,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 6,
+    borderWidth: 1,
+    borderColor: '#F0F0F0',
   },
   largeCard: {
     minHeight: 280,
@@ -233,17 +293,24 @@ const createStyles = (theme) => StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 16,
+    marginBottom: 20,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F5F5F5',
   },
   title: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: theme.colors.text,
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1A1A1A',
+    marginBottom: 6,
   },
   growthContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 4,
+    backgroundColor: '#F8F9FA',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
   },
   growthText: {
     fontSize: 14,
@@ -251,8 +318,9 @@ const createStyles = (theme) => StyleSheet.create({
     marginRight: 4,
   },
   growthLabel: {
-    fontSize: 12,
-    color: theme.colors.textSecondary,
+    fontSize: 14,
+    color: '#666666',
+    fontWeight: '500',
   },
   chatButton: {
     backgroundColor: '#00D4AA',
@@ -267,28 +335,81 @@ const createStyles = (theme) => StyleSheet.create({
   },
   valueContainer: {
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 24,
+    paddingVertical: 16,
+    backgroundColor: '#FAFBFC',
+    borderRadius: 16,
+    marginHorizontal: -4,
   },
   netWorthValue: {
     fontSize: 36,
     fontWeight: '300',
-    color: theme.colors.text,
-    marginBottom: 4,
+    color: '#1A1A1A',
+    marginBottom: 8,
+    textAlign: 'center',
+    letterSpacing: -0.5,
   },
   valueLabel: {
+    fontSize: 14,
+    color: '#666666',
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  valueExplanation: {
     fontSize: 12,
-    color: theme.colors.textSecondary,
+    color: '#999999',
+    textAlign: 'center',
+    marginTop: 4,
+    fontStyle: 'italic',
+  },
+  contextIndicator: {
+    marginTop: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    backgroundColor: '#E8F5E8',
+    borderRadius: 12,
+  },
+  contextText: {
+    fontSize: 12,
+    color: '#2E7D32',
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  breakdownTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1A1A1A',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  legendTextContainer: {
+    flex: 1,
+  },
+  legendValue: {
+    fontSize: 11,
+    color: '#999999',
     fontWeight: '500',
+    marginTop: 2,
   },
   breakdownContainer: {
-    marginBottom: 16,
+    marginBottom: 24,
+    backgroundColor: '#FAFBFC',
+    padding: 16,
+    borderRadius: 12,
+    marginHorizontal: -4,
   },
   breakdownBar: {
     flexDirection: 'row',
-    height: 8,
-    borderRadius: 4,
+    height: 10,
+    borderRadius: 6,
     overflow: 'hidden',
-    marginBottom: 12,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+    backgroundColor: '#F5F5F5',
   },
   breakdownSegment: {
     height: '100%',
@@ -296,25 +417,35 @@ const createStyles = (theme) => StyleSheet.create({
   breakdownLegend: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
+    paddingTop: 4,
   },
   legendItem: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 4,
+    alignItems: 'flex-start',
+    marginBottom: 12,
+    paddingHorizontal: 4,
+    flex: 1,
   },
   legendDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginRight: 6,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    marginRight: 8,
+    marginTop: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1,
+    elevation: 1,
   },
   legendText: {
-    fontSize: 11,
-    color: theme.colors.textSecondary,
+    fontSize: 12,
+    color: '#666666',
+    fontWeight: '500',
   },
   aiInsightContainer: {
-    marginBottom: 12,
+    marginBottom: 16,
   },
   loadingContainer: {
     flexDirection: 'row',
@@ -324,27 +455,35 @@ const createStyles = (theme) => StyleSheet.create({
   },
   loadingText: {
     marginLeft: 8,
-    fontSize: 11,
-    color: theme.colors.textSecondary,
+    fontSize: 12,
+    color: '#666666',
+    fontWeight: '500',
   },
   aiInsightBubble: {
     backgroundColor: '#F0F9FF',
-    borderRadius: 10,
-    padding: 10,
+    borderRadius: 16,
+    padding: 16,
     flexDirection: 'row',
     alignItems: 'flex-start',
     borderWidth: 1,
     borderColor: '#00D4AA',
+    shadowColor: '#00D4AA',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   aiInsightIcon: {
-    fontSize: 14,
-    marginRight: 6,
+    fontSize: 16,
+    marginRight: 10,
+    marginTop: 2,
   },
   aiInsightText: {
     flex: 1,
-    fontSize: 12,
+    fontSize: 14,
     color: '#1A1A1A',
-    lineHeight: 16,
+    lineHeight: 20,
+    fontWeight: '500',
   },
   quickActions: {
     flexDirection: 'row',

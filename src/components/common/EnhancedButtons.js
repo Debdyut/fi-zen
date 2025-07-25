@@ -7,7 +7,7 @@ import {
   Vibration,
   Platform 
 } from 'react-native';
-import { EnhancedFiColors } from '../../theme/enhancedColors';
+import { FiColors } from '../../theme/consolidatedFiColors';
 import { Icon } from './Icons';
 
 const EnhancedButton = ({
@@ -53,31 +53,31 @@ const EnhancedButton = ({
   const getVariantStyles = () => {
     const variants = {
       primary: {
-        backgroundColor: disabled ? EnhancedFiColors.secondary + '40' : EnhancedFiColors.primary,
+        backgroundColor: disabled ? FiColors.secondary + '40' : FiColors.primary,
         borderColor: 'transparent',
       },
       secondary: {
-        backgroundColor: EnhancedFiColors.primary + '10',
-        borderColor: EnhancedFiColors.primary + '30',
+        backgroundColor: FiColors.primary + '10',
+        borderColor: FiColors.primary + '30',
       },
       outline: {
         backgroundColor: 'transparent',
-        borderColor: disabled ? EnhancedFiColors.secondary + '40' : EnhancedFiColors.primary,
+        borderColor: disabled ? FiColors.secondary + '40' : FiColors.primary,
       },
       ghost: {
         backgroundColor: 'transparent',
         borderColor: 'transparent',
       },
       success: {
-        backgroundColor: disabled ? EnhancedFiColors.secondary + '40' : EnhancedFiColors.success,
+        backgroundColor: disabled ? FiColors.secondary + '40' : FiColors.success,
         borderColor: 'transparent',
       },
       warning: {
-        backgroundColor: disabled ? EnhancedFiColors.secondary + '40' : EnhancedFiColors.warning,
+        backgroundColor: disabled ? FiColors.secondary + '40' : FiColors.warning,
         borderColor: 'transparent',
       },
       error: {
-        backgroundColor: disabled ? EnhancedFiColors.secondary + '40' : EnhancedFiColors.error,
+        backgroundColor: disabled ? FiColors.secondary + '40' : FiColors.error,
         borderColor: 'transparent',
       },
     };
@@ -109,18 +109,18 @@ const EnhancedButton = ({
   };
 
   const getTextColor = () => {
-    if (disabled) return EnhancedFiColors.textTertiary;
+    if (disabled) return FiColors.textTertiary;
     
     const textColors = {
-      primary: EnhancedFiColors.white,
-      secondary: EnhancedFiColors.primary,
-      outline: EnhancedFiColors.primary,
-      ghost: EnhancedFiColors.primary,
-      success: EnhancedFiColors.white,
-      warning: EnhancedFiColors.white,
-      error: EnhancedFiColors.white,
+      primary: FiColors.white,
+      secondary: FiColors.primary,
+      outline: FiColors.primary,
+      ghost: FiColors.primary,
+      success: FiColors.white,
+      warning: FiColors.white,
+      error: FiColors.white,
     };
-    return textColors[variant] || EnhancedFiColors.white;
+    return textColors[variant] || FiColors.white;
   };
 
   const variantStyles = getVariantStyles();
@@ -193,7 +193,7 @@ const FloatingActionButton = ({
   onPress,
   icon = 'refresh',
   size = 56,
-  backgroundColor = EnhancedFiColors.primary,
+  backgroundColor = FiColors.primary,
   hapticFeedback = true,
   style = {},
 }) => {
@@ -235,7 +235,7 @@ const FloatingActionButton = ({
         onPressOut={handlePressOut}
         activeOpacity={0.8}
       >
-        <Icon name={icon} size={size * 0.4} color={EnhancedFiColors.white} />
+        <Icon name={icon} size={size * 0.4} color={FiColors.white} />
       </TouchableOpacity>
     </Animated.View>
   );
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 8,
-    shadowColor: EnhancedFiColors.shadow.medium,
+    shadowColor: FiColors.shadow?.medium || '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -302,15 +302,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: EnhancedFiColors.border,
+    borderColor: FiColors.border,
   },
   groupButton: {
     flex: 1,
     paddingVertical: 12,
     paddingHorizontal: 16,
-    backgroundColor: EnhancedFiColors.surface,
+    backgroundColor: FiColors.surface,
     borderRightWidth: 1,
-    borderRightColor: EnhancedFiColors.border,
+    borderRightColor: FiColors.border,
   },
   firstButton: {
     borderTopLeftRadius: 8,
@@ -322,16 +322,16 @@ const styles = StyleSheet.create({
     borderRightWidth: 0,
   },
   selectedButton: {
-    backgroundColor: EnhancedFiColors.primary,
+    backgroundColor: FiColors.primary,
   },
   groupButtonText: {
     textAlign: 'center',
     fontSize: 14,
     fontWeight: '500',
-    color: EnhancedFiColors.text,
+    color: FiColors.text,
   },
   selectedButtonText: {
-    color: EnhancedFiColors.white,
+    color: FiColors.white,
   },
 });
 

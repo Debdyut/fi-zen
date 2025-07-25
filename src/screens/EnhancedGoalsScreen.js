@@ -229,61 +229,6 @@ const EnhancedGoalsScreen = ({ navigation, route }) => {
       />
     </SafeAreaView>
   );
-            onPress={() => openChatWithMessage('Help me create a new financial goal')}
-          >
-            <Text style={styles.addGoalText}>+ Goal</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Dynamic Card Grid */}
-        <ScrollView 
-          style={styles.scrollView}
-          showsVerticalScrollIndicator={false}
-        >
-          <DynamicCardGrid 
-            screenType="goals" 
-            user={user}
-            onChatRequest={openChatWithMessage}
-          />
-
-          {/* Goals List */}
-          <View style={styles.goalsListContainer}>
-            <Text style={styles.sectionTitle}>Your Goals</Text>
-            {user.goals.map((goal) => (
-              <GoalCard 
-                key={goal.id} 
-                goal={goal} 
-                onPress={() => openChatWithMessage(`Help me optimize my ${goal.title} strategy`)}
-              />
-            ))}
-          </View>
-
-          {/* Recent Milestones */}
-          <View style={styles.milestonesContainer}>
-            <Text style={styles.sectionTitle}>Recent Milestones</Text>
-            {user.milestones.map((milestone, index) => (
-              <MilestoneItem key={index} milestone={milestone} />
-            ))}
-          </View>
-        </ScrollView>
-
-        {/* Floating Chat Button */}
-        <FloatingChatButton />
-
-        {/* Smart Chat Interface */}
-        <SmartChatInterface
-          user={user}
-          currentScreen="goals"
-          visible={chatVisible}
-          onClose={() => {
-            setChatVisible(false);
-            setChatInitialMessage(null);
-          }}
-          initialMessage={chatInitialMessage}
-        />
-      </SafeAreaView>
-    </CardProvider>
-  );
 };
 
 const GoalCard = ({ goal, onPress }) => {
@@ -370,6 +315,54 @@ const MilestoneItem = ({ milestone }) => {
 };
 
 const createStyles = (theme) => StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: theme.colors.background,
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 16,
+    color: theme.colors.textSecondary,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: theme.colors.background,
+    padding: 20,
+  },
+  errorText: {
+    fontSize: 16,
+    color: theme.colors.error,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  retryButton: {
+    backgroundColor: theme.colors.primary,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  retryText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: theme.colors.text,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: theme.colors.textSecondary,
+    marginTop: 2,
+  },
+  content: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,

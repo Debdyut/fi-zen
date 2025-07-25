@@ -5,10 +5,10 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-import { useThemedStyles } from '../../theme/useThemedStyles';
+
 
 const SmartGoalsCard = ({ user, onChatRequest, size = 'medium' }) => {
-  const styles = useThemedStyles(createStyles);
+  const styles = createStyles();
 
   const handleChatPress = () => {
     const message = `I'm a ${user.profile?.profession} earning ₹${user.profile?.monthlyIncome || user.monthlyIncome}. Help me set realistic financial goals.`;
@@ -22,17 +22,61 @@ const SmartGoalsCard = ({ user, onChatRequest, size = 'medium' }) => {
         title: 'Set Your Goals',
         subtitle: 'Start your financial journey',
         status: 'Get Started',
-        color: '#00D4AA'
+        color: '#00D4AA',
+        progress: 0
       };
     }
     
     const completedGoals = goals.filter(g => g.completed).length;
+    const progress = (completedGoals / goals.length) * 100;
+    
+    let status, color;
+    if (progress === 100) {
+      status = 'All Complete!';
+      color = '#51CF66';
+    } else if (progress >= 50) {
+      status = 'Great Progress';
+      color = '#69DB7C';
+    } else if (progress > 0) {
+      status = 'Getting Started';
+      color = '#FFB347';
+    } else {
+      status = 'Just Started';
+      color = '#FF8787';
+    }
+    
     return {
       title: 'Financial Goals',
       subtitle: `${completedGoals}/${goals.length} completed`,
-      status: 'On Track',
-      color: '#51CF66'
+      status,
+      color,
+      progress
     };
+  };
+
+  const getPersonalizedGoals = () => {
+    const age = user.profile?.age || 30;
+    const income = user.profile?.monthlyIncome || user.monthlyIncome || 50000;
+    const profession = user.profile?.profession || 'Professional';
+    
+    const suggestions = [];
+    
+    // Age-based suggestions
+    if (age < 30) {
+      suggestions.push('• Emergency Fund (6 months)');
+      suggestions.push('• Career Development Fund');
+      suggestions.push('• First Home Down Payment');
+    } else if (age < 40) {
+      suggestions.push('• Home Purchase/Upgrade');
+      suggestions.push('• Children\'s Education Fund');
+      suggestions.push('• Retirement Planning Start');
+    } else {
+      suggestions.push('• Retirement Corpus Building');
+      suggestions.push('• Healthcare Emergency Fund');
+      suggestions.push('• Wealth Preservation');
+    }
+    
+    return suggestions.slice(0, 3);
   };
 
   const goalsStatus = getGoalsStatus();
@@ -57,17 +101,52 @@ const SmartGoalsCard = ({ user, onChatRequest, size = 'medium' }) => {
       <View style={styles.content}>
         <View style={styles.statusContainer}>
           <Text style={styles.statusIcon}>🎯</Text>
-          <Text style={[styles.statusText, { color: goalsStatus.color }]}>
-            {goalsStatus.status}
-          </Text>
+          <View style={styles.statusTextContainer}>
+            <Text style={[styles.statusText, { color: goalsStatus.color }]}>
+              {goalsStatus.status}
+            </Text>
+            {user.goals?.length > 0 && (
+              <View style={styles.progressContainer}>
+                <View style={styles.progressBar}>
+                  <View 
+                    style={[
+                      styles.progressFill, 
+                      { 
+                        width: `${goalsStatus.progress}%`,
+                        backgroundColor: goalsStatus.color 
+                      }
+                    ]} 
+                  />
+                </View>
+                <Text style={styles.progressText}>{Math.round(goalsStatus.progress)}%</Text>
+              </View>
+            )}
+          </View>
         </View>
 
-        {/* Quick suggestions */}
+        {/* Personalized suggestions */}
         <View style={styles.suggestionsContainer}>
-          <Text style={styles.suggestionsTitle}>Popular Goals:</Text>
-          <Text style={styles.suggestionItem}>• Emergency Fund</Text>
-          <Text style={styles.suggestionItem}>• Home Purchase</Text>
-          <Text style={styles.suggestionItem}>• Retirement Planning</Text>
+          <Text style={styles.suggestionsTitle}>
+            {user.goals?.length > 0 ? 'Your Active Goals:' : 'Recommended for You:'}
+          </Text>
+          {user.goals?.length > 0 ? (
+            user.goals.slice(0, 3).map((goal, index) => (
+              <View key={index} style={styles.goalItem}>
+                <Text style={styles.suggestionItem}>
+                  {goal.completed ? '✅' : '⏳'} {goal.title || goal.name || `Goal ${index + 1}`}
+                </Text>
+                {goal.targetAmount && (
+                  <Text style={styles.goalAmount}>
+                    ₹{goal.targetAmount.toLocaleString()}
+                  </Text>
+                )}
+              </View>
+            ))
+          ) : (
+            getPersonalizedGoals().map((suggestion, index) => (
+              <Text key={index} style={styles.suggestionItem}>{suggestion}</Text>
+            ))
+          )}
         </View>
       </View>
 
@@ -84,9 +163,9 @@ const SmartGoalsCard = ({ user, onChatRequest, size = 'medium' }) => {
   );
 };
 
-const createStyles = (theme) => StyleSheet.create({
+const createStyles = () => StyleSheet.create({
   card: {
-    backgroundColor: theme.colors.surface,
+    backgroundColor: '#FFFFFF',
     borderRadius: 16,
     padding: 20,
     shadowColor: '#000',
@@ -111,14 +190,15 @@ const createStyles = (theme) => StyleSheet.create({
     marginBottom: 16,
   },
   title: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: theme.colors.text,
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1A1A1A',
+    marginBottom: 4,
   },
   subtitle: {
-    fontSize: 12,
-    color: theme.colors.textSecondary,
-    marginTop: 2,
+    fontSize: 14,
+    color: '#666666',
+    fontWeight: '500',
   },
   chatButton: {
     backgroundColor: '#00D4AA',
@@ -133,45 +213,91 @@ const createStyles = (theme) => StyleSheet.create({
   },
   content: {
     flex: 1,
-    justifyContent: 'space-between',
+    paddingVertical: 8,
   },
   statusContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
+    paddingVertical: 12,
+    backgroundColor: '#F8F9FA',
+    borderRadius: 12,
+    paddingHorizontal: 12,
   },
   statusIcon: {
     fontSize: 24,
-    marginRight: 8,
+    marginRight: 12,
+  },
+  statusTextContainer: {
+    flex: 1,
   },
   statusText: {
     fontSize: 16,
+    fontWeight: '700',
+    marginBottom: 4,
+  },
+  progressContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  progressBar: {
+    flex: 1,
+    height: 6,
+    backgroundColor: '#E0E0E0',
+    borderRadius: 3,
+    marginRight: 8,
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: 3,
+  },
+  progressText: {
+    fontSize: 12,
+    color: '#666666',
     fontWeight: '600',
+    minWidth: 30,
   },
   suggestionsContainer: {
-    marginBottom: 16,
+    marginBottom: 20,
+    paddingHorizontal: 4,
   },
   suggestionsTitle: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: theme.colors.textSecondary,
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#1A1A1A',
+    marginBottom: 12,
+  },
+  goalItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 8,
+    paddingLeft: 8,
   },
   suggestionItem: {
+    fontSize: 13,
+    color: '#666666',
+    marginBottom: 6,
+    fontWeight: '500',
+    paddingLeft: 8,
+    flex: 1,
+  },
+  goalAmount: {
     fontSize: 12,
-    color: theme.colors.textSecondary,
-    marginBottom: 4,
+    color: '#00D4AA',
+    fontWeight: '600',
   },
   actionButton: {
     backgroundColor: '#00D4AA',
-    borderRadius: 8,
-    paddingVertical: 12,
+    borderRadius: 12,
+    paddingVertical: 14,
     alignItems: 'center',
+    marginTop: 8,
   },
   actionText: {
     color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: 15,
+    fontWeight: '700',
   },
 });
 

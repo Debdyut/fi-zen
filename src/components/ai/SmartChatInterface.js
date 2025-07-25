@@ -10,7 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform
 } from 'react-native';
-import { ThemeContext } from '../../theme/ThemeContext';
+import { useThemedStyles } from '../../theme/useThemedStyles';
 import aiContextManager from '../../services/AIContextManager';
 
 const SmartChatInterface = ({ 
@@ -20,10 +20,145 @@ const SmartChatInterface = ({
   onClose,
   initialMessage = null 
 }) => {
-  const { theme } = useContext(ThemeContext);
+  const { colors } = useThemedStyles();
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background || '#FFFFFF',
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: '#E0E0E0',
+    },
+    headerTitle: {
+      fontSize: 18,
+      fontWeight: '600',
+      color: colors.text || '#1A1A1A',
+    },
+    closeButton: {
+      padding: 8,
+    },
+    closeButtonText: {
+      fontSize: 18,
+      color: colors.textSecondary || '#666666',
+    },
+    messagesContainer: {
+      flex: 1,
+      padding: 16,
+    },
+    messageContainer: {
+      marginVertical: 8,
+      padding: 12,
+      borderRadius: 12,
+      maxWidth: '80%',
+    },
+    userMessage: {
+      alignSelf: 'flex-end',
+      backgroundColor: '#00D4AA',
+    },
+    userMessageText: {
+      color: '#FFFFFF',
+      fontSize: 16,
+    },
+    aiMessage: {
+      alignSelf: 'flex-start',
+      backgroundColor: '#F5F5F5',
+    },
+    aiMessageText: {
+      color: colors.text || '#1A1A1A',
+      fontSize: 16,
+      lineHeight: 22,
+    },
+    suggestionsContainer: {
+      marginVertical: 16,
+    },
+    suggestionsTitle: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.textSecondary || '#666666',
+      marginBottom: 8,
+    },
+    suggestionButton: {
+      backgroundColor: '#F0F9FF',
+      padding: 12,
+      borderRadius: 8,
+      marginVertical: 4,
+      borderWidth: 1,
+      borderColor: '#00D4AA',
+    },
+    suggestionText: {
+      color: '#00D4AA',
+      fontSize: 14,
+    },
+    actionsContainer: {
+      marginVertical: 16,
+    },
+    actionsTitle: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.textSecondary || '#666666',
+      marginBottom: 8,
+    },
+    actionButton: {
+      backgroundColor: '#00D4AA',
+      padding: 12,
+      borderRadius: 8,
+      marginVertical: 4,
+    },
+    actionText: {
+      color: '#FFFFFF',
+      fontSize: 14,
+      fontWeight: '600',
+      textAlign: 'center',
+    },
+    loadingContainer: {
+      alignItems: 'center',
+      padding: 16,
+    },
+    loadingText: {
+      color: colors.textSecondary || '#666666',
+      fontStyle: 'italic',
+    },
+    inputContainer: {
+      flexDirection: 'row',
+      padding: 16,
+      borderTopWidth: 1,
+      borderTopColor: '#E0E0E0',
+      alignItems: 'flex-end',
+    },
+    textInput: {
+      flex: 1,
+      borderWidth: 1,
+      borderColor: '#E0E0E0',
+      borderRadius: 20,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      marginRight: 12,
+      maxHeight: 100,
+      fontSize: 16,
+    },
+    sendButton: {
+      backgroundColor: '#00D4AA',
+      paddingHorizontal: 20,
+      paddingVertical: 12,
+      borderRadius: 20,
+    },
+    sendButtonDisabled: {
+      backgroundColor: '#CCCCCC',
+    },
+    sendButtonText: {
+      color: '#FFFFFF',
+      fontWeight: '600',
+    },
+  });
 
   // Initialize AI context when component mounts or user/screen changes
   useEffect(() => {
@@ -50,8 +185,7 @@ const SmartChatInterface = ({
       
       setMessages([aiMessage]);
       aiContextManager.addAIResponse(greeting, currentScreen);
-    }
-  }, [visible, user, currentScreen]);
+      
       // Add conversation starters
       const starters = getConversationStarters(user, currentScreen);
       setMessages(prev => [...prev, {
@@ -98,12 +232,12 @@ const SmartChatInterface = ({
   const getConversationStarters = (user, screen) => {
     const starters = {
       home: [
-        `How can I optimize my ₹${user.monthlyIncome.toLocaleString()} income?`,
-        `Best investment strategy for a ${user.profession}?`,
+        `How can I optimize my ₹${(user.profile?.monthlyIncome || 0).toLocaleString()} income?`,
+        `Best investment strategy for a ${user.profile?.profession || 'professional'}?`,
         `Should I increase my SIP this month?`
       ],
       goals: [
-        `Help me plan retirement as a ${user.profession}`,
+        `Help me plan retirement as a ${user.profile?.profession || 'professional'}`,
         `Emergency fund target for my income level?`,
         `How to balance multiple financial goals?`
       ],
@@ -115,7 +249,7 @@ const SmartChatInterface = ({
       profile: [
         `Optimize my investment portfolio`,
         `Best Fi products for my profile?`,
-        `Tax-saving strategies for ${user.profession}`
+        `Tax-saving strategies for ${user.profile?.profession || 'professionals'}`
       ]
     };
     
@@ -125,12 +259,12 @@ const SmartChatInterface = ({
   const buildContextPrompt = (userMessage) => {
     return `
 User Profile:
-- Name: ${user.name}
-- Profession: ${user.profession}
-- Monthly Income: ₹${user.monthlyIncome}
-- Location: ${user.location}
-- Risk Profile: ${user.riskProfile}
-- Net Worth: ₹${user.netWorth?.netWorth || 0}
+- Name: ${user.name || 'User'}
+- Profession: ${user.profile?.profession || 'Professional'}
+- Monthly Income: ₹${(user.profile?.monthlyIncome || 0).toLocaleString()}
+- Location: ${user.profile?.location || 'India'}
+- Risk Profile: ${user.profile?.riskProfile || 'moderate'}
+- Net Worth: ₹${(user.netWorth?.netWorth || 0).toLocaleString()}
 - Current Screen: ${currentScreen}
 
 Available Fi Products:
@@ -372,139 +506,6 @@ Response:`;
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1A1A1A',
-  },
-  closeButton: {
-    padding: 8,
-  },
-  closeButtonText: {
-    fontSize: 18,
-    color: '#666666',
-  },
-  messagesContainer: {
-    flex: 1,
-    padding: 16,
-  },
-  messageContainer: {
-    marginVertical: 8,
-    padding: 12,
-    borderRadius: 12,
-    maxWidth: '80%',
-  },
-  userMessage: {
-    alignSelf: 'flex-end',
-    backgroundColor: '#00D4AA',
-  },
-  userMessageText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-  },
-  aiMessage: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#F5F5F5',
-  },
-  aiMessageText: {
-    color: '#1A1A1A',
-    fontSize: 16,
-    lineHeight: 22,
-  },
-  suggestionsContainer: {
-    marginVertical: 16,
-  },
-  suggestionsTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#666666',
-    marginBottom: 8,
-  },
-  suggestionButton: {
-    backgroundColor: '#F0F9FF',
-    padding: 12,
-    borderRadius: 8,
-    marginVertical: 4,
-    borderWidth: 1,
-    borderColor: '#00D4AA',
-  },
-  suggestionText: {
-    color: '#00D4AA',
-    fontSize: 14,
-  },
-  actionsContainer: {
-    marginVertical: 16,
-  },
-  actionsTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#666666',
-    marginBottom: 8,
-  },
-  actionButton: {
-    backgroundColor: '#00D4AA',
-    padding: 12,
-    borderRadius: 8,
-    marginVertical: 4,
-  },
-  actionText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  loadingContainer: {
-    alignItems: 'center',
-    padding: 16,
-  },
-  loadingText: {
-    color: '#666666',
-    fontStyle: 'italic',
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    padding: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
-    alignItems: 'flex-end',
-  },
-  textInput: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    marginRight: 12,
-    maxHeight: 100,
-    fontSize: 16,
-  },
-  sendButton: {
-    backgroundColor: '#00D4AA',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 20,
-  },
-  sendButtonDisabled: {
-    backgroundColor: '#CCCCCC',
-  },
-  sendButtonText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
-  },
-});
+
 
 export default SmartChatInterface;

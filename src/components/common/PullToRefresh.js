@@ -6,7 +6,7 @@ import {
   PanGestureHandler,
   State 
 } from 'react-native';
-import { EnhancedFiColors } from '../../theme/enhancedColors';
+import { FiColors } from '../../theme/consolidatedFiColors';
 
 const EnhancedPullToRefresh = ({ 
   children, 
@@ -54,11 +54,11 @@ const EnhancedPullToRefresh = ({
         <RefreshControl
           refreshing={isRefreshing}
           onRefresh={handleRefresh}
-          tintColor={EnhancedFiColors.primary}
-          colors={[EnhancedFiColors.primary]}
-          progressBackgroundColor={EnhancedFiColors.surface}
+          tintColor={FiColors.primary}
+          colors={[FiColors.primary]}
+          progressBackgroundColor={FiColors.surface}
           title="Pull to refresh"
-          titleColor={EnhancedFiColors.textSecondary}
+          titleColor={FiColors.textSecondary}
         />
       }
     >

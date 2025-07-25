@@ -56,7 +56,7 @@ const getCardConfiguration = (screenType, user) => {
         condition: (user) => user.netWorth?.netWorth > 100000
       },
       goals: {
-        priority: 2,
+        priority: 1,
         size: 'medium',
         aiInsights: false,
         condition: (user) => true

@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
 import { getThemeColors } from '../theme/consolidatedFiColors';
 import fonts from '../theme/fonts';
@@ -32,29 +32,20 @@ import UserProfileService from '../services/UserProfileService';
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-// Enhanced Tab Icon Component with mode toggle
-const FiTabIcon = ({ emoji, focused, label, colors, onToggleMode, useEnhanced }) => (
+// Enhanced Tab Icon Component
+const FiTabIcon = ({ emoji, focused, label, colors }) => (
   <View style={styles.tabIconContainer}>
-    <TouchableOpacity 
-      style={[
-        styles.tabIconWrapper,
-        focused && { backgroundColor: colors.primary + '20' }
-      ]}
-      onPress={onToggleMode}
-      onLongPress={onToggleMode}
-    >
+    <View style={[
+      styles.tabIconWrapper,
+      focused && { backgroundColor: colors.primary + '20' }
+    ]}>
       <Text style={[
         styles.tabEmoji,
         focused && styles.tabEmojiActive
       ]}>
         {emoji}
       </Text>
-      {useEnhanced && (
-        <View style={styles.enhancedIndicator}>
-          <Text style={styles.enhancedDot}>✨</Text>
-        </View>
-      )}
-    </TouchableOpacity>
+    </View>
     <Text style={[
       styles.tabLabel,
       { color: colors.textSecondary },
@@ -68,12 +59,6 @@ const FiTabIcon = ({ emoji, focused, label, colors, onToggleMode, useEnhanced })
 const TabNavigator = ({ navigation }) => {
   const { isDarkMode } = useTheme();
   const colors = getThemeColors(isDarkMode);
-  const [useEnhancedScreens, setUseEnhancedScreens] = useState(true); // Default to enhanced
-
-  const toggleScreenMode = () => {
-    setUseEnhancedScreens(!useEnhancedScreens);
-    console.log(`Switched to ${!useEnhancedScreens ? 'Enhanced' : 'Original'} screens`);
-  };
 
   return (
     <Tab.Navigator
@@ -91,7 +76,7 @@ const TabNavigator = ({ navigation }) => {
       }}>
       <Tab.Screen 
         name="Home" 
-        component={useEnhancedScreens ? EnhancedHomeScreen : FiHomeScreenWrapper}
+        component={EnhancedHomeScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <FiTabIcon 
@@ -99,16 +84,13 @@ const TabNavigator = ({ navigation }) => {
               focused={focused} 
               label="Home" 
               colors={colors}
-              onToggleMode={toggleScreenMode}
-              useEnhanced={useEnhancedScreens}
             />
           ),
         }}
-        initialParams={{ useEnhanced: useEnhancedScreens }}
       />
       <Tab.Screen 
         name="Insights" 
-        component={useEnhancedScreens ? EnhancedInsightsScreen : InsightsScreen}
+        component={EnhancedInsightsScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <FiTabIcon 
@@ -116,16 +98,13 @@ const TabNavigator = ({ navigation }) => {
               focused={focused} 
               label="Insights" 
               colors={colors}
-              onToggleMode={toggleScreenMode}
-              useEnhanced={useEnhancedScreens}
             />
           ),
         }}
-        initialParams={{ useEnhanced: useEnhancedScreens }}
       />
       <Tab.Screen 
         name="Goals" 
-        component={useEnhancedScreens ? EnhancedGoalsScreen : GoalsScreen}
+        component={EnhancedGoalsScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <FiTabIcon 
@@ -133,12 +112,9 @@ const TabNavigator = ({ navigation }) => {
               focused={focused} 
               label="Goals" 
               colors={colors}
-              onToggleMode={toggleScreenMode}
-              useEnhanced={useEnhancedScreens}
             />
           ),
         }}
-        initialParams={{ useEnhanced: useEnhancedScreens }}
       />
       <Tab.Screen 
         name="Profile" 
@@ -150,12 +126,9 @@ const TabNavigator = ({ navigation }) => {
               focused={focused} 
               label="Profile" 
               colors={colors}
-              onToggleMode={toggleScreenMode}
-              useEnhanced={false} // Profile doesn't have enhanced version yet
             />
           ),
         }}
-        initialParams={{ useEnhanced: false }}
       />
     </Tab.Navigator>
   );
@@ -287,7 +260,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'transparent',
     marginBottom: 4,
-    position: 'relative',
   },
   tabEmoji: {
     fontSize: 18,
@@ -295,21 +267,7 @@ const styles = StyleSheet.create({
   tabEmojiActive: {
     fontSize: 18,
   },
-  enhancedIndicator: {
-    position: 'absolute',
-    top: -2,
-    right: -2,
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    backgroundColor: '#00D4AA',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  enhancedDot: {
-    fontSize: 8,
-    color: '#FFFFFF',
-  },
+
   tabLabel: {
     fontSize: 9,
     fontWeight: '500',
