@@ -149,12 +149,20 @@ Focus on actionable advice for their age and profession.
             <Text style={styles.growthLabel}>this month</Text>
           </View>
         </View>
-        <TouchableOpacity 
-          style={styles.chatButton}
-          onPress={handleChatPress}
-        >
-          <Text style={styles.chatIcon}>💬</Text>
-        </TouchableOpacity>
+        <View style={styles.headerActions}>
+          <TouchableOpacity 
+            style={styles.refreshButton}
+            onPress={loadAIInsight}
+          >
+            <Text style={styles.refreshIcon}>↻</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.chatButton}
+            onPress={handleChatPress}
+          >
+            <Text style={styles.chatIcon}>💬</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Main Value */}
@@ -271,7 +279,6 @@ const createStyles = () => StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
     padding: 24,
-    marginHorizontal: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.12,
@@ -322,9 +329,28 @@ const createStyles = () => StyleSheet.create({
     color: '#666666',
     fontWeight: '500',
   },
+  headerActions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  refreshButton: {
+    backgroundColor: 'rgba(0, 212, 170, 0.1)',
+    borderRadius: 16,
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#00D4AA',
+  },
+  refreshIcon: {
+    fontSize: 14,
+    color: '#00D4AA',
+    fontWeight: '600',
+  },
   chatButton: {
     backgroundColor: '#00D4AA',
-    borderRadius: 18,
+    borderRadius: 16,
     width: 32,
     height: 32,
     justifyContent: 'center',
