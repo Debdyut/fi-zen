@@ -14,8 +14,6 @@ import FiHomeScreenWrapper from '../components/fi-style/FiHomeScreenWrapper';
 import InflationScreen from '../screens/InflationScreen';
 import InflationSetupScreen from '../screens/InflationSetupScreen';
 import DetailedBreakdownScreen from '../components/results/DetailedBreakdownScreen';
-import InsightsScreen from '../screens/InsightsScreen';
-import GoalsScreen from '../screens/GoalsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import MetricDetailScreen from '../screens/MetricDetailScreen';
 import LoginScreen from '../screens/LoginScreen';

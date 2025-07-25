@@ -1,20 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { FadeInUp } from '../animations/AnimatedCard';
-
-const FiColors = {
-  surface: '#FFFFFF',
-  primary: '#00D4AA',
-  text: '#1A1A1A',
-  textSecondary: '#666666',
-  success: '#00D4AA',
-  warning: '#FFB800',
-  error: '#FF6B6B',
-  border: '#E0E0E0',
-  ai: '#8B5CF6',
-  gradient1: '#667eea',
-  gradient2: '#764ba2',
-};
+import { FiColors } from '../../theme/consolidatedFiColors';
 
 const comingSoonFeatures = [
   {

@@ -6,19 +6,7 @@ import { AnimatedCard, FadeInUp } from '../animations/AnimatedCard';
 import { TouchableArea } from '../common/AccessibilityHelpers';
 import { useLanguage } from '../../localization/LanguageContext';
 
-// Fi App Colors (from screenshots)
-const FiColors = {
-  background: '#1A1A1A',
-  surface: '#FFFFFF',
-  surfaceSecondary: '#F8F9FA',
-  primary: '#00D4AA',
-  text: '#1A1A1A',
-  textSecondary: '#666666',
-  textLight: '#999999',
-  success: '#00D4AA',
-  warning: '#FFB800',
-  error: '#FF6B6B',
-};
+import { FiColors } from '../../theme/consolidatedFiColors';
 
 const FiMetricsCards = ({ inflationData, onCardPress, userData, userProfile }) => {
   const { t } = useLanguage();

@@ -2,16 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { FadeInUp } from '../animations/AnimatedCard';
 import FinancialCalculators from '../../utils/FinancialCalculators';
-
-const FiColors = {
-  surface: '#FFFFFF',
-  primary: '#00D4AA',
-  text: '#1A1A1A',
-  textSecondary: '#666666',
-  success: '#00D4AA',
-  warning: '#FFB800',
-  border: '#E0E0E0',
-};
+import { FiColors } from '../../theme/consolidatedFiColors';
 
 const SIPCalculator = ({ userProfile }) => {
   const [targetAmount, setTargetAmount] = useState('1000000');

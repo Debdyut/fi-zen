@@ -1,5 +1,5 @@
 import React from 'react';
-import FiHomeScreen from './FiHomeScreen';
+import EnhancedHomeScreen from '../../screens/EnhancedHomeScreen_WithRealData';
 import DataService from '../../services/DataService';
 
 const FiHomeScreenWrapper = ({ navigation, route }) => {
@@ -9,24 +9,11 @@ const FiHomeScreenWrapper = ({ navigation, route }) => {
   
   // Set the user in DataService
   DataService.setCurrentUser(selectedUser);
-  
-  // Mock inflation data for demo
-  const mockInflationData = {
-    personal: 11.8,
-    government: 6.5,
-    location: { city: 'Mumbai', state: 'Maharashtra' },
-    difference: 5.3,
-    isHigher: true,
-    confidence: 85,
-    dataSource: 'Demo Data'
-  };
 
   return (
-    <FiHomeScreen 
+    <EnhancedHomeScreen 
       navigation={navigation}
       route={route}
-      inflationData={mockInflationData}
-      selectedUserId={selectedUser}
     />
   );
 };

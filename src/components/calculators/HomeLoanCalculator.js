@@ -3,16 +3,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-nativ
 import { FadeInUp } from '../animations/AnimatedCard';
 import FinancialCalculators from '../../utils/FinancialCalculators';
 
-const FiColors = {
-  surface: '#FFFFFF',
-  primary: '#00D4AA',
-  text: '#1A1A1A',
-  textSecondary: '#666666',
-  success: '#00D4AA',
-  warning: '#FFB800',
-  error: '#FF6B6B',
-  border: '#E0E0E0',
-};
+import { FiColors } from '../../theme/consolidatedFiColors';
 
 const HomeLoanCalculator = ({ userProfile }) => {
   const [existingEMIs, setExistingEMIs] = useState('0');

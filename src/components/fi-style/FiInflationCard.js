@@ -3,16 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useLanguage } from '../../localization/LanguageContext';
 
-// Fi App Colors (from screenshots)
-const FiColors = {
-  background: '#1A1A1A',
-  surface: '#FFFFFF', 
-  primary: '#00D4AA',
-  text: '#1A1A1A',
-  textSecondary: '#666666',
-  textLight: '#999999',
-  error: '#FF6B6B'
-};
+import { FiColors } from '../../theme/consolidatedFiColors';
 
 const FiInflationCard = ({ inflationData = {}, userData = null, userProfile = null }) => {
   const navigation = useNavigation();

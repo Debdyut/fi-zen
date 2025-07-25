@@ -23,6 +23,8 @@ const { width } = Dimensions.get('window');
 const cardWidth = (width - 60) / 2; // 2 columns with margins
 
 const LoginScreen = ({ navigation }) => {
+  console.log('LoginScreen rendering...');
+  
   const { isDarkMode } = useTheme();
   const { t } = useLanguage();
   const colors = getThemeColors(isDarkMode);
@@ -30,18 +32,39 @@ const LoginScreen = ({ navigation }) => {
   const [useAPI, setUseAPI] = useState(false);
   const scrollViewRef = React.useRef(null);
 
-  const availableUsers = DataService.getAvailableUsers();
-  const userIds = availableUsers.map(user => user.userId);
-  const userProfiles = availableUsers.reduce((acc, user) => {
-    acc[user.userId] = {
-      name: user.name,
-      location: user.location,
-      profession: user.profession,
-      avatar: DataService.getUserAvatar(user.userId),
-      balance: 0 // Will be loaded dynamically
+  let availableUsers = [];
+  let userIds = [];
+  let userProfiles = {};
+  
+  try {
+    availableUsers = DataService.getAvailableUsers();
+    userIds = availableUsers.map(user => user.userId);
+    userProfiles = availableUsers.reduce((acc, user) => {
+      acc[user.userId] = {
+        name: user.name,
+        location: user.location,
+        profession: user.profession,
+        avatar: DataService.getUserAvatar(user.userId),
+        balance: 0 // Will be loaded dynamically
+      };
+      return acc;
+    }, {});
+    console.log(`✅ LoginScreen: Loaded ${userIds.length} users`);
+  } catch (error) {
+    console.error('❌ LoginScreen: Error loading users:', error);
+    // Fallback to a single test user
+    userIds = ['1010101010'];
+    userProfiles = {
+      '1010101010': {
+        name: 'Test User',
+        location: 'Mumbai, Maharashtra',
+        profession: 'Software Engineer',
+        avatar: 1,
+        balance: 0
+      }
     };
-    return acc;
-  }, {});
+  }
+  
   const [selectedUser, setSelectedUser] = useState(userIds[Math.floor(Math.random() * userIds.length)]);
 
   const handleUserSelect = (userId) => {
@@ -54,30 +77,30 @@ const LoginScreen = ({ navigation }) => {
   const handleLogin = async () => {
     if (!selectedUser) return;
 
+    console.log(`🔑 Starting login for user: ${selectedUser}`);
     setIsLoading(true);
     
     try {
       // Set the selected user as current user
       DataService.setCurrentUser(selectedUser);
-      const success = true;
       DataService.setDataSource(useAPI);
       
       // Test data source
       const testProfile = await DataService.getUserProfile(selectedUser);
       console.log(`📊 Login verification: Data source = ${testProfile._dataSource}`);
+      console.log(`✅ Login: Selected user ${selectedUser} (${userProfiles[selectedUser]?.name || 'Unknown'})`);
       
-      console.log(`Login: Selected user ${selectedUser} (${userProfiles[selectedUser].name})`);
-      
-      if (success) {
-        // Navigate to main app with selected user
-        navigation.replace('MainTabs', { 
-          selectedUserId: selectedUser
-        });
-      } else {
-        console.error('Failed to set user');
-      }
+      // Navigate to main app with selected user
+      console.log('🚀 Navigating to MainTabs...');
+      navigation.replace('MainTabs', { 
+        selectedUserId: selectedUser
+      });
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('❌ Login error:', error);
+      // Still try to navigate even if there's an error
+      navigation.replace('MainTabs', { 
+        selectedUserId: selectedUser
+      });
     } finally {
       setIsLoading(false);
     }
@@ -129,6 +152,18 @@ const LoginScreen = ({ navigation }) => {
     </FadeInUp>
   );
 
+  console.log('LoginScreen: About to render UI...');
+  
+  if (userIds.length === 0) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ color: colors.text, fontSize: 18 }}>Loading users...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+  
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar 
@@ -220,15 +255,22 @@ const LoginScreen = ({ navigation }) => {
           </Text>
           
           <View style={styles.profilesGrid}>
-            {userIds.map((userId) => (
-              <UserProfileCard
-                key={userId}
-                userId={userId}
-                profile={userProfiles[userId]}
-                isSelected={selectedUser === userId}
-                onPress={handleUserSelect}
-              />
-            ))}
+            {userIds.map((userId) => {
+              const profile = userProfiles[userId];
+              if (!profile) {
+                console.warn(`⚠️ Missing profile for user ${userId}`);
+                return null;
+              }
+              return (
+                <UserProfileCard
+                  key={userId}
+                  userId={userId}
+                  profile={profile}
+                  isSelected={selectedUser === userId}
+                  onPress={handleUserSelect}
+                />
+              );
+            })}
           </View>
         </View>
 

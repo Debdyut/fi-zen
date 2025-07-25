@@ -1,6 +1,64 @@
 // Consolidated Fi Colors (Based on Actual Fi App Screenshots)
 // Single source of truth for all Fi-Zen components with Dark/Light mode support
 
+// Export FiColors at the top for immediate availability
+export const FiColors = {
+  // Fi App Primary Colors
+  background: '#1A1A1A',
+  surface: '#2A2A2A',
+  surfaceSecondary: '#333333',
+  
+  // Fi Brand Colors
+  primary: '#00D4AA',
+  primaryLight: '#33E0BB',
+  primaryDark: '#00B894',
+  
+  // Text Colors
+  text: '#FFFFFF',
+  textSecondary: '#CCCCCC',
+  textTertiary: '#999999',
+  textInverse: '#1A1A1A',
+  textInverseSecondary: '#666666',
+  
+  // Status Colors
+  success: '#00D4AA',
+  warning: '#FFB800',
+  error: '#FF6B6B',
+  info: '#4A90E2',
+  
+  // Inflation Colors
+  inflationLow: '#00D4AA',
+  inflationModerate: '#FFB800',
+  inflationHigh: '#FF8A65',
+  inflationVeryHigh: '#FF6B6B',
+  
+  // UI Elements
+  border: '#404040',
+  borderLight: '#333333',
+  shadow: 'rgba(0, 0, 0, 0.3)',
+  secondary: '#666666',
+  white: '#FFFFFF',
+  
+  // Special colors
+  ai: '#8B5CF6',
+  gradient1: '#00D4AA',
+  gradient2: '#33E0BB',
+  
+  // Attention surfaces
+  surfaceAttentionYellow: '#FFFBF0',
+  surfaceAttentionTeal: '#F0FDFA',
+  surfaceAttentionRed: '#FFF5F5',
+  
+  // Background variants
+  backgroundLight: '#2A2A2A',
+  backgroundCard: '#2A2A2A',
+  backgroundAccent: '#00D4AA20',
+  backgroundCardYellow: '#FFFBF0',
+  backgroundCardTeal: '#F0FDFA',
+  backgroundCardRed: '#FFF5F5',
+  backgroundHeader: '#00D4AA',
+};
+
 // Dark Theme Colors (Fi's signature dark mode)
 export const DarkTheme = {
   // Fi App Primary Colors (from screenshots)
@@ -112,8 +170,7 @@ export const getThemeColors = (isDarkMode) => {
   return isDarkMode ? DarkTheme : LightTheme;
 };
 
-// Legacy export for backward compatibility
-export const FiColors = DarkTheme;
+// Legacy export for backward compatibility - FiColors is now exported at the top
 
 // Fi Typography Scale (Based on Screenshots)
 export const FiTypography = {

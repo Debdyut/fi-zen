@@ -17,7 +17,7 @@ import FiInflationCard from '../components/fi-style/FiInflationCard';
 import { TouchableArea } from '../components/common/AccessibilityHelpers';
 import { useLanguage } from '../localization/LanguageContext';
 import { useTheme } from '../theme/ThemeContext';
-import { FiColors } from '../theme/consolidatedFiColors';
+
 import { EnhancedButton } from '../components/common/EnhancedButtons';
 import { AnimatedCard, FadeInUp } from '../components/animations/AnimatedCard';
 import { EnhancedPullToRefresh } from '../components/common/PullToRefresh';
@@ -346,23 +346,23 @@ const createStyles = () => StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: FiColors.background,
+    backgroundColor: '#E6FBF7',
   },
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: FiColors.text,
+    color: '#1A1A1A',
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: FiColors.background,
+    backgroundColor: '#E6FBF7',
     padding: 20,
   },
   errorText: {
     fontSize: 16,
-    color: FiColors.error,
+    color: '#FF4444',
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -461,7 +461,7 @@ const createStyles = () => StyleSheet.create({
   },
   wealthSubtext: {
     fontSize: 14,
-    color: FiColors.primary,
+    color: '#00D4AA',
     fontWeight: '500',
   },
   trustSection: {

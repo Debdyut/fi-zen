@@ -1,10 +1,17 @@
 const UserProfileService = require('./UserProfileService');
-const EnhancedDataService = require('./EnhancedDataService');
 
 class DataService {
   constructor() {
-    // Use Enhanced DataService for production data, fallback to UserProfileService
-    this.enhancedService = EnhancedDataService;
+    // Try to load Enhanced DataService, fallback to UserProfileService
+    try {
+      const EnhancedDataService = require('./EnhancedDataService');
+      this.enhancedService = EnhancedDataService;
+      console.log('✅ EnhancedDataService loaded successfully');
+    } catch (error) {
+      console.warn('⚠️ EnhancedDataService failed to load, using fallback:', error.message);
+      this.enhancedService = null;
+    }
+    
     this.userProfileService = UserProfileService;
     this.currentUser = '1010101010'; // Default user
     this.useAPI = false; // Default to file mode
@@ -25,21 +32,37 @@ class DataService {
 
   // Get list of available test users
   getAvailableUsers() {
-    try {
-      const users = this.enhancedService.getAvailableUsers();
-      console.log(`✅ DataService: Loaded ${users.length} users from EnhancedDataService`);
-      return users;
-    } catch (error) {
-      console.warn('⚠️ Falling back to UserProfileService:', error.message);
-      return this.userProfileService.getAvailableUsers();
+    if (this.enhancedService) {
+      try {
+        const users = this.enhancedService.getAvailableUsers();
+        console.log(`✅ DataService: Loaded ${users.length} users from EnhancedDataService`);
+        return users;
+      } catch (error) {
+        console.warn('⚠️ EnhancedDataService failed, falling back to UserProfileService:', error.message);
+      }
     }
+    
+    // Fallback to UserProfileService
+    const userProfiles = this.userProfileService.getAllUserProfiles();
+    return Object.entries(userProfiles).map(([userId, profile]) => ({
+      userId,
+      name: profile.name,
+      profession: profile.profession,
+      location: profile.location,
+      riskProfile: 'moderate',
+      monthlyIncome: 100000,
+      netWorth: profile.netWorth
+    }));
   }
 
   // Set current user
   setCurrentUser(userId) {
     console.log(`DataService: Setting current user to ${userId}`);
     this.currentUser = userId;
-    this.enhancedService.currentUser = userId;
+    if (this.enhancedService) {
+      this.enhancedService.currentUser = userId;
+    }
+    this.userProfileService.setCurrentUser(userId);
     return userId;
   }
 
@@ -53,48 +76,61 @@ class DataService {
 
   // Get user's total balance
   async getUserBalance(userId) {
-    try {
-      const balance = await this.enhancedService.getUserBalance(userId);
-      console.log(`✅ DataService: Loaded balance ₹${balance.toLocaleString()} for user ${userId}`);
-      return balance;
-    } catch (error) {
-      console.warn('⚠️ Falling back to UserProfileService for balance:', error.message);
-      return this.userProfileService.getUserBalance(userId);
+    if (this.enhancedService) {
+      try {
+        const balance = await this.enhancedService.getUserBalance(userId);
+        console.log(`✅ DataService: Loaded balance ₹${balance.toLocaleString()} for user ${userId}`);
+        return balance;
+      } catch (error) {
+        console.warn('⚠️ EnhancedDataService failed for balance, falling back:', error.message);
+      }
     }
+    
+    return this.userProfileService.getUserBalance(userId);
   }
 
   // Get user's net worth
   async getUserNetWorth(userId) {
-    try {
-      const netWorth = await this.enhancedService.getUserNetWorth(userId);
-      console.log(`✅ DataService: Loaded net worth ₹${netWorth?.netWorth?.toLocaleString()} for user ${userId}`);
-      return netWorth;
-    } catch (error) {
-      console.warn('⚠️ Falling back to UserProfileService for net worth:', error.message);
-      return this.userProfileService.getUserNetWorth(userId);
+    if (this.enhancedService) {
+      try {
+        const netWorth = await this.enhancedService.getUserNetWorth(userId);
+        console.log(`✅ DataService: Loaded net worth ₹${netWorth?.netWorth?.toLocaleString()} for user ${userId}`);
+        return netWorth;
+      } catch (error) {
+        console.warn('⚠️ EnhancedDataService failed for net worth, falling back:', error.message);
+      }
     }
+    
+    return this.userProfileService.getUserNetWorth(userId);
   }
 
   // Get user's avatar number
   getUserAvatar(userId) {
-    try {
-      return this.enhancedService.getUserAvatar(userId);
-    } catch (error) {
-      return this.userProfileService.getUserAvatar(userId);
+    if (this.enhancedService) {
+      try {
+        return this.enhancedService.getUserAvatar(userId);
+      } catch (error) {
+        console.warn('⚠️ EnhancedDataService failed for avatar, falling back:', error.message);
+      }
     }
+    
+    return this.userProfileService.getUserAvatar(userId);
   }
 
   // Get user profile
   async getUserProfile(userId) {
-    try {
-      const profile = await this.enhancedService.getUserProfile(userId);
-      console.log(`✅ DataService: Loaded profile for ${profile?.name} (${userId}) from ${this.getDataSource()}`);
-      return { ...profile, _dataSource: this.getDataSource() };
-    } catch (error) {
-      console.warn('⚠️ Falling back to UserProfileService for profile:', error.message);
-      const profile = this.userProfileService.getUserProfile(userId);
-      return { ...profile, _dataSource: 'FILE_FALLBACK' };
+    if (this.enhancedService) {
+      try {
+        const profile = await this.enhancedService.getUserProfile(userId);
+        console.log(`✅ DataService: Loaded profile for ${profile?.name} (${userId}) from ${this.getDataSource()}`);
+        return { ...profile, _dataSource: this.getDataSource() };
+      } catch (error) {
+        console.warn('⚠️ EnhancedDataService failed for profile, falling back:', error.message);
+      }
     }
+    
+    const profile = this.userProfileService.getUserProfile(userId);
+    return { ...profile, _dataSource: 'FILE_FALLBACK' };
   }
 
   // ==================== ENHANCED DATA METHODS ====================

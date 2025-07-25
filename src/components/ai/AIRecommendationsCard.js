@@ -2,18 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { FadeInUp } from '../animations/AnimatedCard';
 import MLRecommendationEngine from '../../utils/MLRecommendationEngine';
-
-const FiColors = {
-  surface: '#FFFFFF',
-  primary: '#00D4AA',
-  text: '#1A1A1A',
-  textSecondary: '#666666',
-  success: '#00D4AA',
-  warning: '#FFB800',
-  error: '#FF6B6B',
-  border: '#E0E0E0',
-  ai: '#8B5CF6',
-};
+import { FiColors } from '../../theme/consolidatedFiColors';
 
 const AIRecommendationsCard = ({ userProfile, behaviorHistory = [] }) => {
   const [aiRecommendations, setAiRecommendations] = useState(null);
