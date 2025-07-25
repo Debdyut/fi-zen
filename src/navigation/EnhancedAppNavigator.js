@@ -236,6 +236,20 @@ const AppNavigator = () => {
               headerShown: false,
             }}
           />
+          <Stack.Screen 
+            name="Insights" 
+            component={EnhancedInsightsScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen 
+            name="Goals" 
+            component={EnhancedGoalsScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
       </SharedUserProvider>
